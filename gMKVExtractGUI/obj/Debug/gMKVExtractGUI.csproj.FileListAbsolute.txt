@@ -1,0 +1,8 @@
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\bin\Debug\gMKVExtractGUI.exe
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\bin\Debug\gMKVExtractGUI.pdb
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.csprojResolveAssemblyReference.cache
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.frmMain.resources
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.Properties.Resources.resources
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.csproj.GenerateResource.Cache
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.exe
+E:\Development\gMKVExtractGUI\gMKVExtractGUI\obj\Debug\gMKVExtractGUI.pdb

@@ -4,6 +4,12 @@ using System.Text;
 
 namespace gMKVToolnix
 {
+    public enum MkvChapterTypes
+    {
+        XML,
+        OGM
+    }
+
     public class gMKVChapter : gMKVSegment
     {
         private int _ChapterCount = 0;

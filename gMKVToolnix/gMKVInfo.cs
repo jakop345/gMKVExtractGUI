@@ -55,16 +55,16 @@ namespace gMKVToolnix
             check_for_updates // Check online for the latest release
         }
 
-        private Int32 _eventCounter = 0;
         private String _MKVToolnixPath = String.Empty;
         private String _MKVInfoFilename = String.Empty;
         private List<gMKVSegment> _SegmentList = new List<gMKVSegment>();
         private StringBuilder _MKVInfoOutput = new StringBuilder();
+        private StringBuilder _ErrorBuilder = new StringBuilder();
 
         public gMKVInfo(String mkvToonlixPath)
         {
             _MKVToolnixPath = mkvToonlixPath;
-            _MKVInfoFilename = Path.Combine(_MKVToolnixPath, "mkvinfo.exe");
+            _MKVInfoFilename = Path.Combine(_MKVToolnixPath, "mkvinfo.exe");            
         }
 
         public List<gMKVSegment> GetMKVSegments(String argMKVFile)
@@ -73,11 +73,13 @@ namespace gMKVToolnix
             _SegmentList.Clear();
             // Clear the mkvinfo output
             _MKVInfoOutput.Length = 0;
+            // Clear the error builder
+            _ErrorBuilder.Length = 0;
 
             using (Process myProcess = new Process())
             {
-                //List<OptionValue> optionList = new List<OptionValue>();
-                //optionList.Add(new OptionValue(MkvInfoOptions.track_info, String.Empty));
+                List<OptionValue> optionList = new List<OptionValue>();
+                //optionList.Add(new OptionValue(MkvInfoOptions.verbose, "1"));
                 //optionList.Add(new OptionValue(MkvInfoOptions.summary, String.Empty));
                 //optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 //optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
@@ -85,8 +87,9 @@ namespace gMKVToolnix
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVInfoFilename;
                 //myProcessInfo.Arguments = " -?";
-                //myProcessInfo.Arguments = ConvertOptionValueListToString(optionList) + " " + argMKVFile;
-                myProcessInfo.Arguments = String.Format("\"{0}\"", argMKVFile);
+                //myProcessInfo.Arguments = ConvertOptionValueListToString(optionList) + " " + argMKVFile;                
+                myProcessInfo.Arguments = String.Format("{0} \"{1}\"", ConvertOptionValueListToString(optionList), argMKVFile);
+                //myProcessInfo.Arguments = String.Format("--parse-mode fast \"{0}\"", argMKVFile);
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;
                 myProcessInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -114,7 +117,8 @@ namespace gMKVToolnix
                 if (myProcess.ExitCode > 0)
                 {
                     // something went wrong!
-                    throw new Exception(String.Format("Mkvinfo exited with error code {0}!", myProcess.ExitCode));
+                    throw new Exception(String.Format("Mkvinfo exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}",
+                        myProcess.ExitCode, _ErrorBuilder.ToString()));
                 }
                 // Start the parsing of the output
                 ParseMkvInfoOutput();
@@ -434,10 +438,14 @@ namespace gMKVToolnix
                 if (e.Data.Trim().Length > 0)
                 {
                     // add the line to the output stringbuilder
-                    _MKVInfoOutput.AppendLine(e.Data.Trim());
+                    _MKVInfoOutput.AppendLine(e.Data);
+                    // check for errors
+                    if (e.Data.Contains("Error:"))
+                    {
+                        _ErrorBuilder.AppendLine(e.Data.Substring(e.Data.IndexOf(":") + 1).Trim());
+                    }
                     // debug write the output line
-                    Debug.WriteLine(_eventCounter + " " + e.Data.Trim());
-                    _eventCounter++;
+                    Debug.WriteLine(e.Data);
                     // log the output
                     gMKVLogger.Log(e.Data);
                 }

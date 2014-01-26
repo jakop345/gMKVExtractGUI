@@ -9,6 +9,12 @@ namespace gMKVToolnix
 {
     public class gMKVHelper
     {
+        /// <summary>
+        /// Returns the path from MKVToolnix.
+        /// It tries to find it via the registry keys.
+        /// If it doesn't find it, it throws an exception.
+        /// </summary>
+        /// <returns></returns>
         public static String GetMKVToolnixPath()
         {
             RegistryKey regUninstall = null;

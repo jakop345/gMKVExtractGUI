@@ -35,8 +35,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gMKVAttachment.cs" />
+    <Compile Include="gMKVChapter.cs" />
     <Compile Include="gMKVExtract.cs" />
     <Compile Include="gMKVInfo.cs" />
+    <Compile Include="gMKVLogger.cs" />
+    <Compile Include="gMKVSegment.cs" />
+    <Compile Include="gMKVSegmentInfo.cs" />
     <Compile Include="gMKVTrack.cs" />
     <Compile Include="gMKVHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

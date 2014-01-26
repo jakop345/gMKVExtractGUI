@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace gMKVExtractGUI
+namespace gMKVToolnix
 {
-    class gMKVInfo
+    public class gMKVInfo
     {
+
     }
 }

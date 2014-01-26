@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace gMKVExtractGUI
+namespace gMKVToolnix
 {
     public partial class frmMain : Form
     {
@@ -16,9 +16,20 @@ namespace gMKVExtractGUI
         {
             InitializeComponent();
             Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- By Gpower2";
-            gMKVExtract g = new gMKVExtract();
-            Debug.WriteLine(g.GetMKVToolnixPath());
-            g.GetMKVTracks("");
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                gMKVExtract g = new gMKVExtract();
+                Debug.WriteLine(gMKVHelper.GetMKVToolnixPath());
+                g.GetMKVTracks("");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
     }
 }

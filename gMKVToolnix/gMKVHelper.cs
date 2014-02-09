@@ -10,12 +10,20 @@ namespace gMKVToolnix
     public class gMKVHelper
     {
         /// <summary>
+        /// Gets the mkvmerge GUI executable filename
+        /// </summary>
+        public static String MKV_MERGE_GUI_FILENAME 
+        {
+            get { return "mmg.exe"; }
+        }
+
+        /// <summary>
         /// Returns the path from MKVToolnix.
         /// It tries to find it via the registry keys.
         /// If it doesn't find it, it throws an exception.
         /// </summary>
         /// <returns></returns>
-        public static String GetMKVToolnixPath()
+        public static String GetMKVToolnixPathViaRegistry()
         {
             RegistryKey regUninstall = null;
             RegistryKey regMkvToolnix = null;
@@ -104,7 +112,7 @@ namespace gMKVToolnix
                 // if we didn't find the MkvMergeGUI key, all hope is lost
                 if (!subKeyFound)
                 {
-                    throw new Exception("Couldn't find MkvMergeGUI in your system!\r\nPlease download and install it or provide a manual path!");
+                    throw new Exception("Couldn't find MKVToolNix in your system!\r\nPlease download and install it or provide a manual path!");
                 }
                 RegistryKey regGui = null;
                 Boolean foundGuiKey = false;
@@ -120,7 +128,7 @@ namespace gMKVToolnix
                 // if we didn't find the GUI key, all hope is lost
                 if (!foundGuiKey)
                 {
-                    throw new Exception("Found MkvMergeGUI in your system but not the registry Key GUI!\r\nPlease download and reinstall or provide a manual path!");
+                    throw new Exception("Found MKVToolNix in your system but not the registry Key GUI!");
                 }
 
                 foreach (String valueName in regGui.GetValueNames())
@@ -135,7 +143,7 @@ namespace gMKVToolnix
                 // if we didn't find the mkvmerge_executable value, all hope is lost
                 if (!valueFound)
                 {
-                    throw new Exception("Found MkvMergeGUI in your system but not the registry value mkvmerge_executable!\r\nPlease download and reinstall or provide a manual path!");
+                    throw new Exception("Found MKVToolNix in your system but not the registry value mkvmerge_executable!");
                 }
             }
 
@@ -143,7 +151,7 @@ namespace gMKVToolnix
             // let's check if it's valid
             if (!File.Exists(valuePath))
             {
-                throw new Exception("Found a registry value (" + valuePath + ") for MkvMergeGUI in your system but it is not valid!\r\nPlease download and reinstall or provide a manual path!");
+                throw new Exception("Found a registry value (" + valuePath + ") for MKVToolNix in your system but it is not valid!");
             }
 
             // Everything is A-OK! Return the valid Directory value! :)

@@ -29,9 +29,27 @@ namespace gMKVToolnix
             try
             {
                 InitializeComponent();
+                Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
                 Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- By Gpower2";
-                txtMKVToolnixPath.Text = gMKVHelper.GetMKVToolnixPath();
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
+                try
+                {
+                    txtMKVToolnixPath.Text = gMKVHelper.GetMKVToolnixPathViaRegistry();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    // MKVToolnix was not found in registry
+                    // last hope is in the current directory
+                    if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                    {
+                        txtMKVToolnixPath.Text = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    }
+                    else
+                    {
+                        throw new Exception("Could not find MKVToolNix in registry or in the current directory!\r\nPlease download and reinstall or provide a manual path!");
+                    }
+                }
             }
             catch (Exception ex)
             {

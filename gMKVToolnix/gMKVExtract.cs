@@ -411,7 +411,7 @@ namespace gMKVToolnix
                 }
                 else
                 {
-                    _ChapterWriter = new StreamWriter(argChapterFile, false, Encoding.UTF8);
+                    _ChapterWriter = new StreamWriter(argChapterFile, false, new UTF8Encoding(false, true));
                     myProcess.OutputDataReceived += myProcess_ChapterDataReceived;
                 }
 

@@ -2,3 +2,4 @@ E:\Development\gMKVExtractGUI\code\gMKVToolnix\bin\Release\gMKVToolnix.dll
 E:\Development\gMKVExtractGUI\code\gMKVToolnix\bin\Release\gMKVToolnix.pdb
 E:\Development\gMKVExtractGUI\code\gMKVToolnix\obj\Release\gMKVToolnix.dll
 E:\Development\gMKVExtractGUI\code\gMKVToolnix\obj\Release\gMKVToolnix.pdb
+E:\Development\gMKVExtractGUI\code\gMKVToolnix\obj\Release\gMKVToolnix.csprojResolveAssemblyReference.cache

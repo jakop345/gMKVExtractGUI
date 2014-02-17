@@ -46,14 +46,15 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
+            this.btnShowLog = new System.Windows.Forms.Button();
             this.txtInputFile = new gMKVToolnix.gTextBox();
             this.txtOutputDirectory = new gMKVToolnix.gTextBox();
             this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
             this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
             this.txtSegmentInfo = new gMKVToolnix.gTextBox();
-            this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpInputFile.SuspendLayout();
             this.grpOutputDirectory.SuspendLayout();
             this.grpInputFileInfo.SuspendLayout();
@@ -141,6 +142,7 @@
             // 
             // grpActions
             // 
+            this.grpActions.Controls.Add(this.btnShowLog);
             this.grpActions.Controls.Add(this.btnExtractTags);
             this.grpActions.Controls.Add(this.btnExtractCue);
             this.grpActions.Controls.Add(this.lblChapterType);
@@ -291,6 +293,11 @@
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // lblTrack
+            // 
+            this.lblTrack.Name = "lblTrack";
+            this.lblTrack.Size = new System.Drawing.Size(0, 17);
+            // 
             // lblStatus
             // 
             this.lblStatus.Name = "lblStatus";
@@ -300,6 +307,16 @@
             // 
             this.prgBrStatus.Name = "prgBrStatus";
             this.prgBrStatus.Size = new System.Drawing.Size(200, 16);
+            // 
+            // btnShowLog
+            // 
+            this.btnShowLog.Location = new System.Drawing.Point(6, 18);
+            this.btnShowLog.Name = "btnShowLog";
+            this.btnShowLog.Size = new System.Drawing.Size(90, 30);
+            this.btnShowLog.TabIndex = 6;
+            this.btnShowLog.Text = "Show Log";
+            this.btnShowLog.UseVisualStyleBackColor = true;
+            this.btnShowLog.Click += new System.EventHandler(this.btnShowLog_Click);
             // 
             // txtInputFile
             // 
@@ -360,11 +377,6 @@
             this.txtSegmentInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtSegmentInfo.Size = new System.Drawing.Size(586, 74);
             this.txtSegmentInfo.TabIndex = 1;
-            // 
-            // lblTrack
-            // 
-            this.lblTrack.Name = "lblTrack";
-            this.lblTrack.Size = new System.Drawing.Size(0, 17);
             // 
             // frmMain
             // 
@@ -427,6 +439,7 @@
         private System.Windows.Forms.Button btnExtractTags;
         private System.Windows.Forms.Button btnExtractCue;
         private System.Windows.Forms.ToolStripStatusLabel lblTrack;
+        private System.Windows.Forms.Button btnShowLog;
     }
 }
 

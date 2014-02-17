@@ -14,6 +14,8 @@ namespace gMKVToolnix
 {
     public partial class frmMain : Form
     {
+        private frmLog _LogForm = null;
+
         private void ShowErrorMessage(String argMessage)
         {
             MessageBox.Show("An error has occured!\r\n\r\n" + argMessage, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -119,9 +121,14 @@ namespace gMKVToolnix
                         throw new Exception("The input file \r\n\r\n" + txtInputFile.Text.Trim()+ "\r\n\r\ndoes not exist!");
                     }
                     // check if file is an mkv file
-                    if (Path.GetExtension(txtInputFile.Text.Trim()).ToLower() != ".mkv")
+                    String inputExtension = Path.GetExtension(txtInputFile.Text.Trim()).ToLower();
+                    if (inputExtension != ".mkv"
+                        && inputExtension != ".mka"
+                        && inputExtension != ".mks"
+                        && inputExtension != ".mk3d"
+                        && inputExtension != ".webm")
                     {
-                        throw new Exception("The input file \r\n\r\n" + txtInputFile.Text.Trim() + "\r\n\r\nis not an mkv file!");
+                        throw new Exception("The input file \r\n\r\n" + txtInputFile.Text.Trim() + "\r\n\r\nis not a valid matroska file!");
                     }
                     // set output directory to the source directory
                     txtOutputDirectory.Text = Path.GetDirectoryName(txtInputFile.Text.Trim());
@@ -160,7 +167,7 @@ namespace gMKVToolnix
             {
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Title = "Select an input mkv file...";
-                ofd.Filter = "(*.mkv)|*.mkv";
+                ofd.Filter = "(*.mkv)|*.mkv|(*.mka)|*.mka|(*.mks)|*.mks|(*.mk3d)|*.mk3d|(*.webm)|*.webm";
                 ofd.Multiselect = false;
                 ofd.AutoUpgradeEnabled = true;
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -343,6 +350,21 @@ namespace gMKVToolnix
             }
         }
 
+        private void btnShowLog_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_LogForm == null) { _LogForm = new frmLog(); }
+                if (_LogForm.IsDisposed) { _LogForm = new frmLog(); }
+                _LogForm.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         public delegate void UpdateProgressDelegate(Object val);
 
         public void UpdateProgress(Object val)
@@ -359,5 +381,6 @@ namespace gMKVToolnix
             lblTrack.Text = (String)val;
             Application.DoEvents();
         }
+
     }
 }

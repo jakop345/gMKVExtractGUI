@@ -52,7 +52,8 @@ namespace gMKVToolnix
             redirect_output, // Redirects all messages into this file
             help, // Show this help
             version, // Show version information
-            check_for_updates // Check online for the latest release
+            check_for_updates, // Check online for the latest release
+            gui_mode // In this mode specially-formatted lines may be output that can tell a controlling GUI what's happening
         }
 
         private String _MKVToolnixPath = String.Empty;
@@ -79,15 +80,14 @@ namespace gMKVToolnix
             using (Process myProcess = new Process())
             {
                 List<OptionValue> optionList = new List<OptionValue>();
-                //optionList.Add(new OptionValue(MkvInfoOptions.verbose, "1"));
-                //optionList.Add(new OptionValue(MkvInfoOptions.summary, String.Empty));
-                //optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
-                //optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
+                optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
+                optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
+                optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
+                optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
 
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVInfoFilename;
                 //myProcessInfo.Arguments = " -?";
-                //myProcessInfo.Arguments = ConvertOptionValueListToString(optionList) + " " + argMKVFile;                
                 myProcessInfo.Arguments = String.Format("{0} \"{1}\"", ConvertOptionValueListToString(optionList), argMKVFile);
                 //myProcessInfo.Arguments = String.Format("--parse-mode fast \"{0}\"", argMKVFile);
                 myProcessInfo.UseShellExecute = false;

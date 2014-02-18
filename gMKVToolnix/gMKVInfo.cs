@@ -81,7 +81,7 @@ namespace gMKVToolnix
             {
                 List<OptionValue> optionList = new List<OptionValue>();
                 optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
-                optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
+                //optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
                 optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
 

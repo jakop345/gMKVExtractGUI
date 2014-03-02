@@ -40,6 +40,7 @@
     <Compile Include="gMKVExtract.cs" />
     <Compile Include="gMKVInfo.cs" />
     <Compile Include="gMKVLogger.cs" />
+    <Compile Include="gMKVMerge.cs" />
     <Compile Include="gMKVSegment.cs" />
     <Compile Include="gMKVSegmentInfo.cs" />
     <Compile Include="gMKVTrack.cs" />

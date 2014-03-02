@@ -9,7 +9,6 @@ namespace gMKVToolnix
     public class gMKVInfo
     {
         // mkvinfo [options] <inname>
-
         internal class OptionValue
         {
             private MkvInfoOptions _Option;
@@ -19,7 +18,7 @@ namespace gMKVToolnix
             {
                 get { return _Option; }
                 set { _Option = value; }
-            }	
+            }
 
             public String Parameter
             {

@@ -360,7 +360,7 @@ namespace gMKVToolnix
             _MKVExtractOutput.Length = 0;
             String par = String.Format("tags \"{0}\"", argMKVFile);
             String chapFile = Path.Combine(argOutputDirectory,
-                Path.GetFileNameWithoutExtension(argMKVFile) + "_cuesheet.xml");
+                Path.GetFileNameWithoutExtension(argMKVFile) + "_tags.xml");
             try
             {
                 OnMkvExtractTrackUpdated("Tags");

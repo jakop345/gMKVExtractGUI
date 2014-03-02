@@ -49,8 +49,33 @@ namespace gMKVToolnix
                     }
                     else
                     {
-                        throw new Exception("Could not find MKVToolNix in registry or in the current directory!\r\nPlease download and reinstall or provide a manual path!");
+                        // check for ini file
+                        if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                        {
+                            using (StreamReader sr = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                            {
+                                // check if ini file contains a valid path
+                                String iniMkvToolnixPath = sr.ReadLine();
+                                if (File.Exists(Path.Combine(iniMkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                                {
+                                    txtMKVToolnixPath.Text = iniMkvToolnixPath;
+                                }
+                                else
+                                {
+                                    throw new Exception("Could not find MKVToolNix in registry, or in the current directory, or in the ini file!\r\nPlease download and reinstall or provide a manual path!");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Could not find MKVToolNix in registry or in the current directory!\r\nPlease download and reinstall or provide a manual path!");
+                        }
                     }
+                }
+                // check if user provided with a filename
+                if (Environment.GetCommandLineArgs().Length > 1)
+                {
+                    txtInputFile.Text = Environment.GetCommandLineArgs()[1];
                 }
             }
             catch (Exception ex)
@@ -105,6 +130,23 @@ namespace gMKVToolnix
             prgBrStatus.Value = 0;
         }
 
+        private void txtMKVToolnixPath_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Write the value to the ini file
+                using (StreamWriter sw = new StreamWriter(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                {
+                    sw.Write(txtMKVToolnixPath.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         private void txtInputFile_TextChanged(object sender, EventArgs e)
         {
             try
@@ -132,9 +174,21 @@ namespace gMKVToolnix
                     }
                     // set output directory to the source directory
                     txtOutputDirectory.Text = Path.GetDirectoryName(txtInputFile.Text.Trim());
-                    // get the file information
-                    gMKVInfo g = new gMKVInfo(txtMKVToolnixPath.Text.Trim());
+                    // get the file information                    
+                    gMKVMerge g = new gMKVMerge(txtMKVToolnixPath.Text.Trim());
                     List<gMKVSegment> segmentList = g.GetMKVSegments(txtInputFile.Text.Trim());
+                    gMKVInfo gInfo = new gMKVInfo(txtMKVToolnixPath.Text.Trim());
+                    List<gMKVSegment> segmentListInfo = gInfo.GetMKVSegments(txtInputFile.Text.Trim());
+                    foreach (gMKVSegment seg in segmentListInfo)
+                    {
+                        if (seg is gMKVSegmentInfo)
+                        {
+                            segmentList.Insert(0, seg);
+                            break;
+                        }
+                    }
+                    gInfo = null;
+                    segmentListInfo = null;
                     foreach (gMKVSegment seg in segmentList)
                     {
                         if (seg is gMKVSegmentInfo)
@@ -381,6 +435,7 @@ namespace gMKVToolnix
             lblTrack.Text = (String)val;
             Application.DoEvents();
         }
+
 
     }
 }

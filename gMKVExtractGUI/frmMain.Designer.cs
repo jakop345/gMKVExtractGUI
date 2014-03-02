@@ -30,11 +30,16 @@
         {
             this.btnBrowseInputFile = new System.Windows.Forms.Button();
             this.grpInputFile = new System.Windows.Forms.GroupBox();
+            this.txtInputFile = new gMKVToolnix.gTextBox();
             this.grpOutputDirectory = new System.Windows.Forms.GroupBox();
             this.btnBrowseOutputDirectory = new System.Windows.Forms.Button();
+            this.txtOutputDirectory = new gMKVToolnix.gTextBox();
             this.grpInputFileInfo = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
+            this.txtSegmentInfo = new gMKVToolnix.gTextBox();
             this.grpActions = new System.Windows.Forms.GroupBox();
+            this.btnShowLog = new System.Windows.Forms.Button();
             this.btnExtractTags = new System.Windows.Forms.Button();
             this.btnExtractCue = new System.Windows.Forms.Button();
             this.lblChapterType = new System.Windows.Forms.Label();
@@ -42,6 +47,7 @@
             this.btnExtractTracks = new System.Windows.Forms.Button();
             this.grpConfig = new System.Windows.Forms.GroupBox();
             this.btnBrowseMKVToolnixPath = new System.Windows.Forms.Button();
+            this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
             this.grpLog = new System.Windows.Forms.GroupBox();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
@@ -49,12 +55,6 @@
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
-            this.btnShowLog = new System.Windows.Forms.Button();
-            this.txtInputFile = new gMKVToolnix.gTextBox();
-            this.txtOutputDirectory = new gMKVToolnix.gTextBox();
-            this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
-            this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
-            this.txtSegmentInfo = new gMKVToolnix.gTextBox();
             this.grpInputFile.SuspendLayout();
             this.grpOutputDirectory.SuspendLayout();
             this.grpInputFileInfo.SuspendLayout();
@@ -90,6 +90,20 @@
             this.grpInputFile.TabStop = false;
             this.grpInputFile.Text = "Input file (you can drag and drop the file)";
             // 
+            // txtInputFile
+            // 
+            this.txtInputFile.AllowDrop = true;
+            this.txtInputFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtInputFile.Location = new System.Drawing.Point(6, 22);
+            this.txtInputFile.Name = "txtInputFile";
+            this.txtInputFile.ReadOnly = true;
+            this.txtInputFile.Size = new System.Drawing.Size(499, 23);
+            this.txtInputFile.TabIndex = 1;
+            this.txtInputFile.TextChanged += new System.EventHandler(this.txtInputFile_TextChanged);
+            this.txtInputFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
+            this.txtInputFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
+            // 
             // grpOutputDirectory
             // 
             this.grpOutputDirectory.Controls.Add(this.btnBrowseOutputDirectory);
@@ -112,6 +126,18 @@
             this.btnBrowseOutputDirectory.Text = "Browse...";
             this.btnBrowseOutputDirectory.UseVisualStyleBackColor = true;
             this.btnBrowseOutputDirectory.Click += new System.EventHandler(this.btnBrowseOutputDirectory_Click);
+            // 
+            // txtOutputDirectory
+            // 
+            this.txtOutputDirectory.AllowDrop = true;
+            this.txtOutputDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtOutputDirectory.Location = new System.Drawing.Point(6, 22);
+            this.txtOutputDirectory.Name = "txtOutputDirectory";
+            this.txtOutputDirectory.Size = new System.Drawing.Size(499, 23);
+            this.txtOutputDirectory.TabIndex = 2;
+            this.txtOutputDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
+            this.txtOutputDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
             // 
             // grpInputFileInfo
             // 
@@ -140,6 +166,27 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(592, 271);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
+            // chkLstInputFileTracks
+            // 
+            this.chkLstInputFileTracks.CheckOnClick = true;
+            this.chkLstInputFileTracks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkLstInputFileTracks.FormattingEnabled = true;
+            this.chkLstInputFileTracks.Location = new System.Drawing.Point(3, 83);
+            this.chkLstInputFileTracks.Name = "chkLstInputFileTracks";
+            this.chkLstInputFileTracks.Size = new System.Drawing.Size(586, 185);
+            this.chkLstInputFileTracks.TabIndex = 0;
+            // 
+            // txtSegmentInfo
+            // 
+            this.txtSegmentInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSegmentInfo.Location = new System.Drawing.Point(3, 3);
+            this.txtSegmentInfo.Multiline = true;
+            this.txtSegmentInfo.Name = "txtSegmentInfo";
+            this.txtSegmentInfo.ReadOnly = true;
+            this.txtSegmentInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtSegmentInfo.Size = new System.Drawing.Size(586, 74);
+            this.txtSegmentInfo.TabIndex = 1;
+            // 
             // grpActions
             // 
             this.grpActions.Controls.Add(this.btnShowLog);
@@ -155,6 +202,16 @@
             this.grpActions.TabIndex = 6;
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
+            // 
+            // btnShowLog
+            // 
+            this.btnShowLog.Location = new System.Drawing.Point(6, 18);
+            this.btnShowLog.Name = "btnShowLog";
+            this.btnShowLog.Size = new System.Drawing.Size(90, 30);
+            this.btnShowLog.TabIndex = 6;
+            this.btnShowLog.Text = "Show Log";
+            this.btnShowLog.UseVisualStyleBackColor = true;
+            this.btnShowLog.Click += new System.EventHandler(this.btnShowLog_Click);
             // 
             // btnExtractTags
             // 
@@ -232,6 +289,20 @@
             this.btnBrowseMKVToolnixPath.UseVisualStyleBackColor = true;
             this.btnBrowseMKVToolnixPath.Click += new System.EventHandler(this.btnBrowseMKVToolnixPath_Click);
             // 
+            // txtMKVToolnixPath
+            // 
+            this.txtMKVToolnixPath.AllowDrop = true;
+            this.txtMKVToolnixPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMKVToolnixPath.Location = new System.Drawing.Point(6, 22);
+            this.txtMKVToolnixPath.Name = "txtMKVToolnixPath";
+            this.txtMKVToolnixPath.ReadOnly = true;
+            this.txtMKVToolnixPath.Size = new System.Drawing.Size(499, 23);
+            this.txtMKVToolnixPath.TabIndex = 3;
+            this.txtMKVToolnixPath.TextChanged += new System.EventHandler(this.txtMKVToolnixPath_TextChanged);
+            this.txtMKVToolnixPath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
+            this.txtMKVToolnixPath.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
+            // 
             // grpLog
             // 
             this.grpLog.Location = new System.Drawing.Point(14, 606);
@@ -307,76 +378,6 @@
             // 
             this.prgBrStatus.Name = "prgBrStatus";
             this.prgBrStatus.Size = new System.Drawing.Size(200, 16);
-            // 
-            // btnShowLog
-            // 
-            this.btnShowLog.Location = new System.Drawing.Point(6, 18);
-            this.btnShowLog.Name = "btnShowLog";
-            this.btnShowLog.Size = new System.Drawing.Size(90, 30);
-            this.btnShowLog.TabIndex = 6;
-            this.btnShowLog.Text = "Show Log";
-            this.btnShowLog.UseVisualStyleBackColor = true;
-            this.btnShowLog.Click += new System.EventHandler(this.btnShowLog_Click);
-            // 
-            // txtInputFile
-            // 
-            this.txtInputFile.AllowDrop = true;
-            this.txtInputFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtInputFile.Location = new System.Drawing.Point(6, 22);
-            this.txtInputFile.Name = "txtInputFile";
-            this.txtInputFile.ReadOnly = true;
-            this.txtInputFile.Size = new System.Drawing.Size(499, 23);
-            this.txtInputFile.TabIndex = 1;
-            this.txtInputFile.TextChanged += new System.EventHandler(this.txtInputFile_TextChanged);
-            this.txtInputFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
-            this.txtInputFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            // 
-            // txtOutputDirectory
-            // 
-            this.txtOutputDirectory.AllowDrop = true;
-            this.txtOutputDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutputDirectory.Location = new System.Drawing.Point(6, 22);
-            this.txtOutputDirectory.Name = "txtOutputDirectory";
-            this.txtOutputDirectory.Size = new System.Drawing.Size(499, 23);
-            this.txtOutputDirectory.TabIndex = 2;
-            this.txtOutputDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
-            this.txtOutputDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            // 
-            // txtMKVToolnixPath
-            // 
-            this.txtMKVToolnixPath.AllowDrop = true;
-            this.txtMKVToolnixPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMKVToolnixPath.Location = new System.Drawing.Point(6, 22);
-            this.txtMKVToolnixPath.Name = "txtMKVToolnixPath";
-            this.txtMKVToolnixPath.ReadOnly = true;
-            this.txtMKVToolnixPath.Size = new System.Drawing.Size(499, 23);
-            this.txtMKVToolnixPath.TabIndex = 3;
-            this.txtMKVToolnixPath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
-            this.txtMKVToolnixPath.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            // 
-            // chkLstInputFileTracks
-            // 
-            this.chkLstInputFileTracks.CheckOnClick = true;
-            this.chkLstInputFileTracks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkLstInputFileTracks.FormattingEnabled = true;
-            this.chkLstInputFileTracks.Location = new System.Drawing.Point(3, 83);
-            this.chkLstInputFileTracks.Name = "chkLstInputFileTracks";
-            this.chkLstInputFileTracks.Size = new System.Drawing.Size(586, 185);
-            this.chkLstInputFileTracks.TabIndex = 0;
-            // 
-            // txtSegmentInfo
-            // 
-            this.txtSegmentInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtSegmentInfo.Location = new System.Drawing.Point(3, 3);
-            this.txtSegmentInfo.Multiline = true;
-            this.txtSegmentInfo.Name = "txtSegmentInfo";
-            this.txtSegmentInfo.ReadOnly = true;
-            this.txtSegmentInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtSegmentInfo.Size = new System.Drawing.Size(586, 74);
-            this.txtSegmentInfo.TabIndex = 1;
             // 
             // frmMain
             // 

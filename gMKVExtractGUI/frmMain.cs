@@ -221,7 +221,7 @@ namespace gMKVToolnix
             {
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Title = "Select an input mkv file...";
-                ofd.Filter = "(*.mkv)|*.mkv|(*.mka)|*.mka|(*.mks)|*.mks|(*.mk3d)|*.mk3d|(*.webm)|*.webm";
+                ofd.Filter = "Matroska files (*.mkv;*.mka;*.mks;*.mk3d;*.webm)|*.mkv;*.mka;*.mks;*.mk3d;*.webm|Matroska video files (*.mkv)|*.mkv|Matroska audio files (*.mka)|*.mka|Matroska subtitle files (*.mks)|*.mks|Matroska 3D files (*.mk3d)|*.mk3d|Webm files (*.webm)|*.webm";
                 ofd.Multiselect = false;
                 ofd.AutoUpgradeEnabled = true;
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)

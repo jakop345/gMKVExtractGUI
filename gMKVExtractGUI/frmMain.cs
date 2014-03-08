@@ -26,6 +26,8 @@ namespace gMKVToolnix
             MessageBox.Show(argMessage, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private Boolean _FromConstructor = false;
+
         public frmMain()
         {
             try
@@ -58,7 +60,9 @@ namespace gMKVToolnix
                                 String iniMkvToolnixPath = sr.ReadLine();
                                 if (File.Exists(Path.Combine(iniMkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                                 {
+                                    _FromConstructor = true;
                                     txtMKVToolnixPath.Text = iniMkvToolnixPath;
+                                    _FromConstructor = false;
                                 }
                                 else
                                 {
@@ -134,10 +138,13 @@ namespace gMKVToolnix
         {
             try
             {
-                // Write the value to the ini file
-                using (StreamWriter sw = new StreamWriter(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                if (!_FromConstructor)
                 {
-                    sw.Write(txtMKVToolnixPath.Text);
+                    // Write the value to the ini file
+                    using (StreamWriter sw = new StreamWriter(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                    {
+                        sw.Write(txtMKVToolnixPath.Text);
+                    }
                 }
             }
             catch (Exception ex)
@@ -210,6 +217,8 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                // Empty the text since input was wrong or something happened
+                txtInputFile.Text = String.Empty;
                 ShowErrorMessage(ex.Message);
                 tlpMain.Enabled = true;
             }
@@ -278,6 +287,7 @@ namespace gMKVToolnix
         {
             try
             {
+                CheckNeccessaryInputFields(true, true);
                 tlpMain.Enabled = false;
                 gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
                 List<gMKVSegment> segments = new List<gMKVSegment>();
@@ -332,6 +342,7 @@ namespace gMKVToolnix
         {
             try
             {
+                CheckNeccessaryInputFields(false, false);
                 tlpMain.Enabled = false;
                 gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
                 g.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
@@ -370,6 +381,7 @@ namespace gMKVToolnix
         {
             try
             {
+                CheckNeccessaryInputFields(false, false);
                 tlpMain.Enabled = false;
                 gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
                 g.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
@@ -416,6 +428,52 @@ namespace gMKVToolnix
             {
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void CheckNeccessaryInputFields(Boolean checkSelectedTracks, Boolean checkSelectedChapterType) 
+        {
+            if (txtInputFile.Text.Trim().Length == 0)
+            {
+                throw new Exception("You must provide with a valid Matroska file!");
+            }
+            else
+            {
+                if (!File.Exists(txtInputFile.Text.Trim()))
+                {
+                    throw new Exception("The input file does not exist!");
+                }
+            }
+            if (txtMKVToolnixPath.Text.Trim().Length == 0)
+            {
+                throw new Exception("You must provide with MKVToolnix path!");
+            }
+            else
+            {
+                if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                {
+                    throw new Exception("The MKVToolnix path provided does not contain MKVToolnix files!");
+                }
+            }
+            if (checkSelectedTracks)
+            {
+                if (chkLstInputFileTracks.CheckedItems.Count == 0)
+                {
+                    throw new Exception("You must select a track to extract!");
+                }
+            }
+            if (checkSelectedChapterType)
+            {
+                foreach (gMKVSegment item in chkLstInputFileTracks.CheckedItems)
+                {
+                    if (item is gMKVChapter)
+                    {
+                        if (cmbChapterType.SelectedIndex == -1)
+                        {
+                            throw new Exception("You must select a chapter type!");
+                        }
+                    }
+                }
             }
         }
 

@@ -61,6 +61,7 @@
     <Compile Include="gCheckedListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gSettings.cs" />
     <Compile Include="gTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

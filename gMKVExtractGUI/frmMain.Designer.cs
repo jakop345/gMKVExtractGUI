@@ -50,6 +50,8 @@
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
+            this.chkLockOutputDirectory = new System.Windows.Forms.CheckBox();
+            this.btnAbort = new System.Windows.Forms.Button();
             this.txtInputFile = new gMKVToolnix.gTextBox();
             this.txtOutputDirectory = new gMKVToolnix.gTextBox();
             this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
@@ -92,6 +94,7 @@
             // 
             // grpOutputDirectory
             // 
+            this.grpOutputDirectory.Controls.Add(this.chkLockOutputDirectory);
             this.grpOutputDirectory.Controls.Add(this.btnBrowseOutputDirectory);
             this.grpOutputDirectory.Controls.Add(this.txtOutputDirectory);
             this.grpOutputDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -119,7 +122,7 @@
             this.grpInputFileInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpInputFileInfo.Location = new System.Drawing.Point(3, 183);
             this.grpInputFileInfo.Name = "grpInputFileInfo";
-            this.grpInputFileInfo.Size = new System.Drawing.Size(598, 293);
+            this.grpInputFileInfo.Size = new System.Drawing.Size(598, 279);
             this.grpInputFileInfo.TabIndex = 5;
             this.grpInputFileInfo.TabStop = false;
             this.grpInputFileInfo.Text = "Input File Information";
@@ -137,7 +140,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 80F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(592, 271);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(592, 257);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // grpActions
@@ -149,7 +152,7 @@
             this.grpActions.Controls.Add(this.cmbChapterType);
             this.grpActions.Controls.Add(this.btnExtractTracks);
             this.grpActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpActions.Location = new System.Drawing.Point(3, 482);
+            this.grpActions.Location = new System.Drawing.Point(3, 468);
             this.grpActions.Name = "grpActions";
             this.grpActions.Size = new System.Drawing.Size(598, 54);
             this.grpActions.TabIndex = 6;
@@ -207,6 +210,7 @@
             this.cmbChapterType.Name = "cmbChapterType";
             this.cmbChapterType.Size = new System.Drawing.Size(92, 23);
             this.cmbChapterType.TabIndex = 2;
+            this.cmbChapterType.SelectedIndexChanged += new System.EventHandler(this.cmbChapterType_SelectedIndexChanged);
             // 
             // btnExtractTracks
             // 
@@ -253,7 +257,6 @@
             // 
             // toolStripContainer1
             // 
-            this.toolStripContainer1.BottomToolStripPanelVisible = false;
             // 
             // toolStripContainer1.ContentPanel
             // 
@@ -288,35 +291,61 @@
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tlpMain.Size = new System.Drawing.Size(604, 539);
+            this.tlpMain.Size = new System.Drawing.Size(604, 525);
             this.tlpMain.TabIndex = 1;
             // 
             // statusStrip1
             // 
+            this.statusStrip1.AutoSize = false;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lblTrack,
             this.lblStatus,
             this.prgBrStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 525);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(604, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(604, 36);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // lblTrack
             // 
             this.lblTrack.Name = "lblTrack";
-            this.lblTrack.Size = new System.Drawing.Size(0, 17);
+            this.lblTrack.Size = new System.Drawing.Size(0, 31);
             // 
             // lblStatus
             // 
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 17);
+            this.lblStatus.Size = new System.Drawing.Size(0, 31);
             // 
             // prgBrStatus
             // 
+            this.prgBrStatus.AutoSize = false;
             this.prgBrStatus.Name = "prgBrStatus";
-            this.prgBrStatus.Size = new System.Drawing.Size(200, 16);
+            this.prgBrStatus.Size = new System.Drawing.Size(300, 30);
+            // 
+            // chkLockOutputDirectory
+            // 
+            this.chkLockOutputDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkLockOutputDirectory.AutoSize = true;
+            this.chkLockOutputDirectory.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkLockOutputDirectory.Location = new System.Drawing.Point(454, 24);
+            this.chkLockOutputDirectory.Name = "chkLockOutputDirectory";
+            this.chkLockOutputDirectory.Size = new System.Drawing.Size(51, 19);
+            this.chkLockOutputDirectory.TabIndex = 4;
+            this.chkLockOutputDirectory.Text = "Lock";
+            this.chkLockOutputDirectory.UseVisualStyleBackColor = true;
+            this.chkLockOutputDirectory.CheckedChanged += new System.EventHandler(this.chkLockOutputDirectory_CheckedChanged);
+            // 
+            // btnAbort
+            // 
+            this.btnAbort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbort.Location = new System.Drawing.Point(492, 528);
+            this.btnAbort.Name = "btnAbort";
+            this.btnAbort.Size = new System.Drawing.Size(92, 30);
+            this.btnAbort.TabIndex = 10;
+            this.btnAbort.Text = "Abort";
+            this.btnAbort.UseVisualStyleBackColor = true;
+            this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
             // txtInputFile
             // 
@@ -339,7 +368,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtOutputDirectory.Location = new System.Drawing.Point(6, 22);
             this.txtOutputDirectory.Name = "txtOutputDirectory";
-            this.txtOutputDirectory.Size = new System.Drawing.Size(499, 23);
+            this.txtOutputDirectory.Size = new System.Drawing.Size(442, 23);
             this.txtOutputDirectory.TabIndex = 2;
             this.txtOutputDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
             this.txtOutputDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
@@ -365,7 +394,7 @@
             this.chkLstInputFileTracks.FormattingEnabled = true;
             this.chkLstInputFileTracks.Location = new System.Drawing.Point(3, 83);
             this.chkLstInputFileTracks.Name = "chkLstInputFileTracks";
-            this.chkLstInputFileTracks.Size = new System.Drawing.Size(586, 185);
+            this.chkLstInputFileTracks.Size = new System.Drawing.Size(586, 171);
             this.chkLstInputFileTracks.TabIndex = 0;
             // 
             // txtSegmentInfo
@@ -384,6 +413,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(604, 561);
+            this.Controls.Add(this.btnAbort);
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.grpLog);
             this.DoubleBuffered = true;
@@ -403,7 +433,6 @@
             this.grpConfig.ResumeLayout(false);
             this.grpConfig.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);
-            this.toolStripContainer1.ContentPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
             this.tlpMain.ResumeLayout(false);
@@ -442,6 +471,8 @@
         private System.Windows.Forms.Button btnExtractCue;
         private System.Windows.Forms.ToolStripStatusLabel lblTrack;
         private System.Windows.Forms.Button btnShowLog;
+        private System.Windows.Forms.CheckBox chkLockOutputDirectory;
+        private System.Windows.Forms.Button btnAbort;
     }
 }
 

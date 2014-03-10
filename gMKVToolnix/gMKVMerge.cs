@@ -55,6 +55,8 @@ namespace gMKVToolnix
 
         public List<gMKVSegment> GetMKVSegments(String argMKVFile)
         {
+            // check for existence of MKVMerge
+            if (!File.Exists(_MKVMergeFilename)) { throw new Exception("Could not find mkvmerge.exe!\r\n" + _MKVMergeFilename); }
             // First clear the segment list
             _SegmentList.Clear();
             // Clear the mkvmerge output

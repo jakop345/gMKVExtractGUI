@@ -69,6 +69,8 @@ namespace gMKVToolnix
 
         public List<gMKVSegment> GetMKVSegments(String argMKVFile)
         {
+            // check for existence of MKVInfo
+            if (!File.Exists(_MKVInfoFilename)) { throw new Exception("Could not find mkvinfo.exe!\r\n" + _MKVInfoFilename); }
             // First clear the segment list
             _SegmentList.Clear();
             // Clear the mkvinfo output

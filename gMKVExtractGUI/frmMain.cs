@@ -15,6 +15,8 @@ namespace gMKVToolnix
     public partial class frmMain : Form
     {
         private frmLog _LogForm = null;
+        private gMKVExtract _gMkvExtract = null;
+        private gSettings _settings = new gSettings(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
         private void ShowErrorMessage(String argMessage)
         {
@@ -26,6 +28,11 @@ namespace gMKVToolnix
             MessageBox.Show(argMessage, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private DialogResult ShowQuestion(String argQuestion, String argTitle)
+        {
+            return MessageBox.Show(argQuestion, argTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        }
+
         private Boolean _FromConstructor = false;
 
         public frmMain()
@@ -35,7 +42,13 @@ namespace gMKVToolnix
                 InitializeComponent();
                 Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
                 Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- By Gpower2";
+                btnAbort.Enabled = false;
+                _FromConstructor = true;
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
+                // load settings
+                _settings.Reload();
+                cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _settings.ChapterType);
+                _FromConstructor = false;
                 try
                 {
                     txtMKVToolnixPath.Text = gMKVHelper.GetMKVToolnixPathViaRegistry();
@@ -44,7 +57,7 @@ namespace gMKVToolnix
                 {
                     Debug.WriteLine(ex);
                     // MKVToolnix was not found in registry
-                    // last hope is in the current directory
+                    // check in the current directory
                     if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                     {
                         txtMKVToolnixPath.Text = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -52,27 +65,15 @@ namespace gMKVToolnix
                     else
                     {
                         // check for ini file
-                        if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                        if (File.Exists(Path.Combine(_settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                         {
-                            using (StreamReader sr = new StreamReader(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
-                            {
-                                // check if ini file contains a valid path
-                                String iniMkvToolnixPath = sr.ReadLine();
-                                if (File.Exists(Path.Combine(iniMkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
-                                {
-                                    _FromConstructor = true;
-                                    txtMKVToolnixPath.Text = iniMkvToolnixPath;
-                                    _FromConstructor = false;
-                                }
-                                else
-                                {
-                                    throw new Exception("Could not find MKVToolNix in registry, or in the current directory, or in the ini file!\r\nPlease download and reinstall or provide a manual path!");
-                                }
-                            }
+                            _FromConstructor = true;
+                            txtMKVToolnixPath.Text = _settings.MkvToolnixPath;
+                            _FromConstructor = false;
                         }
                         else
                         {
-                            throw new Exception("Could not find MKVToolNix in registry or in the current directory!\r\nPlease download and reinstall or provide a manual path!");
+                            throw new Exception("Could not find MKVToolNix in registry, or in the current directory, or in the ini file!\r\nPlease download and reinstall or provide a manual path!");
                         }
                     }
                 }
@@ -93,8 +94,32 @@ namespace gMKVToolnix
         {
             try
             {
-                String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
-                ((TextBox)sender).Text = s[0];
+                // check if the drop data is actually a file or folder
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    // check for sender
+                    if (((TextBox)sender) == txtMKVToolnixPath)
+                    {
+                        // check if MKVToolnix Path is already set
+                        if (txtMKVToolnixPath.Text.Trim().Length > 0)
+                        {
+                            if (ShowQuestion("Do you really want to change MKVToolnix path?", "Are you sure?") != DialogResult.Yes)
+                            {
+                                throw new Exception("User abort!");
+                            }
+                        }
+                    }
+                    else if (((TextBox)sender) == txtOutputDirectory)
+                    {
+                        // check if output directory is locked
+                        if (chkLockOutputDirectory.Checked)
+                        {
+                            return;
+                        }
+                    }
+                    String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
+                    ((TextBox)sender).Text = s[0];
+                }
             }
             catch (Exception ex)
             {
@@ -108,7 +133,24 @@ namespace gMKVToolnix
             try
             {
                 if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effect = DragDropEffects.All;
+                {
+                    if (((TextBox)sender) == txtOutputDirectory)
+                    {
+                        // check if output directory is locked
+                        if (chkLockOutputDirectory.Checked)
+                        {
+                            e.Effect = DragDropEffects.None;
+                        }
+                        else
+                        {
+                            e.Effect = DragDropEffects.All;
+                        }
+                    }
+                    else
+                    {
+                        e.Effect = DragDropEffects.All;
+                    }
+                }
                 else
                     e.Effect = DragDropEffects.None;
             }
@@ -121,7 +163,11 @@ namespace gMKVToolnix
 
         private void ClearControls()
         {
-            txtOutputDirectory.Text = string.Empty;
+            // check if output directory is locked
+            if (!chkLockOutputDirectory.Checked)
+            {
+                txtOutputDirectory.Text = string.Empty;
+            }
             txtSegmentInfo.Text = string.Empty;
             chkLstInputFileTracks.Items.Clear();
             ClearStatus();
@@ -140,10 +186,38 @@ namespace gMKVToolnix
             {
                 if (!_FromConstructor)
                 {
-                    // Write the value to the ini file
-                    using (StreamWriter sw = new StreamWriter(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "gMKVExtractGUI.ini")))
+                    // check if the folder actually contains MKVToolnix
+                    if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                     {
-                        sw.Write(txtMKVToolnixPath.Text);
+                        _FromConstructor = true;
+                        txtMKVToolnixPath.Text = String.Empty;
+                        _FromConstructor = false;
+                        throw new Exception("The folder does not contain MKVToolnix!");
+                    }
+
+                    // Write the value to the ini file
+                    _settings.MkvToolnixPath = txtMKVToolnixPath.Text.Trim();
+                    _settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void cmbChapterType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_FromConstructor)
+                {
+                    if (cmbChapterType.SelectedIndex > -1)
+                    {
+                        // Write the value to the ini file
+                        _settings.ChapterType = (MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem);
+                        _settings.Save();
                     }
                 }
             }
@@ -179,8 +253,12 @@ namespace gMKVToolnix
                     {
                         throw new Exception("The input file \r\n\r\n" + txtInputFile.Text.Trim() + "\r\n\r\nis not a valid matroska file!");
                     }
-                    // set output directory to the source directory
-                    txtOutputDirectory.Text = Path.GetDirectoryName(txtInputFile.Text.Trim());
+                    // check if output directory is locked
+                    if (!chkLockOutputDirectory.Checked)
+                    {
+                        // set output directory to the source directory
+                        txtOutputDirectory.Text = Path.GetDirectoryName(txtInputFile.Text.Trim());
+                    }
                     // get the file information                    
                     gMKVMerge g = new gMKVMerge(txtMKVToolnixPath.Text.Trim());
                     List<gMKVSegment> segmentList = g.GetMKVSegments(txtInputFile.Text.Trim());
@@ -249,12 +327,16 @@ namespace gMKVToolnix
         {
             try
             {
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-                fbd.Description = "Select output directory...";
-                fbd.ShowNewFolderButton = true;
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                // check if output directory is locked
+                if (!chkLockOutputDirectory.Checked)
                 {
-                    txtOutputDirectory.Text = fbd.SelectedPath;
+                    FolderBrowserDialog fbd = new FolderBrowserDialog();
+                    fbd.Description = "Select output directory...";
+                    fbd.ShowNewFolderButton = true;
+                    if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        txtOutputDirectory.Text = fbd.SelectedPath;
+                    }
                 }
             }
             catch (Exception ex)
@@ -268,6 +350,14 @@ namespace gMKVToolnix
         {
             try
             {
+                // check if MKVToolnix Path is already set
+                if (txtMKVToolnixPath.Text.Trim().Length > 0)
+                {
+                    if (ShowQuestion("Do you really want to change MKVToolnix path?", "Are you sure?") != DialogResult.Yes)
+                    {
+                        throw new Exception("User abort!");
+                    }
+                }
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 fbd.Description = "Select MKVToolnix directory...";
                 fbd.ShowNewFolderButton = true;
@@ -289,42 +379,49 @@ namespace gMKVToolnix
             {
                 CheckNeccessaryInputFields(true, true);
                 tlpMain.Enabled = false;
-                gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
+                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
                 List<gMKVSegment> segments = new List<gMKVSegment>();
                 foreach (gMKVSegment seg in chkLstInputFileTracks.CheckedItems)
                 {
                     segments.Add(seg);
                 }
-                g.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(g.ExtractMKVSegmentsThreaded));
+                _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
+                _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
+                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
                 List<Object> parList = new List<object>();
                 parList.Add(txtInputFile.Text);
                 parList.Add(segments);
                 parList.Add(txtOutputDirectory.Text);
-                parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
+                parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));                
                 t.Start(parList);
+                btnAbort.Enabled = true;
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
                     Application.DoEvents();
                 }
-                g.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 // check for exceptions
-                if (g.ThreadedException != null)
+                if (_gMkvExtract.ThreadedException != null)
                 {
-                    throw g.ThreadedException;
+                    throw _gMkvExtract.ThreadedException;
                 }
                 ShowSuccessMessage("The selected tracks were extracted successfully!");
-                ClearStatus();
-                tlpMain.Enabled = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
+            }
+            finally
+            {
+                if (_gMkvExtract != null)
+                {
+                    _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
+                    _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
+                }
+                _gMkvExtract = null;
                 ClearStatus();
                 tlpMain.Enabled = true;
+                btnAbort.Enabled = false;
             }
         }
 
@@ -344,36 +441,42 @@ namespace gMKVToolnix
             {
                 CheckNeccessaryInputFields(false, false);
                 tlpMain.Enabled = false;
-                gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
-                g.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(g.ExtractMkvCuesheetThreaded));
+                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
+                _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
+                _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
+                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvCuesheetThreaded));
                 List<Object> parList = new List<object>();
                 parList.Add(txtInputFile.Text);
                 parList.Add(txtOutputDirectory.Text);
                 t.Start(parList);
+                btnAbort.Enabled = true; 
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
                     Application.DoEvents();
                 }
-                //g.ExtractMkvCuesheet(txtInputFile.Text, txtOutputDirectory.Text);
-                g.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 // check for exceptions
-                if (g.ThreadedException != null)
+                if (_gMkvExtract.ThreadedException != null)
                 {
-                    throw g.ThreadedException;
+                    throw _gMkvExtract.ThreadedException;
                 }
                 ShowSuccessMessage("The Cue Sheet was extracted successfully!");
-                ClearStatus();
-                tlpMain.Enabled = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
+            }
+            finally
+            {
+                if (_gMkvExtract != null)
+                {
+                    _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
+                    _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
+                }
+                _gMkvExtract = null;
                 ClearStatus();
                 tlpMain.Enabled = true;
+                btnAbort.Enabled = false;
             }
         }
 
@@ -383,36 +486,42 @@ namespace gMKVToolnix
             {
                 CheckNeccessaryInputFields(false, false);
                 tlpMain.Enabled = false;
-                gMKVExtract g = new gMKVExtract(txtMKVToolnixPath.Text);
-                g.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(g.ExtractMkvTagsThreaded));
+                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
+                _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
+                _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
+                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvTagsThreaded));
                 List<Object> parList = new List<object>();
                 parList.Add(txtInputFile.Text);
                 parList.Add(txtOutputDirectory.Text);
+                btnAbort.Enabled = true; 
                 t.Start(parList);
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
                     Application.DoEvents();
                 }
-                //g.ExtractMkvTags(txtInputFile.Text, txtOutputDirectory.Text);
-                g.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
-                g.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 // check for exceptions
-                if (g.ThreadedException != null)
+                if (_gMkvExtract.ThreadedException != null)
                 {
-                    throw g.ThreadedException;
+                    throw _gMkvExtract.ThreadedException;
                 }
                 ShowSuccessMessage("The tags were extracted successfully!");
-                ClearStatus();
-                tlpMain.Enabled = true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
+            }
+            finally
+            {
+                if (_gMkvExtract != null)
+                {
+                    _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;                   
+                    _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
+                }
+                _gMkvExtract = null;
                 ClearStatus();
                 tlpMain.Enabled = true;
+                btnAbort.Enabled = false;
             }
         }
 
@@ -423,6 +532,33 @@ namespace gMKVToolnix
                 if (_LogForm == null) { _LogForm = new frmLog(); }
                 if (_LogForm.IsDisposed) { _LogForm = new frmLog(); }
                 _LogForm.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void chkLockOutputDirectory_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                txtOutputDirectory.ReadOnly = chkLockOutputDirectory.Checked;
+                btnBrowseOutputDirectory.Enabled = !chkLockOutputDirectory.Checked;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void btnAbort_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _gMkvExtract.Abort = true;
             }
             catch (Exception ex)
             {
@@ -493,7 +629,6 @@ namespace gMKVToolnix
             lblTrack.Text = (String)val;
             Application.DoEvents();
         }
-
 
     }
 }

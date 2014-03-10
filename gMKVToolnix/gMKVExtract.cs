@@ -29,6 +29,7 @@ namespace gMKVToolnix
         version,
         check_for_updates
     }
+
     public delegate void MkvExtractProgressUpdatedEventHandler(Int32 progress);
     public delegate void MkvExtractTrackUpdatedEventHandler(String trackName);
 
@@ -43,7 +44,14 @@ namespace gMKVToolnix
         public event MkvExtractProgressUpdatedEventHandler MkvExtractProgressUpdated;
         public event MkvExtractTrackUpdatedEventHandler MkvExtractTrackUpdated;
 
-        public Exception ThreadedException = null;
+        private Exception _ThreadedException = null;
+        public Exception ThreadedException { get { return _ThreadedException; } }
+        private bool _Abort = false;
+        public bool Abort
+        {
+            get { return _Abort; }
+            set { _Abort = value; }
+        }
 
         public gMKVExtract(String mkvToonlixPath)
         {
@@ -53,7 +61,8 @@ namespace gMKVToolnix
 
         public void ExtractMKVSegmentsThreaded(Object parameters)
         {
-            ThreadedException = null;
+            _ThreadedException = null;
+            _Abort = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -64,12 +73,13 @@ namespace gMKVToolnix
             }
             catch (Exception ex)
             {
-                ThreadedException = ex;
+                _ThreadedException = ex;
             }
         }
 
         public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, String argOutputDirectory, MkvChapterTypes argChapterType)
         {
+            _Abort = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             foreach (gMKVSegment seg in argMKVSegmentsToExtract)
@@ -274,7 +284,7 @@ namespace gMKVToolnix
                             par = String.Format("chapters \"{0}\"", argMKVFile);
                             break;
                         case MkvChapterTypes.OGM:
-                            outputFileExtension = "ogm";
+                            outputFileExtension = "ogm.txt";
                             par = String.Format("chapters --simple \"{0}\"", argMKVFile);
                             break;
                         default:
@@ -293,7 +303,7 @@ namespace gMKVToolnix
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex);
-                    _ErrorBuilder.AppendLine("for segment " + seg.ToString());
+                    _ErrorBuilder.AppendLine("Segment: " + seg.ToString() + "\r\nException: " + ex.Message + "\r\n");
                 }                
             }
             // check for errors
@@ -305,7 +315,8 @@ namespace gMKVToolnix
 
         public void ExtractMkvCuesheetThreaded(Object parameters)
         {
-            ThreadedException = null;
+            _ThreadedException = null;
+            _Abort = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -313,12 +324,13 @@ namespace gMKVToolnix
             }
             catch (Exception ex)
             {
-                ThreadedException = ex;
+                _ThreadedException = ex;
             }
         }
 
         public void ExtractMkvCuesheet(String argMKVFile, String argOutputDirectory)
         {
+            _Abort = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             String par = String.Format("cuesheet \"{0}\"", argMKVFile);
@@ -342,7 +354,8 @@ namespace gMKVToolnix
 
         public void ExtractMkvTagsThreaded(Object parameters)
         {
-            ThreadedException = null;
+            _Abort = false;
+            _ThreadedException = null;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -350,21 +363,22 @@ namespace gMKVToolnix
             }
             catch (Exception ex)
             {
-                ThreadedException = ex;
+                _ThreadedException = ex;
             }
         }
 
         public void ExtractMkvTags(String argMKVFile, String argOutputDirectory)
         {
+            _Abort = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             String par = String.Format("tags \"{0}\"", argMKVFile);
-            String chapFile = Path.Combine(argOutputDirectory,
+            String tagsFile = Path.Combine(argOutputDirectory,
                 Path.GetFileNameWithoutExtension(argMKVFile) + "_tags.xml");
             try
             {
                 OnMkvExtractTrackUpdated("Tags");
-                ExtractMkvSegment(argMKVFile, par, chapFile);
+                ExtractMkvSegment(argMKVFile, par, tagsFile);
             }
             catch (Exception ex)
             {
@@ -392,6 +406,8 @@ namespace gMKVToolnix
         private void ExtractMkvSegment(String argMKVFile, String argParameters, String argChapterFile)
         {
             OnMkvExtractProgressUpdated(0);
+            // check for existence of MKVExtract
+            if (!File.Exists(_MKVExtractFilename)) { throw new Exception("Could not find mkvextract.exe!\r\n" + _MKVExtractFilename); }
             using (Process myProcess = new Process())
             {
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
@@ -444,11 +460,23 @@ namespace gMKVToolnix
                     throw new Exception(String.Format("Mkvextract exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}", 
                         myProcess.ExitCode, _ErrorBuilder.ToString()));
                 }
+                else if (myProcess.ExitCode < 0)
+                {
+                    // user aborted the current procedure!
+                    throw new Exception("User aborted the current process!");
+                }
             }
         }
 
         void myProcess_ChapterDataReceived(object sender, DataReceivedEventArgs e)
         {
+            // check for user abort
+            if (_Abort) 
+            {
+                ((Process)sender).Kill();
+                _Abort = false;
+                return;
+            }
             if (e.Data != null)
             {
                 if (e.Data.Trim().Length > 0)
@@ -475,6 +503,13 @@ namespace gMKVToolnix
 
         void myProcess_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            // check for user abort
+            if (_Abort)
+            {
+                ((Process)sender).Kill();
+                _Abort = false;
+                return;
+            }
             if (e.Data != null)
             {
                 if (e.Data.Trim().Length > 0)

@@ -116,7 +116,7 @@ namespace gMKVToolnix
                         if (chkLockOutputDirectory.Checked)
                         {
                             return;
-                        }
+                        }                        
                     }
                     String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
                     ((TextBox)sender).Text = s[0];
@@ -144,7 +144,11 @@ namespace gMKVToolnix
                         }
                         else
                         {
-                            e.Effect = DragDropEffects.All;
+                            // check if it is a directory or not
+                            if (Directory.Exists(((String[])e.Data.GetData(DataFormats.FileDrop))[0]))
+                            {
+                                e.Effect = DragDropEffects.All;
+                            }
                         }
                     }
                     else
@@ -308,6 +312,13 @@ namespace gMKVToolnix
             try
             {
                 OpenFileDialog ofd = new OpenFileDialog();
+                if (txtInputFile.Text.Trim().Length > 0) 
+                {
+                    if (Directory.Exists(Path.GetDirectoryName(txtInputFile.Text.Trim())))
+                    {
+                        ofd.InitialDirectory = Path.GetDirectoryName(txtInputFile.Text.Trim());
+                    }
+                }
                 ofd.Title = "Select an input mkv file...";
                 ofd.Filter = "Matroska files (*.mkv;*.mka;*.mks;*.mk3d;*.webm)|*.mkv;*.mka;*.mks;*.mk3d;*.webm|Matroska video files (*.mkv)|*.mkv|Matroska audio files (*.mka)|*.mka|Matroska subtitle files (*.mks)|*.mks|Matroska 3D files (*.mk3d)|*.mk3d|Webm files (*.webm)|*.webm";
                 ofd.Multiselect = false;
@@ -360,6 +371,13 @@ namespace gMKVToolnix
                     }
                 }
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (txtMKVToolnixPath.Text.Trim().Length > 0) 
+                {
+                    if (Directory.Exists(txtMKVToolnixPath.Text.Trim()))
+                    {
+                        fbd.SelectedPath = txtMKVToolnixPath.Text.Trim();
+                    }
+                }
                 fbd.Description = "Select MKVToolnix directory...";
                 fbd.ShowNewFolderButton = true;
                 if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)

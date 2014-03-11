@@ -207,7 +207,7 @@ namespace gMKVToolnix
                                     File.Delete(timecodesFilename);
                                 }
                                 // add the delay to the extraOutput for the track filename
-                                extraOutputPart = " DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
+                                extraOutputPart = "_DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
 
                                 if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L3"))
                                 {

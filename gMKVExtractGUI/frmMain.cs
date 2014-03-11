@@ -12,6 +12,15 @@ using System.Threading;
 
 namespace gMKVToolnix
 {
+    public enum MkvExtractionMode
+    {
+        Tracks,
+        Cue_Sheet,
+        Tags,
+        Timecodes,
+        Tracks_And_Timecodes
+    }
+
     public partial class frmMain : Form
     {
         private frmLog _LogForm = null;
@@ -46,6 +55,7 @@ namespace gMKVToolnix
                 btnAbortAll.Enabled = false;
                 _FromConstructor = true;
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
+                cmbExtractionMode.DataSource = Enum.GetNames(typeof(MkvExtractionMode));
                 // load settings
                 _settings.Reload();
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _settings.ChapterType);
@@ -391,28 +401,93 @@ namespace gMKVToolnix
                 ShowErrorMessage(ex.Message);
             }
         }
-
-        private void btnExtractTracks_Click(object sender, EventArgs e)
+     
+        private void btnExtract_Click(object sender, EventArgs e)
         {
             try
             {
-                CheckNeccessaryInputFields(true, true);
                 tlpMain.Enabled = false;
                 _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
-                List<gMKVSegment> segments = new List<gMKVSegment>();
-                foreach (gMKVSegment seg in chkLstInputFileTracks.CheckedItems)
-                {
-                    segments.Add(seg);
-                }
                 _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
                 _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
+
+                Thread t = null;
                 List<Object> parList = new List<object>();
-                parList.Add(txtInputFile.Text);
-                parList.Add(segments);
-                parList.Add(txtOutputDirectory.Text);
-                parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));                
+                List<gMKVSegment> segments = new List<gMKVSegment>();
+                switch ((MkvExtractionMode)Enum.Parse(typeof(MkvExtractionMode), (String)cmbExtractionMode.SelectedItem))
+                {
+                    case MkvExtractionMode.Tracks:
+                        CheckNeccessaryInputFields(true, true);
+                        
+                        foreach (gMKVSegment seg in chkLstInputFileTracks.CheckedItems)
+                        {
+                            segments.Add(seg);
+                        }
+                 
+                        t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
+                        parList.Add(txtInputFile.Text);
+                        parList.Add(segments);
+                        parList.Add(txtOutputDirectory.Text);
+                        parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
+                        parList.Add(TimecodesExtractionMode.NoTimecodes);
+
+                        break;
+                    case MkvExtractionMode.Cue_Sheet:
+                        CheckNeccessaryInputFields(false, false);
+                  
+                        t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvCuesheetThreaded));
+                        parList = new List<object>();
+                        parList.Add(txtInputFile.Text);
+                        parList.Add(txtOutputDirectory.Text);
+
+                        break;
+                    case MkvExtractionMode.Tags:
+                        CheckNeccessaryInputFields(false, false);
+                   
+                        t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvTagsThreaded));
+                        parList = new List<object>();
+                        parList.Add(txtInputFile.Text);
+                        parList.Add(txtOutputDirectory.Text);
+
+                        break;
+                    case MkvExtractionMode.Timecodes:
+                        CheckNeccessaryInputFields(true, true);
+                       
+                        foreach (gMKVSegment seg in chkLstInputFileTracks.CheckedItems)
+                        {
+                            segments.Add(seg);
+                        }
+                    
+                        t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVTimecodesThreaded));
+                        parList = new List<object>();
+                        parList.Add(txtInputFile.Text);
+                        parList.Add(segments);
+                        parList.Add(txtOutputDirectory.Text);
+                        parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
+                        parList.Add(TimecodesExtractionMode.OnlyTimecodes);
+
+                        break;
+                    case MkvExtractionMode.Tracks_And_Timecodes:
+                        CheckNeccessaryInputFields(true, true);
+                       
+                        foreach (gMKVSegment seg in chkLstInputFileTracks.CheckedItems)
+                        {
+                            segments.Add(seg);
+                        }
+                    
+                        t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
+                        parList = new List<object>();
+                        parList.Add(txtInputFile.Text);
+                        parList.Add(segments);
+                        parList.Add(txtOutputDirectory.Text);
+                        parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
+                        parList.Add(TimecodesExtractionMode.WithTimecodes);
+
+                        break;
+                }
+                
                 t.Start(parList);
+
                 btnAbort.Enabled = true;
                 btnAbortAll.Enabled = true;
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
@@ -424,7 +499,7 @@ namespace gMKVToolnix
                 {
                     throw _gMkvExtract.ThreadedException;
                 }
-                ShowSuccessMessage("The selected tracks were extracted successfully!");
+                ShowSuccessMessage("The extraction was completed successfully!");
             }
             catch (Exception ex)
             {
@@ -454,100 +529,6 @@ namespace gMKVToolnix
         void g_MkvExtractProgressUpdated(int progress)
         {
             this.Invoke(new UpdateProgressDelegate(UpdateProgress), new object[] { progress });
-        }
-
-        private void btnExtractCue_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                CheckNeccessaryInputFields(false, false);
-                tlpMain.Enabled = false;
-                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
-                _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
-                _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvCuesheetThreaded));
-                List<Object> parList = new List<object>();
-                parList.Add(txtInputFile.Text);
-                parList.Add(txtOutputDirectory.Text);
-                t.Start(parList);
-                btnAbort.Enabled = true;
-                btnAbortAll.Enabled = true;
-                while (t.ThreadState != System.Threading.ThreadState.Stopped)
-                {
-                    Application.DoEvents();
-                }
-                // check for exceptions
-                if (_gMkvExtract.ThreadedException != null)
-                {
-                    throw _gMkvExtract.ThreadedException;
-                }
-                ShowSuccessMessage("The Cue Sheet was extracted successfully!");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
-            finally
-            {
-                if (_gMkvExtract != null)
-                {
-                    _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
-                    _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
-                }
-                _gMkvExtract = null;
-                ClearStatus();
-                tlpMain.Enabled = true;
-                btnAbort.Enabled = false;
-                btnAbortAll.Enabled = false;
-            }
-        }
-
-        private void btnExtractTags_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                CheckNeccessaryInputFields(false, false);
-                tlpMain.Enabled = false;
-                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
-                _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
-                _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
-                Thread t = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvTagsThreaded));
-                List<Object> parList = new List<object>();
-                parList.Add(txtInputFile.Text);
-                parList.Add(txtOutputDirectory.Text);
-                btnAbort.Enabled = true;
-                btnAbortAll.Enabled = true;
-                t.Start(parList);
-                while (t.ThreadState != System.Threading.ThreadState.Stopped)
-                {
-                    Application.DoEvents();
-                }
-                // check for exceptions
-                if (_gMkvExtract.ThreadedException != null)
-                {
-                    throw _gMkvExtract.ThreadedException;
-                }
-                ShowSuccessMessage("The tags were extracted successfully!");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
-            finally
-            {
-                if (_gMkvExtract != null)
-                {
-                    _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;                   
-                    _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
-                }
-                _gMkvExtract = null;
-                ClearStatus();
-                tlpMain.Enabled = true;
-                btnAbort.Enabled = false;
-                btnAbortAll.Enabled = false;
-            }
         }
 
         private void btnShowLog_Click(object sender, EventArgs e)
@@ -668,6 +649,5 @@ namespace gMKVToolnix
             lblTrack.Text = (String)val;
             Application.DoEvents();
         }
-
     }
 }

@@ -30,6 +30,13 @@ namespace gMKVToolnix
         check_for_updates
     }
 
+    public enum TimecodesExtractionMode
+    {
+        NoTimecodes,
+        WithTimecodes,
+        OnlyTimecodes
+    }
+
     public delegate void MkvExtractProgressUpdatedEventHandler(Int32 progress);
     public delegate void MkvExtractTrackUpdatedEventHandler(String trackName);
 
@@ -77,7 +84,8 @@ namespace gMKVToolnix
                 ExtractMKVSegments((String)objParameters[0],
                     (List<gMKVSegment>)objParameters[1],
                     (String)objParameters[2],
-                    (MkvChapterTypes)objParameters[3]);
+                    (MkvChapterTypes)objParameters[3],
+                    (TimecodesExtractionMode)objParameters[4]);
             }
             catch (Exception ex)
             {
@@ -85,7 +93,8 @@ namespace gMKVToolnix
             }
         }
 
-        public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, String argOutputDirectory, MkvChapterTypes argChapterType)
+        public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, 
+            String argOutputDirectory, MkvChapterTypes argChapterType, TimecodesExtractionMode argTimecodesExtractionMode)
         {
             _Abort = false;
             _AbortAll = false;
@@ -109,6 +118,17 @@ namespace gMKVToolnix
                         Double audioDelay = 0;
                         String outputFileExtension = String.Empty;
                         String extraOutputPart = String.Empty;
+                        String parTimecodes = String.Empty;
+                        String timecodesFilename = String.Empty;
+                        bool timecodesExtracted = false;
+
+                        timecodesFilename = Path.Combine(argOutputDirectory,
+                                Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                            "_" + ((gMKVTrack)seg).Language + ".tc.txt");
+
+                        parTimecodes = String.Format("timecodes_v2 \"{0}\" {1}:\"{2}\"", argMKVFile,
+                            ((gMKVTrack)seg).TrackID, timecodesFilename);
+                        
                         switch (((gMKVTrack)seg).TrackType)
                         {
                             case MkvTrackType.video:
@@ -164,18 +184,12 @@ namespace gMKVToolnix
                             case MkvTrackType.audio:
                                 // extract timecodes to find the delay
                                 OnMkvExtractTrackUpdated(trackName + " (timecodes)");
-                                
-                                String timecodeFilename = Path.Combine(argOutputDirectory,
-                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                                    "_" + ((gMKVTrack)seg).Language + ".tc.txt");
-                                
-                                String par2 = String.Format("timecodes_v2 \"{0}\" {1}:\"{2}\"", argMKVFile,
-                                    ((gMKVTrack)seg).TrackID, timecodeFilename);
-                                
-                                ExtractMkvSegment(argMKVFile, par2, String.Empty);
+
+                                ExtractMkvSegment(argMKVFile, parTimecodes, String.Empty);
+                                timecodesExtracted = true;
 
                                 // Now check the timecode file and find the first time
-                                using (StreamReader sr = new StreamReader(timecodeFilename))
+                                using (StreamReader sr = new StreamReader(timecodesFilename))
                                 {
                                     String line = String.Empty;
                                     while ((line = sr.ReadLine()) != null)
@@ -187,9 +201,12 @@ namespace gMKVToolnix
                                         }
                                     }
                                 }
-                                
-                                File.Delete(timecodeFilename);
-
+                                // if no timecodes where asked from the user, delete the file
+                                if (argTimecodesExtractionMode == TimecodesExtractionMode.NoTimecodes)
+                                {
+                                    File.Delete(timecodesFilename);
+                                }
+                                // add the delay to the extraOutput for the track filename
                                 extraOutputPart = " DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
 
                                 if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L3"))
@@ -314,6 +331,17 @@ namespace gMKVToolnix
                             Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
                             "_" + ((gMKVTrack)seg).Language + extraOutputPart +
                             "." + outputFileExtension));
+                        
+                        // check if timecodes are needed
+                        if (argTimecodesExtractionMode != TimecodesExtractionMode.NoTimecodes)
+                        {
+                            // check if timecodes have already been extracted (in case of audio tracks)
+                            if (!timecodesExtracted)
+                            {
+                                OnMkvExtractTrackUpdated(trackName + " (timecodes)");
+                                ExtractMkvSegment(argMKVFile, parTimecodes, String.Empty);
+                            }
+                        }
                     }
                     else if (seg is gMKVAttachment)
                     {
@@ -344,8 +372,12 @@ namespace gMKVToolnix
                             Path.GetFileNameWithoutExtension(argMKVFile) + "_chapters." + outputFileExtension);
                         trackName = "Chapters";
                     }
-                    OnMkvExtractTrackUpdated(trackName);
-                    ExtractMkvSegment(argMKVFile, par, chapFile);
+                    // check if track is actually needed to be extracted
+                    if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
+                    {
+                        OnMkvExtractTrackUpdated(trackName);
+                        ExtractMkvSegment(argMKVFile, par, chapFile);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -360,6 +392,26 @@ namespace gMKVToolnix
             }
         }
 
+        public void ExtractMKVTimecodesThreaded(Object parameters)
+        {
+            _ThreadedException = null;
+            _Abort = false;
+            _AbortAll = false;
+            try
+            {
+                List<Object> objParameters = (List<Object>)parameters;
+                ExtractMKVSegments((String)objParameters[0],
+                    (List<gMKVSegment>)objParameters[1],
+                    (String)objParameters[2],
+                    (MkvChapterTypes)objParameters[3],
+                    TimecodesExtractionMode.OnlyTimecodes);
+            }
+            catch (Exception ex)
+            {
+                _ThreadedException = ex;
+            }
+        }
+        
         public void ExtractMkvCuesheetThreaded(Object parameters)
         {
             _ThreadedException = null;

@@ -116,7 +116,8 @@ namespace gMKVToolnix
                         {
                             if (ShowQuestion("Do you really want to change MKVToolnix path?", "Are you sure?") != DialogResult.Yes)
                             {
-                                throw new Exception("User abort!");
+                                return;
+                                //throw new Exception("User abort!");
                             }
                         }
                     }
@@ -377,7 +378,8 @@ namespace gMKVToolnix
                 {
                     if (ShowQuestion("Do you really want to change MKVToolnix path?", "Are you sure?") != DialogResult.Yes)
                     {
-                        throw new Exception("User abort!");
+                        return;
+                        //throw new Exception("User abort!");
                     }
                 }
                 FolderBrowserDialog fbd = new FolderBrowserDialog();

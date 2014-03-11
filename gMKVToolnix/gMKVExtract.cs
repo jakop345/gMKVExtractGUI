@@ -89,7 +89,10 @@ namespace gMKVToolnix
                 String chapFile = String.Empty;
                 if (seg is gMKVTrack)
                 {
+                    trackName = "Track " + ((gMKVTrack)seg).TrackNumber.ToString();
+                    Double audioDelay = 0;
                     String outputFileExtension = String.Empty;
+                    String extraOutputPart = String.Empty;
                     switch (((gMKVTrack)seg).TrackType)
                     {
                         case MkvTrackType.video:
@@ -143,6 +146,34 @@ namespace gMKVToolnix
                             }
                             break;
                         case MkvTrackType.audio:
+                            // extract timecodes to find the delay
+                            OnMkvExtractTrackUpdated(trackName + " (timecodes)");
+                            String par2 = String.Format("timecodes_v2 \"{0}\" {1}:\"{2}\"",
+                                argMKVFile,
+                                ((gMKVTrack)seg).TrackID,
+                                Path.Combine(argOutputDirectory,
+                                    Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                                "_" + ((gMKVTrack)seg).Language + ".tc.txt"));
+                            ExtractMkvSegment(argMKVFile, par2, chapFile);
+                            // Now check the timecode file and find the first time
+                            using (StreamReader sr = new StreamReader(Path.Combine(argOutputDirectory,
+                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                                        "_" + ((gMKVTrack)seg).Language + ".tc.txt")))
+                            {
+                                String line = String.Empty;
+                                while ((line = sr.ReadLine()) != null)
+                                {
+                                    if (!line.StartsWith("#"))
+                                    {
+                                        audioDelay = Double.Parse(line.Trim(), System.Globalization.CultureInfo.InvariantCulture);
+                                        break;
+                                    }
+                                }
+                            }
+                            File.Delete(Path.Combine(argOutputDirectory,
+                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                                        "_" + ((gMKVTrack)seg).Language + ".tc.txt"));
+                            extraOutputPart = " DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
                             if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L3"))
                             {
                                 outputFileExtension = "mp3";
@@ -261,10 +292,10 @@ namespace gMKVToolnix
                     par = String.Format("tracks \"{0}\" {1}:\"{2}\"",
                         argMKVFile,
                         ((gMKVTrack)seg).TrackID,
-                        Path.Combine(argOutputDirectory, 
+                        Path.Combine(argOutputDirectory,
                         Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                        "_" + ((gMKVTrack)seg).Language + "." + outputFileExtension));
-                    trackName = "Track " + ((gMKVTrack)seg).TrackNumber.ToString();
+                        "_" + ((gMKVTrack)seg).Language + extraOutputPart +
+                        "." + outputFileExtension));
                 }
                 else if (seg is gMKVAttachment)
                 {

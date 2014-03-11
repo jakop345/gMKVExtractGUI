@@ -43,6 +43,7 @@ namespace gMKVToolnix
                 Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
                 Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- By Gpower2";
                 btnAbort.Enabled = false;
+                btnAbortAll.Enabled = false;
                 _FromConstructor = true;
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
                 // load settings
@@ -395,6 +396,7 @@ namespace gMKVToolnix
                 parList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));                
                 t.Start(parList);
                 btnAbort.Enabled = true;
+                btnAbortAll.Enabled = true;
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
                     Application.DoEvents();
@@ -422,6 +424,7 @@ namespace gMKVToolnix
                 ClearStatus();
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
+                btnAbortAll.Enabled = false;
             }
         }
 
@@ -449,7 +452,8 @@ namespace gMKVToolnix
                 parList.Add(txtInputFile.Text);
                 parList.Add(txtOutputDirectory.Text);
                 t.Start(parList);
-                btnAbort.Enabled = true; 
+                btnAbort.Enabled = true;
+                btnAbortAll.Enabled = true;
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
                     Application.DoEvents();
@@ -477,6 +481,7 @@ namespace gMKVToolnix
                 ClearStatus();
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
+                btnAbortAll.Enabled = false;
             }
         }
 
@@ -493,7 +498,8 @@ namespace gMKVToolnix
                 List<Object> parList = new List<object>();
                 parList.Add(txtInputFile.Text);
                 parList.Add(txtOutputDirectory.Text);
-                btnAbort.Enabled = true; 
+                btnAbort.Enabled = true;
+                btnAbortAll.Enabled = true;
                 t.Start(parList);
                 while (t.ThreadState != System.Threading.ThreadState.Stopped)
                 {
@@ -522,6 +528,7 @@ namespace gMKVToolnix
                 ClearStatus();
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
+                btnAbortAll.Enabled = false;
             }
         }
 
@@ -558,6 +565,20 @@ namespace gMKVToolnix
         {
             try
             {
+                _gMkvExtract.Abort = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void btnAbortAll_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                _gMkvExtract.AbortAll = true;
                 _gMkvExtract.Abort = true;
             }
             catch (Exception ex)

@@ -53,6 +53,13 @@ namespace gMKVToolnix
             set { _Abort = value; }
         }
 
+        private bool _AbortAll = false;
+        public bool AbortAll
+        {
+            get { return _AbortAll; }
+            set { _AbortAll = value; }
+        }
+
         public gMKVExtract(String mkvToonlixPath)
         {
             _MKVToolnixPath = mkvToonlixPath;
@@ -63,6 +70,7 @@ namespace gMKVToolnix
         {
             _ThreadedException = null;
             _Abort = false;
+            _AbortAll = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -80,254 +88,262 @@ namespace gMKVToolnix
         public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, String argOutputDirectory, MkvChapterTypes argChapterType)
         {
             _Abort = false;
+            _AbortAll = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             foreach (gMKVSegment seg in argMKVSegmentsToExtract)
             {
-                String trackName = String.Empty;
-                String par = String.Empty;
-                String chapFile = String.Empty;
-                if (seg is gMKVTrack)
+                if (_AbortAll)
                 {
-                    trackName = "Track " + ((gMKVTrack)seg).TrackNumber.ToString();
-                    Double audioDelay = 0;
-                    String outputFileExtension = String.Empty;
-                    String extraOutputPart = String.Empty;
-                    switch (((gMKVTrack)seg).TrackType)
-                    {
-                        case MkvTrackType.video:
-                            if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MS/VFW/FOURCC"))
-                            {
-                                outputFileExtension = "avi";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_UNCOMPRESSED"))
-                            {
-                                outputFileExtension = "raw";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG4/ISO/"))
-                            {
-                                outputFileExtension = "avc";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG4/MS/V3"))
-                            {
-                                outputFileExtension = "mp4";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG1"))
-                            {
-                                outputFileExtension = "mpg";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG2"))
-                            {
-                                outputFileExtension = "mpg";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_REAL/"))
-                            {
-                                outputFileExtension = "rm";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_QUICKTIME"))
-                            {
-                                outputFileExtension = "mov";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_THEORA"))
-                            {
-                                outputFileExtension = "ogg";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_PRORES"))
-                            {
-                                outputFileExtension = "mov";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_VP"))
-                            {
-                                outputFileExtension = "ivf";
-                            }
-                            else
-                            {
-                                outputFileExtension = "mkv";
-                            }
-                            break;
-                        case MkvTrackType.audio:
-                            // extract timecodes to find the delay
-                            OnMkvExtractTrackUpdated(trackName + " (timecodes)");
-                            String par2 = String.Format("timecodes_v2 \"{0}\" {1}:\"{2}\"",
-                                argMKVFile,
-                                ((gMKVTrack)seg).TrackID,
-                                Path.Combine(argOutputDirectory,
-                                    Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                                "_" + ((gMKVTrack)seg).Language + ".tc.txt"));
-                            ExtractMkvSegment(argMKVFile, par2, chapFile);
-                            // Now check the timecode file and find the first time
-                            using (StreamReader sr = new StreamReader(Path.Combine(argOutputDirectory,
-                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                                        "_" + ((gMKVTrack)seg).Language + ".tc.txt")))
-                            {
-                                String line = String.Empty;
-                                while ((line = sr.ReadLine()) != null)
-                                {
-                                    if (!line.StartsWith("#"))
-                                    {
-                                        audioDelay = Double.Parse(line.Trim(), System.Globalization.CultureInfo.InvariantCulture);
-                                        break;
-                                    }
-                                }
-                            }
-                            File.Delete(Path.Combine(argOutputDirectory,
-                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                                        "_" + ((gMKVTrack)seg).Language + ".tc.txt"));
-                            extraOutputPart = " DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
-                            if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L3"))
-                            {
-                                outputFileExtension = "mp3";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L2"))
-                            {
-                                outputFileExtension = "mp2";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L1"))
-                            {
-                                outputFileExtension = "mpa";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_PCM"))
-                            {
-                                outputFileExtension = "wav";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPC"))
-                            {
-                                outputFileExtension = "mpc";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_AC3"))
-                            {
-                                outputFileExtension = "ac3";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_ALAC"))
-                            {
-                                outputFileExtension = "caf";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_DTS"))
-                            {
-                                outputFileExtension = "dts";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_VORBIS"))
-                            {
-                                outputFileExtension = "ogg";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_FLAC"))
-                            {
-                                outputFileExtension = "flac";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_REAL"))
-                            {
-                                outputFileExtension = "ra";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MS/ACM"))
-                            {
-                                outputFileExtension = "wav";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_AAC"))
-                            {
-                                outputFileExtension = "aac";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_QUICKTIME"))
-                            {
-                                outputFileExtension = "mov";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_TTA1"))
-                            {
-                                outputFileExtension = "thd";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_WAVPACK4"))
-                            {
-                                outputFileExtension = "wv";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_OPUS"))
-                            {
-                                outputFileExtension = "opus";
-                            }
-                            else
-                            {
-                                outputFileExtension = "mka";
-                            }
-                            break;
-                        case MkvTrackType.subtitles:
-                            if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/UTF8"))
-                            {
-                                outputFileExtension = "srt";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/SSA"))
-                            {
-                                outputFileExtension = "ass";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/ASS"))
-                            {
-                                outputFileExtension = "ass";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/USF"))
-                            {
-                                outputFileExtension = "usf";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_IMAGE/BMP"))
-                            {
-                                outputFileExtension = "sub";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_VOBSUB"))
-                            {
-                                outputFileExtension = "sub";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_HDMV/PGS"))
-                            {
-                                outputFileExtension = "sup";
-                            }
-                            else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_KATE"))
-                            {
-                                outputFileExtension = "ogg";
-                            }
-                            else
-                            {
-                                outputFileExtension = "sub";
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                    par = String.Format("tracks \"{0}\" {1}:\"{2}\"",
-                        argMKVFile,
-                        ((gMKVTrack)seg).TrackID,
-                        Path.Combine(argOutputDirectory,
-                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
-                        "_" + ((gMKVTrack)seg).Language + extraOutputPart +
-                        "." + outputFileExtension));
-                }
-                else if (seg is gMKVAttachment)
-                {
-                    par = String.Format("attachments \"{0}\" {1}:\"{2}\"",
-                        argMKVFile,
-                        ((gMKVAttachment)seg).ID,
-                        Path.Combine(argOutputDirectory, ((gMKVAttachment)seg).Filename));
-                    trackName = "Attachment " + ((gMKVAttachment)seg).ID.ToString();
-                }
-                else if (seg is gMKVChapter)
-                {
-                    String outputFileExtension = String.Empty;
-                    switch (argChapterType)
-                    {
-                        case MkvChapterTypes.XML:
-                            outputFileExtension = "xml";
-                            par = String.Format("chapters \"{0}\"", argMKVFile);
-                            break;
-                        case MkvChapterTypes.OGM:
-                            outputFileExtension = "ogm.txt";
-                            par = String.Format("chapters --simple \"{0}\"", argMKVFile);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    chapFile = Path.Combine(argOutputDirectory,
-                        Path.GetFileNameWithoutExtension(argMKVFile) + "_chapters." + outputFileExtension);
-                    trackName = "Chapters";
+                    _ErrorBuilder.AppendLine("User aborted all the processes!");
+                    break;
                 }
                 try
                 {
+                    String trackName = String.Empty;
+                    String par = String.Empty;
+                    String chapFile = String.Empty;
+                    if (seg is gMKVTrack)
+                    {
+                        trackName = "Track " + ((gMKVTrack)seg).TrackNumber.ToString();
+                        Double audioDelay = 0;
+                        String outputFileExtension = String.Empty;
+                        String extraOutputPart = String.Empty;
+                        switch (((gMKVTrack)seg).TrackType)
+                        {
+                            case MkvTrackType.video:
+                                if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MS/VFW/FOURCC"))
+                                {
+                                    outputFileExtension = "avi";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_UNCOMPRESSED"))
+                                {
+                                    outputFileExtension = "raw";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG4/ISO/"))
+                                {
+                                    outputFileExtension = "avc";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG4/MS/V3"))
+                                {
+                                    outputFileExtension = "mp4";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG1"))
+                                {
+                                    outputFileExtension = "mpg";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_MPEG2"))
+                                {
+                                    outputFileExtension = "mpg";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_REAL/"))
+                                {
+                                    outputFileExtension = "rm";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_QUICKTIME"))
+                                {
+                                    outputFileExtension = "mov";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_THEORA"))
+                                {
+                                    outputFileExtension = "ogg";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_PRORES"))
+                                {
+                                    outputFileExtension = "mov";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("V_VP"))
+                                {
+                                    outputFileExtension = "ivf";
+                                }
+                                else
+                                {
+                                    outputFileExtension = "mkv";
+                                }
+                                break;
+                            case MkvTrackType.audio:
+                                // extract timecodes to find the delay
+                                OnMkvExtractTrackUpdated(trackName + " (timecodes)");
+                                
+                                String timecodeFilename = Path.Combine(argOutputDirectory,
+                                        Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                                    "_" + ((gMKVTrack)seg).Language + ".tc.txt");
+                                
+                                String par2 = String.Format("timecodes_v2 \"{0}\" {1}:\"{2}\"", argMKVFile,
+                                    ((gMKVTrack)seg).TrackID, timecodeFilename);
+                                
+                                ExtractMkvSegment(argMKVFile, par2, String.Empty);
+
+                                // Now check the timecode file and find the first time
+                                using (StreamReader sr = new StreamReader(timecodeFilename))
+                                {
+                                    String line = String.Empty;
+                                    while ((line = sr.ReadLine()) != null)
+                                    {
+                                        if (!line.StartsWith("#"))
+                                        {
+                                            audioDelay = Double.Parse(line.Trim(), System.Globalization.CultureInfo.InvariantCulture);
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                File.Delete(timecodeFilename);
+
+                                extraOutputPart = " DELAY " + audioDelay.ToString(System.Globalization.CultureInfo.InvariantCulture) + "ms";
+
+                                if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L3"))
+                                {
+                                    outputFileExtension = "mp3";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L2"))
+                                {
+                                    outputFileExtension = "mp2";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPEG/L1"))
+                                {
+                                    outputFileExtension = "mpa";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_PCM"))
+                                {
+                                    outputFileExtension = "wav";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MPC"))
+                                {
+                                    outputFileExtension = "mpc";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_AC3"))
+                                {
+                                    outputFileExtension = "ac3";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_ALAC"))
+                                {
+                                    outputFileExtension = "caf";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_DTS"))
+                                {
+                                    outputFileExtension = "dts";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_VORBIS"))
+                                {
+                                    outputFileExtension = "ogg";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_FLAC"))
+                                {
+                                    outputFileExtension = "flac";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_REAL"))
+                                {
+                                    outputFileExtension = "ra";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_MS/ACM"))
+                                {
+                                    outputFileExtension = "wav";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_AAC"))
+                                {
+                                    outputFileExtension = "aac";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_QUICKTIME"))
+                                {
+                                    outputFileExtension = "mov";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_TTA1"))
+                                {
+                                    outputFileExtension = "thd";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_WAVPACK4"))
+                                {
+                                    outputFileExtension = "wv";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("A_OPUS"))
+                                {
+                                    outputFileExtension = "opus";
+                                }
+                                else
+                                {
+                                    outputFileExtension = "mka";
+                                }
+                                break;
+                            case MkvTrackType.subtitles:
+                                if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/UTF8"))
+                                {
+                                    outputFileExtension = "srt";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/SSA"))
+                                {
+                                    outputFileExtension = "ass";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/ASS"))
+                                {
+                                    outputFileExtension = "ass";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_TEXT/USF"))
+                                {
+                                    outputFileExtension = "usf";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_IMAGE/BMP"))
+                                {
+                                    outputFileExtension = "sub";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_VOBSUB"))
+                                {
+                                    outputFileExtension = "sub";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_HDMV/PGS"))
+                                {
+                                    outputFileExtension = "sup";
+                                }
+                                else if (((gMKVTrack)seg).CodecID.ToUpper().Contains("S_KATE"))
+                                {
+                                    outputFileExtension = "ogg";
+                                }
+                                else
+                                {
+                                    outputFileExtension = "sub";
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+
+                        par = String.Format("tracks \"{0}\" {1}:\"{2}\"",
+                            argMKVFile,
+                            ((gMKVTrack)seg).TrackID,
+                            Path.Combine(argOutputDirectory,
+                            Path.GetFileNameWithoutExtension(argMKVFile) + "_track" + ((gMKVTrack)seg).TrackNumber +
+                            "_" + ((gMKVTrack)seg).Language + extraOutputPart +
+                            "." + outputFileExtension));
+                    }
+                    else if (seg is gMKVAttachment)
+                    {
+                        par = String.Format("attachments \"{0}\" {1}:\"{2}\"",
+                            argMKVFile,
+                            ((gMKVAttachment)seg).ID,
+                            Path.Combine(argOutputDirectory, ((gMKVAttachment)seg).Filename));
+                        trackName = "Attachment " + ((gMKVAttachment)seg).ID.ToString();
+                    }
+                    else if (seg is gMKVChapter)
+                    {
+                        String outputFileExtension = String.Empty;
+                        switch (argChapterType)
+                        {
+                            case MkvChapterTypes.XML:
+                                outputFileExtension = "xml";
+                                par = String.Format("chapters \"{0}\"", argMKVFile);
+                                break;
+                            case MkvChapterTypes.OGM:
+                                outputFileExtension = "ogm.txt";
+                                par = String.Format("chapters --simple \"{0}\"", argMKVFile);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        chapFile = Path.Combine(argOutputDirectory,
+                            Path.GetFileNameWithoutExtension(argMKVFile) + "_chapters." + outputFileExtension);
+                        trackName = "Chapters";
+                    }
                     OnMkvExtractTrackUpdated(trackName);
                     ExtractMkvSegment(argMKVFile, par, chapFile);
                 }
@@ -348,6 +364,7 @@ namespace gMKVToolnix
         {
             _ThreadedException = null;
             _Abort = false;
+            _AbortAll = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -362,6 +379,7 @@ namespace gMKVToolnix
         public void ExtractMkvCuesheet(String argMKVFile, String argOutputDirectory)
         {
             _Abort = false;
+            _AbortAll = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             String par = String.Format("cuesheet \"{0}\"", argMKVFile);
@@ -386,6 +404,7 @@ namespace gMKVToolnix
         public void ExtractMkvTagsThreaded(Object parameters)
         {
             _Abort = false;
+            _AbortAll = false;
             _ThreadedException = null;
             try
             {
@@ -401,6 +420,7 @@ namespace gMKVToolnix
         public void ExtractMkvTags(String argMKVFile, String argOutputDirectory)
         {
             _Abort = false;
+            _AbortAll = false;
             _ErrorBuilder.Length = 0;
             _MKVExtractOutput.Length = 0;
             String par = String.Format("tags \"{0}\"", argMKVFile);

@@ -57,6 +57,7 @@
             this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
             this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
             this.txtSegmentInfo = new gMKVToolnix.gTextBox();
+            this.btnAbortAll = new System.Windows.Forms.Button();
             this.grpInputFile.SuspendLayout();
             this.grpOutputDirectory.SuspendLayout();
             this.grpInputFileInfo.SuspendLayout();
@@ -260,6 +261,7 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(this.btnAbortAll);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.tlpMain);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
             this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(604, 561);
@@ -298,9 +300,9 @@
             // 
             this.statusStrip1.AutoSize = false;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.prgBrStatus,
             this.lblTrack,
-            this.lblStatus,
-            this.prgBrStatus});
+            this.lblStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 525);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(604, 36);
@@ -408,6 +410,17 @@
             this.txtSegmentInfo.Size = new System.Drawing.Size(586, 74);
             this.txtSegmentInfo.TabIndex = 1;
             // 
+            // btnAbortAll
+            // 
+            this.btnAbortAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbortAll.Location = new System.Drawing.Point(394, 528);
+            this.btnAbortAll.Name = "btnAbortAll";
+            this.btnAbortAll.Size = new System.Drawing.Size(92, 30);
+            this.btnAbortAll.TabIndex = 11;
+            this.btnAbortAll.Text = "Abort All";
+            this.btnAbortAll.UseVisualStyleBackColor = true;
+            this.btnAbortAll.Click += new System.EventHandler(this.btnAbortAll_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -473,6 +486,7 @@
         private System.Windows.Forms.Button btnShowLog;
         private System.Windows.Forms.CheckBox chkLockOutputDirectory;
         private System.Windows.Forms.Button btnAbort;
+        private System.Windows.Forms.Button btnAbortAll;
     }
 }
 

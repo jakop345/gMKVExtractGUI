@@ -272,6 +272,7 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
+            this.toolStripContainer1.ContentPanel.Controls.Add(this.btnAbort);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.btnAbortAll);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.tlpMain);
             this.toolStripContainer1.ContentPanel.Controls.Add(this.statusStrip1);
@@ -285,6 +286,17 @@
             this.toolStripContainer1.TabIndex = 9;
             this.toolStripContainer1.Text = "toolStripContainer1";
             this.toolStripContainer1.TopToolStripPanelVisible = false;
+            // 
+            // btnAbort
+            // 
+            this.btnAbort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbort.Location = new System.Drawing.Point(512, 528);
+            this.btnAbort.Name = "btnAbort";
+            this.btnAbort.Size = new System.Drawing.Size(92, 30);
+            this.btnAbort.TabIndex = 10;
+            this.btnAbort.Text = "Abort";
+            this.btnAbort.UseVisualStyleBackColor = true;
+            this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
             // btnAbortAll
             // 
@@ -346,17 +358,6 @@
             // 
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 31);
-            // 
-            // btnAbort
-            // 
-            this.btnAbort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbort.Location = new System.Drawing.Point(512, 528);
-            this.btnAbort.Name = "btnAbort";
-            this.btnAbort.Size = new System.Drawing.Size(92, 30);
-            this.btnAbort.TabIndex = 10;
-            this.btnAbort.Text = "Abort";
-            this.btnAbort.UseVisualStyleBackColor = true;
-            this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
             // txtInputFile
             // 
@@ -424,7 +425,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 561);
-            this.Controls.Add(this.btnAbort);
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.grpLog);
             this.DoubleBuffered = true;

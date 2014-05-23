@@ -22,6 +22,21 @@ namespace gMKVToolnix
             set { _ChapterType = value; }
         }
 
+        private Boolean _LockedOutputDirectory;
+        public Boolean LockedOutputDirectory
+        {
+            get { return _LockedOutputDirectory; }
+            set { _LockedOutputDirectory = value; }
+        }
+
+        private String _OutputDirectory;
+        public String OutputDirectory
+        {
+            get { return _OutputDirectory; }
+            set { _OutputDirectory = value; }
+        }
+
+
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
 
@@ -67,6 +82,30 @@ namespace gMKVToolnix
                                 _ChapterType = MkvChapterTypes.XML;
                             }
                         }
+                        else if (line.StartsWith("Output Directory:"))
+                        {
+                            try
+                            {
+                                _OutputDirectory = line.Substring(line.IndexOf(":") + 1);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _OutputDirectory = String.Empty;
+                            }
+                        }
+                        else if (line.StartsWith("Lock Output Directory:"))
+                        {
+                            try
+                            {
+                                _LockedOutputDirectory = Boolean.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _LockedOutputDirectory = false;
+                            }
+                        }
                     }
                 }
             }
@@ -77,7 +116,9 @@ namespace gMKVToolnix
             using (StreamWriter sw = new StreamWriter(Path.Combine(_ApplicationPath, _SETTINGS_FILE), false, Encoding.UTF8))
             {
                 sw.WriteLine(String.Format("MKVToolnix Path:{0}", _MkvToolnixPath));
-                sw.Write(String.Format("Chapter Type:{0}", _ChapterType));
+                sw.WriteLine(String.Format("Chapter Type:{0}", _ChapterType));
+                sw.WriteLine(String.Format("Output Directory:{0}", _OutputDirectory));
+                sw.WriteLine(String.Format("Lock Output Directory:{0}", _LockedOutputDirectory));
             }
         }
     }

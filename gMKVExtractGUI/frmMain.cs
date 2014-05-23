@@ -26,6 +26,7 @@ namespace gMKVToolnix
         private frmLog _LogForm = null;
         private gMKVExtract _gMkvExtract = null;
         private gSettings _settings = new gSettings(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+        private Boolean _FromConstructor = false;
 
         private void ShowErrorMessage(String argMessage)
         {
@@ -42,8 +43,6 @@ namespace gMKVToolnix
             return MessageBox.Show(argQuestion, argTitle, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
         }
 
-        private Boolean _FromConstructor = false;
-
         public frmMain()
         {
             try
@@ -59,6 +58,8 @@ namespace gMKVToolnix
                 // load settings
                 _settings.Reload();
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _settings.ChapterType);
+                txtOutputDirectory.Text = _settings.OutputDirectory;
+                chkLockOutputDirectory.Checked = _settings.LockedOutputDirectory;
                 _FromConstructor = false;
                 try
                 {
@@ -346,6 +347,49 @@ namespace gMKVToolnix
             }
         }
 
+        private void txtOutputDirectory_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_FromConstructor)
+                {
+                    _settings.OutputDirectory = txtOutputDirectory.Text;
+                    _settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void chkLockOutputDirectory_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (sender == chkLockOutputDirectory)
+                {
+                    if (txtOutputDirectory.Text.Trim().Length == 0)
+                    {
+                        chkLockOutputDirectory.Checked = false;
+                    }
+                }
+                txtOutputDirectory.ReadOnly = chkLockOutputDirectory.Checked;
+                btnBrowseOutputDirectory.Enabled = !chkLockOutputDirectory.Checked;
+                if (!_FromConstructor)
+                {
+                    _settings.LockedOutputDirectory = chkLockOutputDirectory.Checked;
+                    _settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         private void btnBrowseOutputDirectory_Click(object sender, EventArgs e)
         {
             try
@@ -540,20 +584,6 @@ namespace gMKVToolnix
                 if (_LogForm == null) { _LogForm = new frmLog(); }
                 if (_LogForm.IsDisposed) { _LogForm = new frmLog(); }
                 _LogForm.Show();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
-        }
-
-        private void chkLockOutputDirectory_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                txtOutputDirectory.ReadOnly = chkLockOutputDirectory.Checked;
-                btnBrowseOutputDirectory.Enabled = !chkLockOutputDirectory.Checked;
             }
             catch (Exception ex)
             {

@@ -17,6 +17,26 @@ namespace gMKVToolnix
             get { return "mmg.exe"; }
         }
 
+        public static String UnescapeString(String argString)
+        {
+            return argString.
+                Replace(@"\s", " ").
+                Replace(@"\2", "\"").
+                Replace(@"\c", ":").
+                Replace(@"\h", "#").
+                Replace(@"\\", @"\");
+        }
+
+        public static String EscapeString(String argString)
+        {
+            return argString.
+                Replace(" ", @"\s").
+                Replace("\"", @"\2").
+                Replace(":", @"\c").
+                Replace("#", @"\h").
+                Replace(@"\", @"\\");
+        }
+
         /// <summary>
         /// Returns the path from MKVToolnix.
         /// It tries to find it via the registry keys.

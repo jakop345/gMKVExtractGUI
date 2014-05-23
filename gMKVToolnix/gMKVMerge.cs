@@ -188,14 +188,9 @@ namespace gMKVToolnix
             {
                 endCharacter = "]";
             }
-            return line.Substring(line.IndexOf(propertyName + ":")).
+            return gMKVHelper.UnescapeString(line.Substring(line.IndexOf(propertyName + ":")).
                 Substring(0, line.Substring(line.IndexOf(propertyName + ":")).IndexOf(endCharacter)).
-                Replace(propertyName + ":", String.Empty).
-                Replace(@"\s"," ").
-                Replace(@"\2","\"").
-                Replace(@"\c", ":").
-                Replace(@"\h", "#").
-                Replace(@"\\", @"\").
+                Replace(propertyName + ":", String.Empty)).
                 Trim();            
         }
 

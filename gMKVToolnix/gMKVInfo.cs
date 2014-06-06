@@ -97,9 +97,11 @@ namespace gMKVToolnix
             if (!File.Exists(_MKVInfoFilename)) { throw new Exception("Could not find mkvinfo.exe!\r\n" + _MKVInfoFilename); }
             // check for list of track numbers
             if (argSegmentsList == null || argSegmentsList.Count == 0) { throw new Exception("No mkv segments were provided!"); }
-            // get only video and audio track in a trackList
+            // clear the track list 
             _TrackList.Clear();
+            // reset the found delays counter
             _TrackDelaysFound = 0;
+            // get only video and audio track in a trackList
             foreach (gMKVSegment seg in argSegmentsList)
             {
                 if (seg is gMKVTrack) 
@@ -112,7 +114,7 @@ namespace gMKVToolnix
                 }
             }
 
-            // add the check_mode option
+            // add the check_mode option for mkvinfo
             List<OptionValue> optionList = new List<OptionValue>();
             optionList.Add(new OptionValue(MkvInfoOptions.check_mode, String.Empty));
 
@@ -159,11 +161,12 @@ namespace gMKVToolnix
         {
             using (Process myProcess = new Process())
             {
+                // add the default options for running mkvinfo
                 List<OptionValue> optionList = new List<OptionValue>();
                 optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
-                //optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
                 optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
+                // check for extra options provided from the caller
                 if (argOptionList != null)
                 {
                     optionList.AddRange(argOptionList);
@@ -171,9 +174,7 @@ namespace gMKVToolnix
 
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVInfoFilename;
-                //myProcessInfo.Arguments = " -?";
                 myProcessInfo.Arguments = String.Format("{0} \"{1}\"", ConvertOptionValueListToString(optionList), argMKVFile);
-                //myProcessInfo.Arguments = String.Format("--parse-mode fast \"{0}\"", argMKVFile);
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;
                 myProcessInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -187,7 +188,7 @@ namespace gMKVToolnix
                 Debug.WriteLine(myProcessInfo.Arguments);
                 // Start the mkvinfo process
                 myProcess.Start();
-                // Get the Unique Process ID
+                // Get the Process
                 _MyProcess = myProcess;
                 // Start reading the output
                 myProcess.BeginOutputReadLine();
@@ -197,7 +198,7 @@ namespace gMKVToolnix
                 myProcess.OutputDataReceived -= argHandler;
 
                 // Debug write the exit code
-                Debug.WriteLine("Exit code: " + myProcess.ExitCode);
+                Debug.WriteLine(String.Format("Exit code: {0}", myProcess.ExitCode));
                 
                 _MyProcess = null;
 

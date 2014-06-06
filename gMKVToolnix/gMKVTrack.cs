@@ -85,7 +85,6 @@ namespace gMKVToolnix
             set { _EffectiveDelay = value; }
         }
 
-
         public override string ToString()
         {
             String str = String.Format("Track {0} [TID {1}][{2}][{3}][{4}][{5}][{6}]", 

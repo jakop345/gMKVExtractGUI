@@ -78,6 +78,7 @@ namespace gMKVToolnix
 
         private Exception _ThreadedException = null;
         public Exception ThreadedException { get { return _ThreadedException; } }
+
         private bool _Abort = false;
         public bool Abort
         {
@@ -101,8 +102,6 @@ namespace gMKVToolnix
         public void ExtractMKVSegmentsThreaded(Object parameters)
         {
             _ThreadedException = null;
-            _Abort = false;
-            _AbortAll = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -122,22 +121,16 @@ namespace gMKVToolnix
             String argMKVFile, String argOutputDirectory, MkvChapterTypes argChapterType, 
             TimecodesExtractionMode argTimecodesExtractionMode)
         {
-            List<TrackParameter> parList = new List<TrackParameter>();
-
-            String trackName = String.Empty;
-            String par = String.Empty;
-            String chapFile = String.Empty;
+            // create the new parameter list type
+            List<TrackParameter> trackParameterList = new List<TrackParameter>();
+            
+            // check the selected segment's type
             if (argSeg is gMKVTrack)
             {
-                trackName = String.Format("Track {0}", ((gMKVTrack)argSeg).TrackNumber);
-                String outputFileExtension = String.Empty;
-                String extraOutputPart = String.Empty;
-                String parTimecodes = String.Empty;
-                String timecodesFilename = String.Empty;
-
+                // if we are in a mode that requires timecodes extraction, add the parameter for the track
                 if (argTimecodesExtractionMode != TimecodesExtractionMode.NoTimecodes)
                 {
-                    parList.Add(new TrackParameter(
+                    trackParameterList.Add(new TrackParameter(
                         MkvExtractModes.timecodes_v2,
                         String.Empty,
                         String.Format("{0}:\"{1}\"",
@@ -153,82 +146,94 @@ namespace gMKVToolnix
                     ));
                 }
 
-                switch (((gMKVTrack)argSeg).TrackType)
-                {
-                    case MkvTrackType.video:
-                        outputFileExtension = getVideoFileExtensionFromCodecID((gMKVTrack)argSeg);
-                        break;
-                    case MkvTrackType.audio:
-                        // add the delay to the extraOutput for the track filename
-                        extraOutputPart = String.Format("_DELAY {0}ms", ((gMKVTrack)argSeg).EffectiveDelay.ToString(CultureInfo.InvariantCulture));
-
-                        outputFileExtension = getAudioFileExtensionFromCodecID((gMKVTrack)argSeg);
-                        break;
-                    case MkvTrackType.subtitles:
-                        outputFileExtension = getSubtitleFileExtensionFromCodecID((gMKVTrack)argSeg);
-                        break;
-                    default:
-                        break;
-                }
-
+                // check if the mode requires the extraction of the segment itself
                 if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
                 {
-                    parList.Add(new TrackParameter(
-                            MkvExtractModes.tracks,
-                            String.Empty,
-                            String.Format("{0}:\"{1}\"",
-                                ((gMKVTrack)argSeg).TrackID,
-                                Path.Combine(
-                                    argOutputDirectory,
-                                    String.Format("{0}_track{1}_{2}{3}.{4}",
-                                        Path.GetFileNameWithoutExtension(argMKVFile),
-                                        ((gMKVTrack)argSeg).TrackNumber,
-                                        ((gMKVTrack)argSeg).Language,
-                                        extraOutputPart,
-                                        outputFileExtension))),
-                            false,
-                            String.Empty
-                        ));
+                    String outputFileExtension = String.Empty;
+                    String outputDelayPart = String.Empty;
+
+                    // check the track's type in order to get the output file's extension and the delay for audio tracks
+                    switch (((gMKVTrack)argSeg).TrackType)
+                    {
+                        case MkvTrackType.video:
+                            // get the extension of the output via the CODEC_ID of the track
+                            outputFileExtension = getVideoFileExtensionFromCodecID((gMKVTrack)argSeg);
+                            break;
+                        case MkvTrackType.audio:
+                            // add the delay to the extraOutput for the track filename
+                            outputDelayPart = String.Format("_DELAY {0}ms", ((gMKVTrack)argSeg).EffectiveDelay.ToString(CultureInfo.InvariantCulture));
+                            // get the extension of the output via the CODEC_ID of the track
+                            outputFileExtension = getAudioFileExtensionFromCodecID((gMKVTrack)argSeg);
+                            break;
+                        case MkvTrackType.subtitles:
+                            // get the extension of the output via the CODEC_ID of the track
+                            outputFileExtension = getSubtitleFileExtensionFromCodecID((gMKVTrack)argSeg);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // add the parameter for extracting the track
+                    trackParameterList.Add(new TrackParameter(
+                        MkvExtractModes.tracks,
+                        String.Empty,
+                        String.Format("{0}:\"{1}\"",
+                            ((gMKVTrack)argSeg).TrackID,
+                            Path.Combine(
+                                argOutputDirectory,
+                                String.Format("{0}_track{1}_{2}{3}.{4}",
+                                    Path.GetFileNameWithoutExtension(argMKVFile),
+                                    ((gMKVTrack)argSeg).TrackNumber,
+                                    ((gMKVTrack)argSeg).Language,
+                                    outputDelayPart,
+                                    outputFileExtension))),
+                        false,
+                        String.Empty
+                    ));
                 }
             }
             else if (argSeg is gMKVAttachment)
             {
+                // check if the mode requires the extraction of the segment itself
                 if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
                 {
-                    parList.Add(new TrackParameter(
-                            MkvExtractModes.attachments,
-                            String.Empty,
-                            String.Format("{0}:\"{1}\"",
-                                ((gMKVAttachment)argSeg).ID,
-                                Path.Combine(
-                                    argOutputDirectory,
-                                    ((gMKVAttachment)argSeg).Filename)),
-                            false,
-                            String.Empty
-                        ));
+                    // add the parameter for extracting the attachment
+                    trackParameterList.Add(new TrackParameter(
+                        MkvExtractModes.attachments,
+                        String.Empty,
+                        String.Format("{0}:\"{1}\"",
+                            ((gMKVAttachment)argSeg).ID,
+                            Path.Combine(
+                                argOutputDirectory,
+                                ((gMKVAttachment)argSeg).Filename)),
+                        false,
+                        String.Empty
+                    ));
                 }
-                trackName = String.Format("Attachment {0}", ((gMKVAttachment)argSeg).ID);
             }
             else if (argSeg is gMKVChapter)
             {
-                String outputFileExtension = String.Empty;
-                String options = String.Empty;
-                switch (argChapterType)
-                {
-                    case MkvChapterTypes.XML:
-                        outputFileExtension = "xml";
-                        break;
-                    case MkvChapterTypes.OGM:
-                        outputFileExtension = "ogm.txt";
-                        options = "--simple";
-                        break;
-                    default:
-                        break;
-                }
-
+                // check if the mode requires the extraction of the segment itself
                 if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
                 {
-                    parList.Add(new TrackParameter(
+                    String outputFileExtension = String.Empty;
+                    String options = String.Empty;
+                    // check the chapter's type to determine the output file's extension and options
+                    switch (argChapterType)
+                    {
+                        case MkvChapterTypes.XML:
+                            outputFileExtension = "xml";
+                            break;
+                        case MkvChapterTypes.OGM:
+                            outputFileExtension = "ogm.txt";
+                            options = "--simple";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // add the parameter for extracting the chapters
+                    trackParameterList.Add(new TrackParameter(
                         MkvExtractModes.chapters,
                         options,
                         String.Empty,
@@ -238,12 +243,11 @@ namespace gMKVToolnix
                             String.Format("{0}_chapters.{1}",
                                 Path.GetFileNameWithoutExtension(argMKVFile),
                                 outputFileExtension))
-                        ));
+                    ));
                 }
-                trackName = "Chapters";
             }
 
-            return parList;
+            return trackParameterList;
         }
 
         public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, 
@@ -345,8 +349,6 @@ namespace gMKVToolnix
         public void ExtractMKVTimecodesThreaded(Object parameters)
         {
             _ThreadedException = null;
-            _Abort = false;
-            _AbortAll = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -365,8 +367,6 @@ namespace gMKVToolnix
         public void ExtractMkvCuesheetThreaded(Object parameters)
         {
             _ThreadedException = null;
-            _Abort = false;
-            _AbortAll = false;
             try
             {
                 List<Object> objParameters = (List<Object>)parameters;
@@ -411,8 +411,6 @@ namespace gMKVToolnix
 
         public void ExtractMkvTagsThreaded(Object parameters)
         {
-            _Abort = false;
-            _AbortAll = false;
             _ThreadedException = null;
             try
             {

@@ -63,21 +63,26 @@ namespace gMKVToolnix
             _MKVMergeOutput.Length = 0;
             // Clear the error builder
             _ErrorBuilder.Length = 0;
+            // Execute the mkvmerge
+            ExecuteMkvMerge(argMKVFile);
+            // Start the parsing of the output
+            ParseMkvMergeOutput();
+            return _SegmentList;
+        }
 
+        private void ExecuteMkvMerge(String argMKVFile)
+        {
             using (Process myProcess = new Process())
             {
                 List<OptionValue> optionList = new List<OptionValue>();
                 optionList.Add(new OptionValue(MkvMergeOptions.ui_language, "en"));
-                //optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
                 //optionList.Add(new OptionValue(MkvMergeOptions.command_line_charset, "\"UFT-8\""));
                 //optionList.Add(new OptionValue(MkvMergeOptions.output_charset, "\"UFT-8\""));
                 optionList.Add(new OptionValue(MkvMergeOptions.identify_verbose, String.Empty));
 
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVMergeFilename;
-                //myProcessInfo.Arguments = " -?";
                 myProcessInfo.Arguments = String.Format("{0} \"{1}\"", ConvertOptionValueListToString(optionList), argMKVFile);
-                //myProcessInfo.Arguments = String.Format("--parse-mode fast \"{0}\"", argMKVFile);
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;
                 myProcessInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -99,7 +104,7 @@ namespace gMKVToolnix
                 myProcess.OutputDataReceived -= myProcess_OutputDataReceived;
 
                 // Debug write the exit code
-                Debug.WriteLine("Exit code: " + myProcess.ExitCode);
+                Debug.WriteLine(String.Format("Exit code: {0}", myProcess.ExitCode));
 
                 // Check the exit code
                 if (myProcess.ExitCode > 0)
@@ -108,9 +113,6 @@ namespace gMKVToolnix
                     throw new Exception(String.Format("Mkvmerge exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}",
                         myProcess.ExitCode, _ErrorBuilder.ToString()));
                 }
-                // Start the parsing of the output
-                ParseMkvMergeOutput();
-                return _SegmentList;
             }
         }
 

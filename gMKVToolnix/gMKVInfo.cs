@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace gMKVToolnix
 {
@@ -60,6 +61,10 @@ namespace gMKVToolnix
         private List<gMKVSegment> _SegmentList = new List<gMKVSegment>();
         private StringBuilder _MKVInfoOutput = new StringBuilder();
         private StringBuilder _ErrorBuilder = new StringBuilder();
+        private Process _MyProcess = null;
+        private List<gMKVTrack> _TrackList = new List<gMKVTrack>();
+        private Int32 _TrackDelaysFound = 0;
+        private Int32 _VideoTrackDelay = Int32.MinValue;
 
         public gMKVInfo(String mkvToonlixPath)
         {
@@ -78,6 +83,80 @@ namespace gMKVToolnix
             // Clear the error builder
             _ErrorBuilder.Length = 0;
 
+            // Execute MKVInfo
+            ExecuteMkvInfo(null, argMKVFile, myProcess_OutputDataReceived);
+
+            // Start the parsing of the output
+            ParseMkvInfoOutput();
+            return _SegmentList;
+        }
+
+        public void FindAndSetDelays(List<gMKVSegment> argSegmentsList, String argMKVFile)
+        {
+            // check for existence of MKVInfo
+            if (!File.Exists(_MKVInfoFilename)) { throw new Exception("Could not find mkvinfo.exe!\r\n" + _MKVInfoFilename); }
+            // check for list of track numbers
+            if (argSegmentsList == null || argSegmentsList.Count == 0) { throw new Exception("No mkv segments were provided!"); }
+            // get only video and audio track in a trackList
+            _TrackList.Clear();
+            _TrackDelaysFound = 0;
+            foreach (gMKVSegment seg in argSegmentsList)
+            {
+                if (seg is gMKVTrack) 
+                {
+                    // only find delays for video and audio tracks
+                    if (((gMKVTrack)seg).TrackType != MkvTrackType.subtitles)
+                    {
+                        _TrackList.Add((gMKVTrack)seg);
+                    }
+                }
+            }
+
+            // add the check_mode option
+            List<OptionValue> optionList = new List<OptionValue>();
+            optionList.Add(new OptionValue(MkvInfoOptions.check_mode, String.Empty));
+
+            // Execute MKVInfo
+            try
+            {
+                ExecuteMkvInfo(optionList, argMKVFile, myProcess_OutputDataReceived_Delays);
+                // set the effective delays for all tracks
+                foreach (gMKVTrack tr in _TrackList)
+                {
+                    if (tr.TrackType == MkvTrackType.video)
+                    {
+                        if (_VideoTrackDelay == Int32.MinValue)
+                        {
+                            tr.EffectiveDelay = tr.Delay;
+                        }
+                        else
+                        {
+                            tr.EffectiveDelay = _VideoTrackDelay;
+                        }
+                    }
+                    else
+                    {
+                        // check if the video track delay was found
+                        if (_VideoTrackDelay == Int32.MinValue)
+                        {
+                            tr.EffectiveDelay = tr.Delay;
+                        }
+                        else
+                        {
+                            // set the effective delay
+                            tr.EffectiveDelay = tr.Delay - _VideoTrackDelay;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }           
+        }
+
+        private void ExecuteMkvInfo(List<OptionValue> argOptionList, String argMKVFile, DataReceivedEventHandler argHandler)
+        {
             using (Process myProcess = new Process())
             {
                 List<OptionValue> optionList = new List<OptionValue>();
@@ -85,6 +164,10 @@ namespace gMKVToolnix
                 //optionList.Add(new OptionValue(MkvInfoOptions.gui_mode, String.Empty));
                 optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
+                if (argOptionList != null)
+                {
+                    optionList.AddRange(argOptionList);
+                }
 
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVInfoFilename;
@@ -99,20 +182,24 @@ namespace gMKVToolnix
                 myProcessInfo.CreateNoWindow = true;
                 myProcessInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 myProcess.StartInfo = myProcessInfo;
-                myProcess.OutputDataReceived += myProcess_OutputDataReceived;
+                myProcess.OutputDataReceived += argHandler;
 
                 Debug.WriteLine(myProcessInfo.Arguments);
                 // Start the mkvinfo process
                 myProcess.Start();
+                // Get the Unique Process ID
+                _MyProcess = myProcess;
                 // Start reading the output
                 myProcess.BeginOutputReadLine();
                 // Wait for the process to exit
                 myProcess.WaitForExit();
                 // unregister the event
-                myProcess.OutputDataReceived -= myProcess_OutputDataReceived;
+                myProcess.OutputDataReceived -= argHandler;
 
                 // Debug write the exit code
                 Debug.WriteLine("Exit code: " + myProcess.ExitCode);
+                
+                _MyProcess = null;
 
                 // Check the exit code
                 if (myProcess.ExitCode > 0)
@@ -121,9 +208,6 @@ namespace gMKVToolnix
                     throw new Exception(String.Format("Mkvinfo exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}",
                         myProcess.ExitCode, _ErrorBuilder.ToString()));
                 }
-                // Start the parsing of the output
-                ParseMkvInfoOutput();
-                return _SegmentList;
             }
         }
 
@@ -438,6 +522,11 @@ namespace gMKVToolnix
             {
                 if (e.Data.Trim().Length > 0)
                 {
+                    // debug write the output line
+                    Debug.WriteLine(e.Data);
+                    // log the output
+                    gMKVLogger.Log(e.Data);
+                    
                     // add the line to the output stringbuilder
                     _MKVInfoOutput.AppendLine(e.Data);
                     // check for errors
@@ -445,27 +534,82 @@ namespace gMKVToolnix
                     {
                         _ErrorBuilder.AppendLine(e.Data.Substring(e.Data.IndexOf(":") + 1).Trim());
                     }
-                    // debug write the output line
-                    Debug.WriteLine(e.Data);
-                    // log the output
-                    gMKVLogger.Log(e.Data);
                 }
             }
         }
 
-        private String ConvertOptionValueListToString(List<OptionValue> listOptionValue)
+        private void myProcess_OutputDataReceived_Delays(object sender, DataReceivedEventArgs e)
+        {
+            if (e.Data != null)
+            {
+                if (e.Data.Trim().Length > 0)
+                {
+                    // debug write the output line
+                    Debug.WriteLine(e.Data);
+                    // log the output
+                    gMKVLogger.Log(e.Data);
+
+                    // check for errors                    
+                    if (e.Data.Contains("Error:"))
+                    {
+                        _ErrorBuilder.AppendLine(e.Data.Substring(e.Data.IndexOf(":") + 1).Trim());
+                    }
+
+                    // check if line contains the first timecode for one of the requested tracks
+                    foreach (gMKVTrack tr in _TrackList)
+                    {
+                        // check if the delay is already found
+                        if (tr.Delay == Int32.MinValue)
+                        {
+                            // try to find the delay
+                            Match m = Regex.Match(e.Data, String.Format(@"track number {0}, \d frame\(s\), timecode (\d+\.\d+)s", tr.TrackNumber));
+                            if (m.Success)
+                            {
+                                // Parse the delay (get the seconds in decimal, multiply by 1000 to convert them to ms, and then convert to Int32
+                                Int32 delay = Convert.ToInt32(Decimal.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture) * 1000m);
+                                // set the track delay
+                                tr.Delay = delay;
+                                // increase the number of track delays found
+                                _TrackDelaysFound++;
+                                // check if the track is a videotrack and set the VideoTrackDelay
+                                if (tr.TrackType == MkvTrackType.video)
+                                {
+                                    // set the video track delay
+                                    _VideoTrackDelay = delay;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    // check if first timecodes for all tracks where found
+                    if (_TrackDelaysFound == _TrackList.Count)
+                    {
+                        if (_MyProcess != null)
+                        {
+                            if (!_MyProcess.HasExited)
+                            {
+                                _MyProcess.Kill();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private String ConvertOptionValueListToString(List<OptionValue> argListOptionValue)
         {
             StringBuilder optionString = new StringBuilder();
-            foreach (OptionValue optVal in listOptionValue)
+            foreach (OptionValue optVal in argListOptionValue)
             {
                 optionString.AppendFormat(" {0} {1}", ConvertEnumOptionToStringOption(optVal.Option), optVal.Parameter);
             }
             return optionString.ToString();
         }
 
-        private String ConvertEnumOptionToStringOption(MkvInfoOptions enumOption)
+        private String ConvertEnumOptionToStringOption(MkvInfoOptions argEnumOption)
         {
-            return String.Format("--{0}", Enum.GetName(typeof(MkvInfoOptions), enumOption).Replace("_", "-"));
+            return String.Format("--{0}", Enum.GetName(typeof(MkvInfoOptions), argEnumOption).Replace("_", "-"));
         }
     }
 }

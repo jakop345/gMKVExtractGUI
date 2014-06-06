@@ -289,6 +289,7 @@ namespace gMKVToolnix
                             break;
                         }
                     }
+                    gInfo.FindAndSetDelays(segmentList, txtInputFile.Text.Trim());
                     gInfo = null;
                     segmentListInfo = null;
                     foreach (gMKVSegment seg in segmentList)

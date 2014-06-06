@@ -69,10 +69,32 @@ namespace gMKVToolnix
             set { _ExtraInfo = value; }
         }
 
+        private Int32 _Delay = Int32.MinValue;
+
+        public Int32 Delay
+        {
+            get { return _Delay; }
+            set { _Delay = value; }
+        }
+
+        private Int32 _EffectiveDelay = Int32.MinValue;
+
+        public Int32 EffectiveDelay
+        {
+            get { return _EffectiveDelay; }
+            set { _EffectiveDelay = value; }
+        }
+
+
         public override string ToString()
         {
-            return String.Format("Track {0} [TID {1}][{2}][{3}][{4}][{5}][{6}]", 
+            String str = String.Format("Track {0} [TID {1}][{2}][{3}][{4}][{5}][{6}]", 
                 _TrackNumber, _TrackID, Enum.GetName(typeof(MkvTrackType), _TrackType), _CodecID, _TrackName, _Language, _ExtraInfo);
+            if (_TrackType != MkvTrackType.subtitles)
+            {
+                str = String.Format("{0}[{1} ms][{2} ms]", str, _Delay, _EffectiveDelay);
+            }
+            return str;
         }
     }
 }

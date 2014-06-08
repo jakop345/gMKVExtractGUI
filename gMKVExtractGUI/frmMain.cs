@@ -21,6 +21,17 @@ namespace gMKVToolnix
         Tracks_And_Timecodes
     }
 
+    public enum TrackSelectionMode
+    {
+        video,
+        audio,
+        subtitle,
+        chapter,
+        attachment,
+        all,
+        none
+    }
+
     public partial class frmMain : Form
     {
         private frmLog _LogForm = null;
@@ -177,6 +188,40 @@ namespace gMKVToolnix
             }
         }
 
+        private void grpInputFile_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                // check if the drop data is actually a file or folder
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
+                    txtInputFile.Text = s[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void grpInputFile_DragEnter(object sender, DragEventArgs e)
+        {
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effect = DragDropEffects.All;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         private void ClearControls()
         {
             // check if output directory is locked
@@ -319,6 +364,7 @@ namespace gMKVToolnix
             finally
             {
                 tlpMain.Enabled = true;
+                grpInputFileInfo.Text = String.Format("Input File Information ({0} Tracks)", chkLstInputFileTracks.Items.Count);
                 this.Refresh();
                 Application.DoEvents();
             }
@@ -708,38 +754,166 @@ namespace gMKVToolnix
             Application.DoEvents();
         }
 
-        private void grpInputFile_DragDrop(object sender, DragEventArgs e)
+        private void SetContextMenuText()
         {
-            try
+            Int32 videoTracksCount = 0;
+            Int32 audioTracksCount = 0;
+            Int32 subtitleTracksCount = 0;
+            Int32 attachmentTracksCount = 0;
+            Int32 chapterTracksCount = 0;
+            Int32 selectedVideoTracksCount = 0;
+            Int32 selectedAudioTracksCount = 0;
+            Int32 selectedSubtitleTracksCount = 0;
+            Int32 selectedAttachmentTracksCount = 0;
+            Int32 selectedChapterTracksCount = 0;
+
+            for (Int32 i = 0; i < chkLstInputFileTracks.Items.Count; i++)
             {
-                // check if the drop data is actually a file or folder
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                gMKVSegment segObject = (gMKVSegment)chkLstInputFileTracks.Items[i];
+                if (segObject is gMKVTrack)
                 {
-                    String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
-                    txtInputFile.Text = s[0];
+                    switch (((gMKVTrack)segObject).TrackType)
+                    {
+                        case MkvTrackType.video:
+                            videoTracksCount++;
+                            if (chkLstInputFileTracks.GetItemChecked(i)) { selectedVideoTracksCount++; }
+                            break;
+                        case MkvTrackType.audio:
+                            audioTracksCount++;
+                             if (chkLstInputFileTracks.GetItemChecked(i)) { selectedAudioTracksCount++; }
+                           break;
+                        case MkvTrackType.subtitles:
+                            subtitleTracksCount++;
+                              if (chkLstInputFileTracks.GetItemChecked(i)) { selectedSubtitleTracksCount++; }
+                          break;
+                        default:
+                            break;
+                    }
+                }
+                else if (segObject is gMKVAttachment)
+                {
+                    attachmentTracksCount++;
+                    if (chkLstInputFileTracks.GetItemChecked(i)) { selectedAttachmentTracksCount++; }
+                }
+                else if (segObject is gMKVChapter)
+                {
+                    chapterTracksCount++;
+                    if (chkLstInputFileTracks.GetItemChecked(i)) { selectedChapterTracksCount++; }
                 }
             }
-            catch (Exception ex)
+            selectAllVideoTracksToolStripMenuItem.Enabled = (videoTracksCount > 0);
+            selectAllAudioTracksToolStripMenuItem.Enabled = (audioTracksCount > 0);
+            selectAllSubtitleTracksToolStripMenuItem.Enabled = (subtitleTracksCount > 0);
+            selectAllChapterTracksToolStripMenuItem.Enabled = (chapterTracksCount > 0);
+            selectAllAttachmentsToolStripMenuItem.Enabled = (attachmentTracksCount > 0);
+            selectAllTracksToolStripMenuItem.Enabled = (chkLstInputFileTracks.Items.Count > 0);
+            unselectAllTracksToolStripMenuItem.Enabled = (chkLstInputFileTracks.Items.Count > 0);
+
+            selectAllVideoTracksToolStripMenuItem.Text = String.Format("Select All Video Tracks ({1}/{0})", videoTracksCount, selectedVideoTracksCount);
+            selectAllAudioTracksToolStripMenuItem.Text = String.Format("Select All Audio Tracks ({1}/{0})", audioTracksCount, selectedAudioTracksCount);
+            selectAllSubtitleTracksToolStripMenuItem.Text = String.Format("Select All Subtitle Tracks ({1}/{0})", subtitleTracksCount, selectedSubtitleTracksCount);
+            selectAllChapterTracksToolStripMenuItem.Text = String.Format("Select All Chapter Tracks ({1}/{0})", chapterTracksCount, selectedChapterTracksCount);
+            selectAllAttachmentsToolStripMenuItem.Text = String.Format("Select All Attachment Tracks ({1}/{0})", attachmentTracksCount, selectedAttachmentTracksCount);
+            selectAllTracksToolStripMenuItem.Text = String.Format("Select All Tracks ({1}/{0})", chkLstInputFileTracks.Items.Count, chkLstInputFileTracks.CheckedItems.Count);
+            unselectAllTracksToolStripMenuItem.Text = String.Format("Unselect All Tracks ({1}/{0})", chkLstInputFileTracks.Items.Count, chkLstInputFileTracks.CheckedItems.Count);
+        }
+
+        private void SetTrackSelection(TrackSelectionMode argSelectionMode)
+        {
+            for (Int32 i = 0; i < chkLstInputFileTracks.Items.Count; i++)
             {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
+                gMKVSegment seg = (gMKVSegment)chkLstInputFileTracks.Items[i];
+                switch (argSelectionMode)
+                {
+                    case TrackSelectionMode.video:
+                        if (seg is gMKVTrack)
+                        {
+                            if (((gMKVTrack)seg).TrackType == MkvTrackType.video)
+                            {
+                                chkLstInputFileTracks.SetItemChecked(i, true);
+                            }
+                        }
+                        break;
+                    case TrackSelectionMode.audio:
+                        if (seg is gMKVTrack)
+                        {
+                            if (((gMKVTrack)seg).TrackType == MkvTrackType.audio)
+                            {
+                                chkLstInputFileTracks.SetItemChecked(i, true);
+                            }
+                        }
+                        break;
+                    case TrackSelectionMode.subtitle:
+                        if (seg is gMKVTrack)
+                        {
+                            if (((gMKVTrack)seg).TrackType == MkvTrackType.subtitles)
+                            {
+                                chkLstInputFileTracks.SetItemChecked(i, true);
+                            }
+                        }
+                        break;
+                    case TrackSelectionMode.chapter:
+                        if (seg is gMKVChapter)
+                        {
+                            chkLstInputFileTracks.SetItemChecked(i, true);
+                        }
+                        break;
+                    case TrackSelectionMode.attachment:
+                        if (seg is gMKVAttachment)
+                        {
+                            chkLstInputFileTracks.SetItemChecked(i, true);
+                        }
+                        break;
+                    case TrackSelectionMode.all:
+                        chkLstInputFileTracks.SetItemChecked(i, true);
+                        break;
+                    case TrackSelectionMode.none:
+                        chkLstInputFileTracks.SetItemChecked(i, false);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
-        private void grpInputFile_DragEnter(object sender, DragEventArgs e)
+        private void selectAllTracksToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effect = DragDropEffects.All;
-                else
-                    e.Effect = DragDropEffects.None;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
+            SetTrackSelection(TrackSelectionMode.all);
+        }
+
+        private void selectAllVideoTracksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.video);
+        }
+
+        private void selectAllAudioTracksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.audio);
+        }
+
+        private void selectAllSubtitleTracksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.subtitle);
+        }
+
+        private void selectAllChapterTracksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.chapter);
+        }
+
+        private void selectAllAttachmentsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.attachment);
+        }
+
+        private void unselectAllTracksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetTrackSelection(TrackSelectionMode.none);
+        }
+
+        private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+            SetContextMenuText();
         }
     }
 }

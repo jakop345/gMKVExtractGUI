@@ -222,6 +222,40 @@ namespace gMKVToolnix
             }
         }
 
+        private void grpInputFileInfo_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                // check if the drop data is actually a file or folder
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
+                    txtInputFile.Text = s[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void grpInputFileInfo_DragEnter(object sender, DragEventArgs e)
+        {
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effect = DragDropEffects.All;
+                else
+                    e.Effect = DragDropEffects.None;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
         private void ClearControls()
         {
             // check if output directory is locked
@@ -915,5 +949,6 @@ namespace gMKVToolnix
         {
             SetContextMenuText();
         }
+
     }
 }

@@ -520,6 +520,7 @@
             this.MinimumSize = new System.Drawing.Size(640, 600);
             this.Name = "frmMain";
             this.Text = "gMKVExtractGUI";
+            this.Move += new System.EventHandler(this.frmMain_Move);
             this.grpInputFile.ResumeLayout(false);
             this.grpInputFile.PerformLayout();
             this.grpOutputDirectory.ResumeLayout(false);

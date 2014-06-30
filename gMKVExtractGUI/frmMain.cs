@@ -70,6 +70,11 @@ namespace gMKVToolnix
                 cmbExtractionMode.DataSource = Enum.GetNames(typeof(MkvExtractionMode));
                 // load settings
                 _settings.Reload();
+                if (_settings.WindowPosX > 0 && _settings.WindowPosY > 0)
+                {
+                    this.StartPosition = FormStartPosition.Manual;
+                    this.Location = new Point(_settings.WindowPosX, _settings.WindowPosY);
+                }
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _settings.ChapterType);
                 txtOutputDirectory.Text = _settings.OutputDirectory;
                 chkLockOutputDirectory.Checked = _settings.LockedOutputDirectory;
@@ -988,6 +993,23 @@ namespace gMKVToolnix
         private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
         {
             SetContextMenuText();
+        }
+
+        private void frmMain_Move(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_FromConstructor)
+                {
+                    _settings.WindowPosX = this.Location.X;
+                    _settings.WindowPosY = this.Location.Y;
+                    _settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
     }

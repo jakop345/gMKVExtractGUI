@@ -36,6 +36,20 @@ namespace gMKVToolnix
             set { _OutputDirectory = value; }
         }
 
+        private Int32 _WindowPosX;
+        public Int32 WindowPosX
+        {
+            get { return _WindowPosX; }
+            set { _WindowPosX = value; }
+        }
+
+        private Int32 _WindowPosY;
+        public Int32 WindowPosY
+        {
+            get { return _WindowPosY; }
+            set { _WindowPosY = value; }
+        }
+
 
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
@@ -106,6 +120,30 @@ namespace gMKVToolnix
                                 _LockedOutputDirectory = false;
                             }
                         }
+                        else if (line.StartsWith("Initial Window Position X:"))
+                        {
+                            try
+                            {
+                                _WindowPosX = Int32.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _WindowPosX = -1;
+                            }
+                        }
+                        else if (line.StartsWith("Initial Window Position Y:"))
+                        {
+                            try
+                            {
+                                _WindowPosY = Int32.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _WindowPosY = -1;
+                            }
+                        }
                     }
                 }
             }
@@ -119,6 +157,8 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Chapter Type:{0}", _ChapterType));
                 sw.WriteLine(String.Format("Output Directory:{0}", _OutputDirectory));
                 sw.WriteLine(String.Format("Lock Output Directory:{0}", _LockedOutputDirectory));
+                sw.WriteLine(String.Format("Initial Window Position X:{0}", _WindowPosX));
+                sw.WriteLine(String.Format("Initial Window Position Y:{0}", _WindowPosY));
             }
         }
     }

@@ -165,7 +165,8 @@ namespace gMKVToolnix
                 {
                     gMKVAttachment tmp = new gMKVAttachment();
                     tmp.ID = Int32.Parse(outputLine.Substring(0, outputLine.IndexOf(":")).Replace("Attachment ID", String.Empty).Trim());
-                    tmp.Filename = outputLine.Substring(outputLine.IndexOf("file name")).Replace("file name", string.Empty).Replace("'", String.Empty).Trim();
+                    tmp.Filename = outputLine.Substring(outputLine.IndexOf("file name")).Replace("file name", string.Empty);
+                    tmp.Filename = tmp.Filename.Substring(tmp.Filename.IndexOf("'") + 1, tmp.Filename.LastIndexOf("'") - 2).Trim();
                     tmp.FileSize = outputLine.Substring(outputLine.IndexOf("size")).Replace("size", string.Empty).Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries)[0].Replace("bytes", String.Empty).Trim();
                     tmp.MimeType = outputLine.Substring(outputLine.IndexOf("type")).Replace("type", string.Empty).Split(new String[] { "," }, StringSplitOptions.RemoveEmptyEntries)[0].Replace("'", String.Empty).Trim();
                     _SegmentList.Add(tmp);

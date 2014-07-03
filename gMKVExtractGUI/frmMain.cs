@@ -36,7 +36,7 @@ namespace gMKVToolnix
     {
         private frmLog _LogForm = null;
         private gMKVExtract _gMkvExtract = null;
-        private gSettings _settings = new gSettings(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+        private gSettings _Settings = new gSettings(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
         private Boolean _FromConstructor = false;
         private ToolTip _ToolTip = new ToolTip();
 
@@ -61,7 +61,7 @@ namespace gMKVToolnix
             {
                 InitializeComponent();
                 Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-                Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- By Gpower2";
+                Text = String.Format("gMKVExtractGUI v{0} -- By Gpower2", Assembly.GetExecutingAssembly().GetName().Version);
                 SetTooltips();
                 btnAbort.Enabled = false;
                 btnAbortAll.Enabled = false;
@@ -69,15 +69,13 @@ namespace gMKVToolnix
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
                 cmbExtractionMode.DataSource = Enum.GetNames(typeof(MkvExtractionMode));
                 // load settings
-                _settings.Reload();
-                if (_settings.WindowPosX > 0 && _settings.WindowPosY > 0)
-                {
-                    this.StartPosition = FormStartPosition.Manual;
-                    this.Location = new Point(_settings.WindowPosX, _settings.WindowPosY);
-                }
-                cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _settings.ChapterType);
-                txtOutputDirectory.Text = _settings.OutputDirectory;
-                chkLockOutputDirectory.Checked = _settings.LockedOutputDirectory;
+                _Settings.Reload();
+                this.StartPosition = FormStartPosition.Manual;
+                this.Location = new Point(_Settings.WindowPosX, _Settings.WindowPosY);
+                this.Size = new System.Drawing.Size(_Settings.WindowSizeWidth, _Settings.WindowSizeHeight);
+                cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _Settings.ChapterType);
+                txtOutputDirectory.Text = _Settings.OutputDirectory;
+                chkLockOutputDirectory.Checked = _Settings.LockedOutputDirectory;
                 _FromConstructor = false;
                 try
                 {
@@ -95,10 +93,10 @@ namespace gMKVToolnix
                     else
                     {
                         // check for ini file
-                        if (File.Exists(Path.Combine(_settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                        if (File.Exists(Path.Combine(_Settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                         {
                             _FromConstructor = true;
-                            txtMKVToolnixPath.Text = _settings.MkvToolnixPath;
+                            txtMKVToolnixPath.Text = _Settings.MkvToolnixPath;
                             _FromConstructor = false;
                         }
                         else
@@ -336,8 +334,8 @@ namespace gMKVToolnix
                     }
 
                     // Write the value to the ini file
-                    _settings.MkvToolnixPath = txtMKVToolnixPath.Text.Trim();
-                    _settings.Save();
+                    _Settings.MkvToolnixPath = txtMKVToolnixPath.Text.Trim();
+                    _Settings.Save();
                 }
             }
             catch (Exception ex)
@@ -356,8 +354,8 @@ namespace gMKVToolnix
                     if (cmbChapterType.SelectedIndex > -1)
                     {
                         // Write the value to the ini file
-                        _settings.ChapterType = (MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem);
-                        _settings.Save();
+                        _Settings.ChapterType = (MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem);
+                        _Settings.Save();
                     }
                 }
             }
@@ -483,8 +481,8 @@ namespace gMKVToolnix
             {
                 if (!_FromConstructor)
                 {
-                    _settings.OutputDirectory = txtOutputDirectory.Text;
-                    _settings.Save();
+                    _Settings.OutputDirectory = txtOutputDirectory.Text;
+                    _Settings.Save();
                 }
             }
             catch (Exception ex)
@@ -509,8 +507,8 @@ namespace gMKVToolnix
                 btnBrowseOutputDirectory.Enabled = !chkLockOutputDirectory.Checked;
                 if (!_FromConstructor)
                 {
-                    _settings.LockedOutputDirectory = chkLockOutputDirectory.Checked;
-                    _settings.Save();
+                    _Settings.LockedOutputDirectory = chkLockOutputDirectory.Checked;
+                    _Settings.Save();
                 }
             }
             catch (Exception ex)
@@ -1001,9 +999,26 @@ namespace gMKVToolnix
             {
                 if (!_FromConstructor)
                 {
-                    _settings.WindowPosX = this.Location.X;
-                    _settings.WindowPosY = this.Location.Y;
-                    _settings.Save();
+                    _Settings.WindowPosX = this.Location.X;
+                    _Settings.WindowPosY = this.Location.Y;
+                    _Settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        private void frmMain_ResizeEnd(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_FromConstructor)
+                {
+                    _Settings.WindowSizeWidth = this.Size.Width;
+                    _Settings.WindowSizeHeight = this.Size.Height;
+                    _Settings.Save();
                 }
             }
             catch (Exception ex)

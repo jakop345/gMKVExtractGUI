@@ -50,6 +50,19 @@ namespace gMKVToolnix
             set { _WindowPosY = value; }
         }
 
+        private Int32 _WindowSizeWidth;
+        public Int32 WindowSizeWidth
+        {
+            get { return _WindowSizeWidth; }
+            set { _WindowSizeWidth = value; }
+        }
+
+        private Int32 _WindowSizeHeight;
+        public Int32 WindowSizeHeight
+        {
+            get { return _WindowSizeHeight; }
+            set { _WindowSizeHeight = value; }
+        }
 
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
@@ -129,7 +142,7 @@ namespace gMKVToolnix
                             catch (Exception ex)
                             {
                                 Debug.WriteLine(ex);
-                                _WindowPosX = -1;
+                                _WindowPosX = 0;
                             }
                         }
                         else if (line.StartsWith("Initial Window Position Y:"))
@@ -141,7 +154,31 @@ namespace gMKVToolnix
                             catch (Exception ex)
                             {
                                 Debug.WriteLine(ex);
-                                _WindowPosY = -1;
+                                _WindowPosY = 0;
+                            }
+                        }
+                        else if (line.StartsWith("Initial Window Size Width:"))
+                        {
+                            try
+                            {
+                                _WindowSizeWidth = Int32.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _WindowSizeWidth = 640;
+                            }
+                        }
+                        else if (line.StartsWith("Initial Window Size Height:"))
+                        {
+                            try
+                            {
+                                _WindowSizeHeight = Int32.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _WindowSizeHeight = 600;
                             }
                         }
                     }
@@ -159,6 +196,8 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Lock Output Directory:{0}", _LockedOutputDirectory));
                 sw.WriteLine(String.Format("Initial Window Position X:{0}", _WindowPosX));
                 sw.WriteLine(String.Format("Initial Window Position Y:{0}", _WindowPosY));
+                sw.WriteLine(String.Format("Initial Window Size Width:{0}", _WindowSizeWidth));
+                sw.WriteLine(String.Format("Initial Window Size Height:{0}", _WindowSizeHeight));
             }
         }
     }

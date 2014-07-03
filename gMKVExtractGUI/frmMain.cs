@@ -121,39 +121,39 @@ namespace gMKVToolnix
         private void SetTooltips()
         {
             // General ToolTip properties
-            _ToolTip.AutoPopDelay = 10000;
-            _ToolTip.InitialDelay = 500;
-            _ToolTip.ReshowDelay = 100;
-            _ToolTip.IsBalloon = true;
-            _ToolTip.ToolTipIcon = ToolTipIcon.Info;
-            _ToolTip.ToolTipTitle = "gMKVExtractGUI Help";
+            //_ToolTip.AutoPopDelay = 10000;
+            //_ToolTip.InitialDelay = 500;
+            //_ToolTip.ReshowDelay = 100;
+            //_ToolTip.IsBalloon = true;
+            //_ToolTip.ToolTipIcon = ToolTipIcon.Info;
+            //_ToolTip.ToolTipTitle = "gMKVExtractGUI Help";
 
-            // Assign Control Tooltip Text
-            StringBuilder txtBuilder = new StringBuilder();
-            txtBuilder.AppendFormat("\r\n");
-            txtBuilder.AppendFormat("The list of Tracks that the matroska file contains.\r\n");
-            txtBuilder.AppendFormat("\r\n");
-            txtBuilder.AppendFormat("Each Track is shown with its properties in brackets as follows:\r\n");
-            txtBuilder.AppendFormat("\r\n");
-            txtBuilder.AppendFormat("Video/Audio/Subtitle Tracks:\r\n");
-            txtBuilder.AppendFormat("\tTrack ID\r\n");
-            txtBuilder.AppendFormat("\tTrack Type\r\n");
-            txtBuilder.AppendFormat("\tCodec ID\r\n");
-            txtBuilder.AppendFormat("\tTrack Name\r\n");
-            txtBuilder.AppendFormat("\tLanguage\r\n");
-            txtBuilder.AppendFormat("\tExtra Info (resolution for video tracks, sample rate and channels for audio tracks)\r\n");
-            txtBuilder.AppendFormat("\tDelay (the actual track delay as defined in the mkv header)\r\n");
-            txtBuilder.AppendFormat("\tEffective Delay (the delay that players use while playing the file)\r\n");
-            txtBuilder.AppendFormat("\r\n");
-            txtBuilder.AppendFormat("Attachments:\r\n");
-            txtBuilder.AppendFormat("\tID\r\n");
-            txtBuilder.AppendFormat("\tFile name\r\n");
-            txtBuilder.AppendFormat("\tMime Type\r\n");
-            txtBuilder.AppendFormat("\tFile size\r\n");
-            txtBuilder.AppendFormat("\r\n");
-            txtBuilder.AppendFormat("Chapters:\r\n");
-            txtBuilder.AppendFormat("\tCount of chapter entries\r\n");
-            _ToolTip.SetToolTip(chkLstInputFileTracks, txtBuilder.ToString());
+            //// Assign Control Tooltip Text
+            //StringBuilder txtBuilder = new StringBuilder();
+            //txtBuilder.AppendFormat("\r\n");
+            //txtBuilder.AppendFormat("The list of Tracks that the matroska file contains.\r\n");
+            //txtBuilder.AppendFormat("\r\n");
+            //txtBuilder.AppendFormat("Each Track is shown with its properties in brackets as follows:\r\n");
+            //txtBuilder.AppendFormat("\r\n");
+            //txtBuilder.AppendFormat("Video/Audio/Subtitle Tracks:\r\n");
+            //txtBuilder.AppendFormat("\tTrack ID\r\n");
+            //txtBuilder.AppendFormat("\tTrack Type\r\n");
+            //txtBuilder.AppendFormat("\tCodec ID\r\n");
+            //txtBuilder.AppendFormat("\tTrack Name\r\n");
+            //txtBuilder.AppendFormat("\tLanguage\r\n");
+            //txtBuilder.AppendFormat("\tExtra Info (resolution for video tracks, sample rate and channels for audio tracks)\r\n");
+            //txtBuilder.AppendFormat("\tDelay (the actual track delay as defined in the mkv header)\r\n");
+            //txtBuilder.AppendFormat("\tEffective Delay (the delay that players use while playing the file)\r\n");
+            //txtBuilder.AppendFormat("\r\n");
+            //txtBuilder.AppendFormat("Attachments:\r\n");
+            //txtBuilder.AppendFormat("\tID\r\n");
+            //txtBuilder.AppendFormat("\tFile name\r\n");
+            //txtBuilder.AppendFormat("\tMime Type\r\n");
+            //txtBuilder.AppendFormat("\tFile size\r\n");
+            //txtBuilder.AppendFormat("\r\n");
+            //txtBuilder.AppendFormat("Chapters:\r\n");
+            //txtBuilder.AppendFormat("\tCount of chapter entries\r\n");
+            //_ToolTip.SetToolTip(chkLstInputFileTracks, txtBuilder.ToString());
         }
 
         private void txt_DragDrop(object sender, DragEventArgs e)

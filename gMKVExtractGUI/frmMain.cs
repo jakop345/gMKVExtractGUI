@@ -675,6 +675,7 @@ namespace gMKVToolnix
                 {
                     throw _gMkvExtract.ThreadedException;
                 }
+                UpdateProgress(100);
                 ShowSuccessMessage("The extraction was completed successfully!");
             }
             catch (Exception ex)

@@ -490,7 +490,7 @@ namespace gMKVToolnix
             {
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVExtractFilename;
-                myProcessInfo.Arguments = argParameters;
+                myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;
                 myProcessInfo.StandardOutputEncoding = Encoding.UTF8;

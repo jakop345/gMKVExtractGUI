@@ -665,6 +665,8 @@ namespace gMKVToolnix
 
                 btnAbort.Enabled = true;
                 btnAbortAll.Enabled = true;
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Normal);
+                gTaskbarProgress.SetOverlayIcon(this, SystemIcons.Shield, "Extracting...");
                 Application.DoEvents();
                 while (myThread.ThreadState != System.Threading.ThreadState.Stopped)
                 {
@@ -681,6 +683,9 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Error);
+                gTaskbarProgress.SetOverlayIcon(this, SystemIcons.Error, "Error!");
                 ShowErrorMessage(ex.Message);
             }
             finally
@@ -695,6 +700,8 @@ namespace gMKVToolnix
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
                 btnAbortAll.Enabled = false;
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.NoProgress);
+                gTaskbarProgress.SetOverlayIcon(this, null, null);
                 this.Refresh(); 
                 Application.DoEvents();
             }
@@ -821,6 +828,7 @@ namespace gMKVToolnix
         {
             prgBrStatus.Value = Convert.ToInt32(val);
             lblStatus.Text = String.Format("{0}%", Convert.ToInt32(val));
+            gTaskbarProgress.SetValue(this, Convert.ToUInt64(val), (UInt64)100);
             Application.DoEvents();
         }
 

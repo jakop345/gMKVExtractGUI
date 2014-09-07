@@ -62,6 +62,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gSettings.cs" />
+    <Compile Include="gTaskbarProgress.cs" />
     <Compile Include="gTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -709,9 +709,13 @@ namespace gMKVToolnix
             {
                 outputFileExtension = "mov";
             }
-            else if (argTrack.CodecID.ToUpper().Contains("A_TTA1"))
+            else if (argTrack.CodecID.ToUpper().Contains("A_TRUEHD"))
             {
                 outputFileExtension = "thd";
+            }
+            else if (argTrack.CodecID.ToUpper().Contains("A_TTA1"))
+            {
+                outputFileExtension = "tta";
             }
             else if (argTrack.CodecID.ToUpper().Contains("A_WAVPACK4"))
             {

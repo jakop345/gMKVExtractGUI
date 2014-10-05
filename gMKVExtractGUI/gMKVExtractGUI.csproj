@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>gMkvExtractGuiIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Images\gMkvExtractGuiIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>gMKVToolnix.Program</StartupObject>
@@ -46,32 +46,41 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmLog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmLog.Designer.cs">
-      <DependentUpon>frmLog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </Compile>
-    <Compile Include="gCheckedListBox.cs">
+    <Compile Include="Controls\gGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\gTableLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\frmLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmLog.Designer.cs">
+      <DependentUpon>frmLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\gCheckedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\gForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="gSettings.cs" />
-    <Compile Include="gTaskbarProgress.cs" />
-    <Compile Include="gTextBox.cs">
+    <Compile Include="Controls\gTaskbarProgress.cs" />
+    <Compile Include="Controls\gTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmLog.resx">
+    <EmbeddedResource Include="Forms\frmLog.resx">
       <DependentUpon>frmLog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
+    <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -101,7 +110,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="gMkvExtractGuiIcon.ico" />
+    <Content Include="Images\gMkvExtractGuiIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

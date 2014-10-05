@@ -32,7 +32,7 @@ namespace gMKVToolnix
         none
     }
 
-    public partial class frmMain : Form
+    public partial class frmMain : gForm
     {
         private frmLog _LogForm = null;
         private gMKVExtract _gMkvExtract = null;

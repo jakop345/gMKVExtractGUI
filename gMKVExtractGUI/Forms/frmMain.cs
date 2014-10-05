@@ -399,6 +399,7 @@ namespace gMKVToolnix
                         txtOutputDirectory.Text = Path.GetDirectoryName(txtInputFile.Text.Trim());
                     }
                     // get the file information                    
+                    gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Indeterminate);
                     gMKVMerge g = new gMKVMerge(txtMKVToolnixPath.Text.Trim());
                     List<gMKVSegment> segmentList = g.GetMKVSegments(txtInputFile.Text.Trim());
                     gMKVInfo gInfo = new gMKVInfo(txtMKVToolnixPath.Text.Trim());
@@ -436,6 +437,7 @@ namespace gMKVToolnix
                 Debug.WriteLine(ex);
                 // Empty the text since input was wrong or something happened
                 txtInputFile.Text = String.Empty;
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Error);
                 ShowErrorMessage(ex.Message);
             }
             finally
@@ -443,6 +445,7 @@ namespace gMKVToolnix
                 tlpMain.Enabled = true;
                 grpInputFileInfo.Text = String.Format("Input File Information ({0} Tracks)", chkLstInputFileTracks.Items.Count);
                 this.Refresh();
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.NoProgress);
                 Application.DoEvents();
             }
         }

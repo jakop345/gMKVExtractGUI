@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace gMKVToolnix
 {
-    public partial class frmLog : Form
+    public partial class frmLog : gForm
     {
         private void ShowErrorMessage(String argMessage)
         {

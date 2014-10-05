@@ -40,7 +40,7 @@ namespace gMKVToolnix
                     return;
                 }
             }
-            Debug.WriteLine(m);
+            //Debug.WriteLine(m);
             previousMessage = m;
             base.WndProc(ref m);
         }

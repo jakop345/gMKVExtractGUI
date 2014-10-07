@@ -592,6 +592,7 @@ namespace gMKVToolnix
                 Thread myThread = null;
                 List<Object> parameterList = new List<object>();
                 List<gMKVSegment> segmentList = new List<gMKVSegment>();
+                gMKVJob job = null;
                 switch ((MkvExtractionMode)Enum.Parse(typeof(MkvExtractionMode), (String)cmbExtractionMode.SelectedItem))
                 {
                     case MkvExtractionMode.Tracks:
@@ -602,31 +603,31 @@ namespace gMKVToolnix
                             segmentList.Add(seg);
                         }
                  
-                        myThread = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(segmentList);
                         parameterList.Add(txtOutputDirectory.Text);
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.NoTimecodes);
 
+                        job = new gMKVJob(_gMkvExtract.ExtractMKVSegmentsThreaded, parameterList);
                         break;
                     case MkvExtractionMode.Cue_Sheet:
                         CheckNeccessaryInputFields(false, false);
                   
-                        myThread = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvCuesheetThreaded));
                         parameterList = new List<object>();
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(txtOutputDirectory.Text);
 
+                        job = new gMKVJob(_gMkvExtract.ExtractMkvCuesheetThreaded, parameterList);
                         break;
                     case MkvExtractionMode.Tags:
                         CheckNeccessaryInputFields(false, false);
                    
-                        myThread = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMkvTagsThreaded));
                         parameterList = new List<object>();
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(txtOutputDirectory.Text);
 
+                        job = new gMKVJob(_gMkvExtract.ExtractMkvTagsThreaded, parameterList);
                         break;
                     case MkvExtractionMode.Timecodes:
                         CheckNeccessaryInputFields(true, false);
@@ -636,7 +637,6 @@ namespace gMKVToolnix
                             segmentList.Add(seg);
                         }
                     
-                        myThread = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVTimecodesThreaded));
                         parameterList = new List<object>();
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(segmentList);
@@ -644,6 +644,7 @@ namespace gMKVToolnix
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.OnlyTimecodes);
 
+                        job = new gMKVJob(_gMkvExtract.ExtractMKVTimecodesThreaded, parameterList);
                         break;
                     case MkvExtractionMode.Tracks_And_Timecodes:
                         CheckNeccessaryInputFields(true, true);
@@ -653,7 +654,6 @@ namespace gMKVToolnix
                             segmentList.Add(seg);
                         }
                     
-                        myThread = new Thread(new ParameterizedThreadStart(_gMkvExtract.ExtractMKVSegmentsThreaded));
                         parameterList = new List<object>();
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(segmentList);
@@ -661,10 +661,13 @@ namespace gMKVToolnix
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.WithTimecodes);
 
+                        job = new gMKVJob(_gMkvExtract.ExtractMKVSegmentsThreaded, parameterList);
                         break;
                 }
+
                 // start the thread
-                myThread.Start(parameterList);
+                myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod));
+                myThread.Start(job.ParametersList);
 
                 btnAbort.Enabled = true;
                 btnAbortAll.Enabled = true;

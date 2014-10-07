@@ -19,6 +19,8 @@ namespace gMKVToolnix
         private Int32 _CurrentJob = 0;
         private Int32 _TotalJobs = 0;
 
+        private Boolean _AbortAll = false;
+        
         public frmJobManager(gMKVExtract argGMkvExtract, frmMain argMainForm)
         {
             InitializeComponent();
@@ -96,6 +98,11 @@ namespace gMKVToolnix
             {
                 try
                 {
+                    // check for abort
+                    if (_AbortAll)
+                    {
+                        break;
+                    }
                     // increate the current job index
                     _CurrentJob++;
                     // start the thread
@@ -105,7 +112,6 @@ namespace gMKVToolnix
                     btnAbort.Enabled = true;
                     btnAbortAll.Enabled = true;
                     gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Normal);
-                    gTaskbarProgress.SetOverlayIcon(this, SystemIcons.Shield, "Extracting...");
                     Application.DoEvents();
                     while (myThread.ThreadState != System.Threading.ThreadState.Stopped)
                     {
@@ -133,7 +139,7 @@ namespace gMKVToolnix
         public void UpdateCurrentProgress(Object val)
         {
             prgBrCurrent.Value = Convert.ToInt32(val);
-            prgBrTotal.Value = (Convert.ToInt32(val) == 0) ? 0 : (_CurrentJob - 1) * 100 + Convert.ToInt32(val);
+            prgBrTotal.Value = (_CurrentJob - 1) * 100 + Convert.ToInt32(val);
             lblCurrentProgressValue.Text = String.Format("{0}%", Convert.ToInt32(val));
             lblTotalProgressValue.Text = String.Format("{0}%", prgBrTotal.Value / _TotalJobs);
             gTaskbarProgress.SetValue(this, Convert.ToUInt64(val), (UInt64)100);
@@ -201,8 +207,10 @@ namespace gMKVToolnix
                     _gMkvExtract.MkvExtractTrackUpdated -= _gMkvExtract_MkvExtractTrackUpdated;
                 }
                 UpdateCurrentProgress(0);
+                prgBrTotal.Value = 0;
                 lblCurrentProgressValue.Text = string.Empty;
                 lblTotalProgressValue.Text = string.Empty;
+                _AbortAll = false;
                 SetActionStatus(true);
                 SetAbortStatus(false);
                 _MainForm.SetTableLayoutMainStatus(true);
@@ -226,8 +234,9 @@ namespace gMKVToolnix
         {
             try
             {
-                _gMkvExtract.AbortAll = true;
+                _AbortAll = true;
                 _gMkvExtract.Abort = true;
+                _gMkvExtract.AbortAll = true;
             }
             catch (Exception ex)
             {

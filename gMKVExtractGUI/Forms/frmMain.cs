@@ -57,6 +57,7 @@ namespace gMKVToolnix
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _Settings.ChapterType);
                 txtOutputDirectory.Text = _Settings.OutputDirectory;
                 chkLockOutputDirectory.Checked = _Settings.LockedOutputDirectory;
+                chkJobMode.Checked = _Settings.JobMode;
                 _FromConstructor = false;
                 try
                 {
@@ -1036,6 +1037,11 @@ namespace gMKVToolnix
         {
             _JobMode = chkJobMode.Checked;
             btnExtract.Text = _JobMode ? "Add job" : "Extract";
+            if (!_FromConstructor)
+            {
+                _Settings.JobMode = chkJobMode.Checked;
+                _Settings.Save();
+            }
         }
 
         public void SetTableLayoutMainStatus(Boolean argStatus)

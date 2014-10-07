@@ -64,6 +64,14 @@ namespace gMKVToolnix
             set { _WindowSizeHeight = value; }
         }
 
+        private Boolean _JobMode;
+        public Boolean JobMode
+        {
+            get { return _JobMode; }
+            set { _JobMode = value; }
+        }
+
+
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
 
@@ -181,6 +189,18 @@ namespace gMKVToolnix
                                 _WindowSizeHeight = 600;
                             }
                         }
+                        else if (line.StartsWith("Job Mode:"))
+                        {
+                            try
+                            {
+                                _JobMode = Boolean.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _JobMode = false;
+                            }
+                        }
                     }
                 }
             }
@@ -198,6 +218,7 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Initial Window Position Y:{0}", _WindowPosY));
                 sw.WriteLine(String.Format("Initial Window Size Width:{0}", _WindowSizeWidth));
                 sw.WriteLine(String.Format("Initial Window Size Height:{0}", _WindowSizeHeight));
+                sw.WriteLine(String.Format("Job Mode:{0}", _JobMode));
             }
         }
     }

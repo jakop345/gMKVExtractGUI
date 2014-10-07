@@ -68,6 +68,7 @@
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.chkJobMode = new System.Windows.Forms.CheckBox();
             this.grpInputFile.SuspendLayout();
             this.grpOutputDirectory.SuspendLayout();
             this.grpInputFileInfo.SuspendLayout();
@@ -294,6 +295,7 @@
             // 
             // grpActions
             // 
+            this.grpActions.Controls.Add(this.chkJobMode);
             this.grpActions.Controls.Add(this.btnExtract);
             this.grpActions.Controls.Add(this.lblExtractionMode);
             this.grpActions.Controls.Add(this.cmbExtractionMode);
@@ -353,11 +355,11 @@
             // 
             this.lblChapterType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChapterType.AutoSize = true;
-            this.lblChapterType.Location = new System.Drawing.Point(127, 26);
+            this.lblChapterType.Location = new System.Drawing.Point(156, 26);
             this.lblChapterType.Name = "lblChapterType";
-            this.lblChapterType.Size = new System.Drawing.Size(78, 15);
+            this.lblChapterType.Size = new System.Drawing.Size(49, 15);
             this.lblChapterType.TabIndex = 3;
-            this.lblChapterType.Text = "Chapter Type";
+            this.lblChapterType.Text = "Chapter";
             // 
             // cmbChapterType
             // 
@@ -508,6 +510,19 @@
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(0, 31);
             // 
+            // chkJobMode
+            // 
+            this.chkJobMode.AutoSize = true;
+            this.chkJobMode.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkJobMode.Location = new System.Drawing.Point(70, 24);
+            this.chkJobMode.Name = "chkJobMode";
+            this.chkJobMode.Size = new System.Drawing.Size(78, 19);
+            this.chkJobMode.TabIndex = 11;
+            this.chkJobMode.Text = "Job Mode";
+            this.chkJobMode.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkJobMode.UseVisualStyleBackColor = true;
+            this.chkJobMode.CheckedChanged += new System.EventHandler(this.chkJobMode_CheckedChanged);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -584,6 +599,7 @@
         private System.Windows.Forms.ToolStripMenuItem selectAllAttachmentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem unselectAllTracksToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkJobMode;
     }
 }
 

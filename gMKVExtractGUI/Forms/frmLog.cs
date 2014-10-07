@@ -13,16 +13,6 @@ namespace gMKVToolnix
 {
     public partial class frmLog : gForm
     {
-        private void ShowErrorMessage(String argMessage)
-        {
-            MessageBox.Show("An error has occured!\r\n\r\n" + argMessage, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void ShowSuccessMessage(String argMessage)
-        {
-            MessageBox.Show(argMessage, "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         public frmLog()
         {
             InitializeComponent();
@@ -32,7 +22,7 @@ namespace gMKVToolnix
         private void InitForm()
         {
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-            Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- Log -- By Gpower2";
+            Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- Log";
             txtLog.Text = gMKVLogger.LogText;
         }
 

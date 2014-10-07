@@ -16,6 +16,7 @@ namespace gMKVToolnix
             //SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.Opaque, true);
             //SetStyle(ControlStyles.EnableNotifyMessage, true);
             this.DoubleBuffered = true;
         }

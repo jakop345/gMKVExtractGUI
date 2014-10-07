@@ -49,8 +49,17 @@
     <Compile Include="Controls\gGroupBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\gListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\gTableLayoutPanel.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\frmJobManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmJobManager.Designer.cs">
+      <DependentUpon>frmJobManager.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmLog.cs">
       <SubType>Form</SubType>
@@ -77,6 +86,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\frmJobManager.resx">
+      <DependentUpon>frmJobManager.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmLog.resx">
       <DependentUpon>frmLog.cs</DependentUpon>
     </EmbeddedResource>

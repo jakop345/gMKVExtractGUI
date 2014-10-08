@@ -17,26 +17,5 @@ namespace gMKVToolnix
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.DoubleBuffered = true;
         }
-
-        protected Boolean isOkToRefresh = true;
-
-        protected override void WndProc(ref Message m)
-        {
-            if (m.Msg == WM_ERASEBKGND)
-            {
-                if (isOkToRefresh)
-                {
-                    isOkToRefresh = false;
-                    m.Result = (IntPtr)1;
-                }
-                else
-                {
-                    isOkToRefresh = true;
-                    return;
-                }
-            }
-            //Debug.WriteLine(m);
-            base.WndProc(ref m);
-        }
     }
 }

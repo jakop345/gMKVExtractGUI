@@ -11,9 +11,6 @@ namespace gMKVToolnix
 
     public class gCheckedListBox: System.Windows.Forms.CheckedListBox
     {
-        public const Int32 WM_ERASEBKGND = 0x0014;
-        public const Int32 WM_NCPAINT = 0x0085;
-
         public gCheckedListBox()
             : base()
         {

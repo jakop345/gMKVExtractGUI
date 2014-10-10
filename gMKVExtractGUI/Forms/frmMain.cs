@@ -586,7 +586,7 @@ namespace gMKVToolnix
                         {
                             segmentList.Add(seg);
                         }
-                 
+
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(segmentList);
                         parameterList.Add(txtOutputDirectory.Text);

@@ -144,8 +144,6 @@ namespace gMKVToolnix
                     {
                         jobInfo.State = JobState.Completed;
                         grdJobs.Refresh();
-                        // Remove the finished job
-                        //((BindingList<gMKVJobInfo>)grdJobs.DataSource).Remove(jobInfo);
                         Application.DoEvents();
                     }
                 }
@@ -176,8 +174,11 @@ namespace gMKVToolnix
             List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
             foreach (Object item in grdJobs.SelectedRows)
             {
-                jobList.Add((gMKVJobInfo)((DataGridViewRow)item).DataBoundItem);
+                gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
+                jobInfo.State = JobState.Pending;
+                jobList.Add(jobInfo);
             }
+            grdJobs.Refresh();
             PrepareForRunJobs(jobList);
         }
 
@@ -190,8 +191,11 @@ namespace gMKVToolnix
             List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
             foreach (Object item in grdJobs.Rows)
             {
-                jobList.Add((gMKVJobInfo)((DataGridViewRow)item).DataBoundItem);
+                gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
+                jobInfo.State = JobState.Pending;
+                jobList.Add(jobInfo);
             }
+            grdJobs.Refresh();
             PrepareForRunJobs(jobList);
         }
 
@@ -210,6 +214,15 @@ namespace gMKVToolnix
                 // Check exception builder for exceptions
                 if (_ExceptionBuilder.Length > 0)
                 {
+                    // reset the status from pending to ready
+                    foreach (DataGridViewRow item in grdJobs.Rows)
+                    {
+                        gMKVJobInfo jobInfo = (gMKVJobInfo)item.DataBoundItem;
+                        if (jobInfo.State == JobState.Pending)
+                        {
+                            jobInfo.State = JobState.Ready;
+                        }
+                    }
                     throw new Exception(_ExceptionBuilder.ToString());
                 }
                 UpdateCurrentProgress(100);
@@ -232,6 +245,7 @@ namespace gMKVToolnix
                 lblCurrentProgressValue.Text = string.Empty;
                 lblTotalProgressValue.Text = string.Empty;
                 _AbortAll = false;
+                grdJobs.Refresh();
                 SetActionStatus(true);
                 SetAbortStatus(false);
                 _MainForm.SetTableLayoutMainStatus(true);

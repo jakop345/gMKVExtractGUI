@@ -40,7 +40,20 @@ namespace gMKVToolnix
             switch (_ExtractionMode)
             {
                 case FormMkvExtractionMode.Tracks:
-                    retValue.AppendFormat("Tracks '{0}' => '{1}'",
+                    StringBuilder trackBuilder = new StringBuilder();
+                    foreach (gMKVSegment item in (List<gMKVSegment>)_ParametersList[1])
+                    {
+                        if (item is gMKVTrack)
+                        {
+                            trackBuilder.AppendFormat("[{0}]", ((gMKVTrack)item).TrackID);
+                        }
+                        else if (item is gMKVChapter)
+                        {
+                            trackBuilder.AppendFormat("[{0}]", "Chap");
+                        }
+                    }
+                    retValue.AppendFormat("Tracks {0} '{1}' => '{2}'",
+                        trackBuilder.ToString(),
                         Path.GetFileName((String)_ParametersList[0]), _ParametersList[2]);
                     break;
                 case FormMkvExtractionMode.Cue_Sheet:
@@ -52,11 +65,37 @@ namespace gMKVToolnix
                         Path.GetFileName((String)_ParametersList[0]), _ParametersList[1]);
                     break;
                 case FormMkvExtractionMode.Timecodes:
-                    retValue.AppendFormat("Timecodes '{0}' => '{1}'",
+                    StringBuilder tcBuilder = new StringBuilder();
+                    foreach (gMKVSegment item in (List<gMKVSegment>)_ParametersList[1])
+                    {
+                        if (item is gMKVTrack)
+                        {
+                            tcBuilder.AppendFormat("[{0}]", ((gMKVTrack)item).TrackID);
+                        }
+                        else if (item is gMKVChapter)
+                        {
+                            tcBuilder.AppendFormat("[{0}]", "Chap");
+                        }
+                    }
+                    retValue.AppendFormat("Timecodes {0} '{1}' => '{2}'",
+                        tcBuilder.ToString(),
                         Path.GetFileName((String)_ParametersList[0]), _ParametersList[2]);
                     break;
                 case FormMkvExtractionMode.Tracks_And_Timecodes:
-                    retValue.AppendFormat("Tracks/Timecodes '{0}' => '{1}'",
+                    StringBuilder trackTcBuilder = new StringBuilder();
+                    foreach (gMKVSegment item in (List<gMKVSegment>)_ParametersList[1])
+                    {
+                        if (item is gMKVTrack)
+                        {
+                            trackTcBuilder.AppendFormat("[{0}]", ((gMKVTrack)item).TrackID);
+                        }
+                        else if (item is gMKVChapter)
+                        {
+                            trackTcBuilder.AppendFormat("[{0}]", "Chap");
+                        }
+                    }
+                    retValue.AppendFormat("Tracks/Timecodes {0} '{1}' => '{2}'",
+                        trackTcBuilder.ToString(),
                         Path.GetFileName((String)_ParametersList[0]), _ParametersList[2]);
                     break;
                 default:

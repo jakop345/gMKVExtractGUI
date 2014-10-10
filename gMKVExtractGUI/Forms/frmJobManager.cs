@@ -19,6 +19,8 @@ namespace gMKVToolnix
         private Int32 _CurrentJob = 0;
         private Int32 _TotalJobs = 0;
 
+        private BindingList<gMKVJobInfo> _JobList = new BindingList<gMKVJobInfo>();
+
         private Boolean _AbortAll = false;
         
         public frmJobManager(gMKVExtract argGMkvExtract, frmMain argMainForm)
@@ -31,12 +33,15 @@ namespace gMKVToolnix
             _gMkvExtract = argGMkvExtract;
             _MainForm = argMainForm;
 
+            grdJobs.DataSource = _JobList;
+
             SetAbortStatus(false);
         }
 
-        public void AddJob(gMKVJob argJob)
+        public void AddJob(gMKVJobInfo argJobInfo)
         {
-            lstJobs.Items.Add(argJob);
+            //lstJobs.Items.Add(argJob);
+            _JobList.Add(argJobInfo);
         }
 
         private void SetAbortStatus(Boolean argStatus)
@@ -73,13 +78,18 @@ namespace gMKVToolnix
         {
             try
             {
-                if (lstJobs.Items.Count > 0)
+                if (grdJobs.Rows.Count > 0)
                 {
-                    if (lstJobs.SelectedItems.Count > 0)
+                    if (grdJobs.SelectedRows.Count > 0)
                     {
-                        while (lstJobs.SelectedItems.Count > 0)
+                        List<Int32> selectionList = new List<Int32>();
+                        foreach (DataGridViewRow item in grdJobs.SelectedRows)
                         {
-                            lstJobs.Items.Remove(lstJobs.SelectedItems[0]);
+                            selectionList.Add(item.Index);
+                        }
+                        foreach (Int32 idx in selectionList)
+                        {
+                            grdJobs.Rows.RemoveAt(idx);
                         }
                     }
                 }
@@ -91,13 +101,15 @@ namespace gMKVToolnix
             }
         }
 
-        private void RunJobs(List<gMKVJob> argJobList)
+        private void RunJobs(List<gMKVJobInfo> argJobInfoList)
         {
             _ExceptionBuilder.Length = 0;
-            foreach (gMKVJob job in argJobList)
+            foreach (gMKVJobInfo jobInfo in argJobInfoList)
             {
                 try
                 {
+                    // get job from jobInfo
+                    gMKVJob job = jobInfo.Job;
                     // check for abort
                     if (_AbortAll)
                     {
@@ -107,6 +119,9 @@ namespace gMKVToolnix
                     _CurrentJob++;
                     // start the thread
                     Thread myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod));
+                    jobInfo.StartTime = DateTime.Now;
+                    jobInfo.State = JobState.Running;
+                    grdJobs.Refresh();
                     myThread.Start(job.ParametersList);
 
                     btnAbort.Enabled = true;
@@ -117,21 +132,26 @@ namespace gMKVToolnix
                     {
                         Application.DoEvents();
                     }
+                    jobInfo.EndTime = DateTime.Now;
                     // check for exceptions
                     if (_gMkvExtract.ThreadedException != null)
                     {
+                        jobInfo.State = JobState.Failed;
+                        grdJobs.Refresh();
                         throw _gMkvExtract.ThreadedException;
                     }
                     else
                     {
+                        jobInfo.State = JobState.Completed;
+                        grdJobs.Refresh();
                         // Remove the finished job
-                        lstJobs.Items.Remove(job);
+                        //((BindingList<gMKVJobInfo>)grdJobs.DataSource).Remove(jobInfo);
                         Application.DoEvents();
                     }
                 }
                 catch (Exception ex)
                 {
-                    _ExceptionBuilder.AppendFormat("Exception for job {0}: {1}\r\n", job.ToString(), ex.Message);
+                    _ExceptionBuilder.AppendFormat("Exception for job {0}: {1}\r\n", jobInfo.ToString(), ex.Message);
                 }
             }
         }
@@ -143,38 +163,39 @@ namespace gMKVToolnix
             lblCurrentProgressValue.Text = String.Format("{0}%", Convert.ToInt32(val));
             lblTotalProgressValue.Text = String.Format("{0}%", prgBrTotal.Value / _TotalJobs);
             gTaskbarProgress.SetValue(this, Convert.ToUInt64(val), (UInt64)100);
+            grdJobs.Refresh();
             Application.DoEvents();
         }
 
         private void btnRunSelection_Click(object sender, EventArgs e)
         {
-            if (lstJobs.SelectedItems.Count == 0)
+            if (grdJobs.SelectedRows.Count == 0)
             {
                 throw new Exception("There are no selected jobs!");
             }
-            List<gMKVJob> jobList = new List<gMKVJob>();
-            foreach (Object item in lstJobs.SelectedItems)
+            List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
+            foreach (Object item in grdJobs.SelectedRows)
             {
-                jobList.Add((gMKVJob)item);
+                jobList.Add((gMKVJobInfo)((DataGridViewRow)item).DataBoundItem);
             }
             PrepareForRunJobs(jobList);
         }
 
         private void btnRunAll_Click(object sender, EventArgs e)
         {
-            if (lstJobs.Items.Count == 0)
+            if (grdJobs.SelectedRows.Count == 0)
             {
                 throw new Exception("There are no available jobs to run!");
             }
-            List<gMKVJob> jobList = new List<gMKVJob>();
-            foreach (Object item in lstJobs.Items)
+            List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
+            foreach (Object item in grdJobs.Rows)
             {
-                jobList.Add((gMKVJob)item);
+                jobList.Add((gMKVJobInfo)((DataGridViewRow)item).DataBoundItem);
             }
             PrepareForRunJobs(jobList);
         }
 
-        private void PrepareForRunJobs(List<gMKVJob> argJobList)
+        private void PrepareForRunJobs(List<gMKVJobInfo> argJobInfoList)
         {
             try
             {
@@ -183,9 +204,9 @@ namespace gMKVToolnix
                 _MainForm.SetTableLayoutMainStatus(false);
                 _gMkvExtract.MkvExtractProgressUpdated += _gMkvExtract_MkvExtractProgressUpdated;
                 _gMkvExtract.MkvExtractTrackUpdated += _gMkvExtract_MkvExtractTrackUpdated;
-                _TotalJobs = argJobList.Count;
+                _TotalJobs = argJobInfoList.Count;
                 prgBrTotal.Maximum = _TotalJobs * 100;
-                RunJobs(new List<gMKVJob>(argJobList));
+                RunJobs(new List<gMKVJobInfo>(argJobInfoList));
                 // Check exception builder for exceptions
                 if (_ExceptionBuilder.Length > 0)
                 {

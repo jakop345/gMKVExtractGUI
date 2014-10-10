@@ -38,7 +38,7 @@
             this.prgBrCurrent = new System.Windows.Forms.ProgressBar();
             this.tlpJobs = new gMKVToolnix.gTableLayoutPanel();
             this.grpJobs = new gMKVToolnix.gGroupBox();
-            this.lstJobs = new gMKVToolnix.Controls.gListBox();
+            this.grdJobs = new gMKVToolnix.Controls.gDataGridView();
             this.grpActions = new gMKVToolnix.gGroupBox();
             this.btnAbortAll = new System.Windows.Forms.Button();
             this.btnAbort = new System.Windows.Forms.Button();
@@ -49,6 +49,7 @@
             this.grpProgress.SuspendLayout();
             this.tlpJobs.SuspendLayout();
             this.grpJobs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).BeginInit();
             this.grpActions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,7 +91,7 @@
             this.lblTotalProgressValue.AutoSize = true;
             this.lblTotalProgressValue.Location = new System.Drawing.Point(573, 50);
             this.lblTotalProgressValue.Name = "lblTotalProgressValue";
-            this.lblTotalProgressValue.Size = new System.Drawing.Size(0, 13);
+            this.lblTotalProgressValue.Size = new System.Drawing.Size(0, 15);
             this.lblTotalProgressValue.TabIndex = 6;
             // 
             // lblCurrentProgressValue
@@ -99,7 +100,7 @@
             this.lblCurrentProgressValue.AutoSize = true;
             this.lblCurrentProgressValue.Location = new System.Drawing.Point(573, 22);
             this.lblCurrentProgressValue.Name = "lblCurrentProgressValue";
-            this.lblCurrentProgressValue.Size = new System.Drawing.Size(0, 13);
+            this.lblCurrentProgressValue.Size = new System.Drawing.Size(0, 15);
             this.lblCurrentProgressValue.TabIndex = 5;
             // 
             // lblTotalProgress
@@ -107,7 +108,7 @@
             this.lblTotalProgress.AutoSize = true;
             this.lblTotalProgress.Location = new System.Drawing.Point(8, 50);
             this.lblTotalProgress.Name = "lblTotalProgress";
-            this.lblTotalProgress.Size = new System.Drawing.Size(79, 13);
+            this.lblTotalProgress.Size = new System.Drawing.Size(82, 15);
             this.lblTotalProgress.TabIndex = 4;
             this.lblTotalProgress.Text = "Total Progress";
             // 
@@ -116,7 +117,7 @@
             this.lblCurrentProgress.AutoSize = true;
             this.lblCurrentProgress.Location = new System.Drawing.Point(8, 22);
             this.lblCurrentProgress.Name = "lblCurrentProgress";
-            this.lblCurrentProgress.Size = new System.Drawing.Size(93, 13);
+            this.lblCurrentProgress.Size = new System.Drawing.Size(95, 15);
             this.lblCurrentProgress.TabIndex = 3;
             this.lblCurrentProgress.Text = "Current Progress";
             // 
@@ -156,7 +157,7 @@
             // 
             // grpJobs
             // 
-            this.grpJobs.Controls.Add(this.lstJobs);
+            this.grpJobs.Controls.Add(this.grdJobs);
             this.grpJobs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpJobs.Location = new System.Drawing.Point(3, 3);
             this.grpJobs.Name = "grpJobs";
@@ -165,19 +166,23 @@
             this.grpJobs.TabStop = false;
             this.grpJobs.Text = "Jobs";
             // 
-            // lstJobs
+            // grdJobs
             // 
-            this.lstJobs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstJobs.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.lstJobs.FormattingEnabled = true;
-            this.lstJobs.HorizontalScrollbar = true;
-            this.lstJobs.IntegralHeight = false;
-            this.lstJobs.ItemHeight = 15;
-            this.lstJobs.Location = new System.Drawing.Point(3, 18);
-            this.lstJobs.Name = "lstJobs";
-            this.lstJobs.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
-            this.lstJobs.Size = new System.Drawing.Size(502, 254);
-            this.lstJobs.TabIndex = 0;
+            this.grdJobs.AllowUserToAddRows = false;
+            this.grdJobs.AllowUserToDeleteRows = false;
+            this.grdJobs.AllowUserToResizeRows = false;
+            this.grdJobs.BackgroundColor = System.Drawing.Color.White;
+            this.grdJobs.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.grdJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdJobs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grdJobs.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.grdJobs.Location = new System.Drawing.Point(3, 19);
+            this.grdJobs.Name = "grdJobs";
+            this.grdJobs.ReadOnly = true;
+            this.grdJobs.RowHeadersVisible = false;
+            this.grdJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.grdJobs.Size = new System.Drawing.Size(502, 253);
+            this.grdJobs.TabIndex = 1;
             // 
             // grpActions
             // 
@@ -252,7 +257,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(624, 361);
             this.Controls.Add(this.tlpMain);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
             this.MinimumSize = new System.Drawing.Size(640, 400);
             this.Name = "frmJobManager";
             this.Text = "frmJobManager";
@@ -262,6 +267,7 @@
             this.grpProgress.PerformLayout();
             this.tlpJobs.ResumeLayout(false);
             this.grpJobs.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).EndInit();
             this.grpActions.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -270,7 +276,6 @@
         #endregion
 
         private gGroupBox grpJobs;
-        private Controls.gListBox lstJobs;
         private System.Windows.Forms.ProgressBar prgBrCurrent;
         private System.Windows.Forms.ProgressBar prgBrTotal;
         private gGroupBox grpProgress;
@@ -286,5 +291,6 @@
         private gTableLayoutPanel tlpJobs;
         private System.Windows.Forms.Button btnAbortAll;
         private System.Windows.Forms.Button btnAbort;
+        private Controls.gDataGridView grdJobs;
     }
 }

@@ -87,6 +87,7 @@ namespace gMKVToolnix
                         }
                     }
                 }
+                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
                 // check if user provided with a filename
                 if (Environment.GetCommandLineArgs().Length > 1)
                 {
@@ -166,7 +167,7 @@ namespace gMKVToolnix
                         }                        
                     }
                     String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
-                    ((TextBox)sender).Text = s[0];
+                    ((gTextBox)sender).Text = s[0];
                 }
             }
             catch (Exception ex)
@@ -645,6 +646,7 @@ namespace gMKVToolnix
                         parameterList.Add(TimecodesExtractionMode.WithTimecodes);
 
                         job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMKVSegmentsThreaded, parameterList);
+
                         break;
                 }
                 if (_JobMode)
@@ -654,7 +656,7 @@ namespace gMKVToolnix
                         _JobManagerForm = new frmJobManager(_gMkvExtract, this);
                     }
                     _JobManagerForm.Show();
-                    _JobManagerForm.AddJob(job);
+                    _JobManagerForm.AddJob(new gMKVJobInfo(job));
                 }
                 else
                 {

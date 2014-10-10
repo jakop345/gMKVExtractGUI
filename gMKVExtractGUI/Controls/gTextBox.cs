@@ -6,38 +6,16 @@ using System.Windows.Forms;
 
 namespace gMKVToolnix
 {
-    public class gTextBox : TextBox
+    public class gTextBox : RichTextBox
     {
-        public const Int32 WM_ERASEBKGND = 0x0014;
-
         public gTextBox()
             : base()
         {
-            //SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.Opaque, true);
-            //SetStyle(ControlStyles.EnableNotifyMessage, true);
+            this.ShortcutsEnabled = false;
+            this.DetectUrls = false;
             this.DoubleBuffered = true;
-        }
-
-        protected Boolean isOkToRefresh = true;
-
-        protected override void WndProc(ref Message m)
-        {
-            if (m.Msg == WM_ERASEBKGND)
-            {
-                if (isOkToRefresh)
-                {
-                    isOkToRefresh = false;
-                }
-                else
-                {
-                    isOkToRefresh = true;
-                    return;
-                }
-            }
-            base.WndProc(ref m);
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

@@ -146,7 +146,7 @@ namespace gMKVToolnix
                 if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 {
                     // check for sender
-                    if (((TextBox)sender) == txtMKVToolnixPath)
+                    if (((gTextBox)sender) == txtMKVToolnixPath)
                     {
                         // check if MKVToolnix Path is already set
                         if (txtMKVToolnixPath.Text.Trim().Length > 0)
@@ -157,7 +157,7 @@ namespace gMKVToolnix
                             }
                         }
                     }
-                    else if (((TextBox)sender) == txtOutputDirectory)
+                    else if (((gTextBox)sender) == txtOutputDirectory)
                     {
                         // check if output directory is locked
                         if (chkLockOutputDirectory.Checked)
@@ -182,7 +182,7 @@ namespace gMKVToolnix
             {
                 if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 {
-                    if (((TextBox)sender) == txtOutputDirectory)
+                    if (((gTextBox)sender) == txtOutputDirectory)
                     {
                         // check if output directory is locked
                         if (chkLockOutputDirectory.Checked)

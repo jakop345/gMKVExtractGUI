@@ -723,9 +723,23 @@ namespace gMKVToolnix
         {
             try
             {
-                if (_LogForm == null) { _LogForm = new frmLog(); }
-                if (_LogForm.IsDisposed) { _LogForm = new frmLog(); }
-                _LogForm.Show();
+                if (_JobMode)
+                {
+                    if (_JobManagerForm == null)
+                    {
+                        _JobManagerForm = new frmJobManager(_gMkvExtract, this);
+                    }
+                    _JobManagerForm.Show();
+                    _JobManagerForm.Focus();
+                    _JobManagerForm.Select();
+                }
+                else
+                {
+                    if (_LogForm == null) { _LogForm = new frmLog(); }
+                    _LogForm.Show();
+                    _LogForm.Focus();
+                    _LogForm.Select();
+                }
             }
             catch (Exception ex)
             {
@@ -1040,6 +1054,7 @@ namespace gMKVToolnix
         {
             _JobMode = chkJobMode.Checked;
             btnExtract.Text = _JobMode ? "Add job" : "Extract";
+            btnShowLog.Text = _JobMode ? "Jobs..." : "Log...";
             if (!_FromConstructor)
             {
                 _Settings.JobMode = chkJobMode.Checked;

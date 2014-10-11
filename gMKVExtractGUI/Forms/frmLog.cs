@@ -22,14 +22,19 @@ namespace gMKVToolnix
         private void InitForm()
         {
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-            Text = "gMKVExtractGUI v" + Assembly.GetExecutingAssembly().GetName().Version + " -- Log";
+            Text = String.Format("gMKVExtractGUI v{0} -- Log", Assembly.GetExecutingAssembly().GetName().Version);
+        }
+
+        private void frmLog_Shown(object sender, EventArgs e)
+        {
             txtLog.Text = gMKVLogger.LogText;
         }
 
         private void txtLog_TextChanged(object sender, EventArgs e)
         {
-            txtLog.SelectionStart = txtLog.Text.Length;
+            txtLog.Select(txtLog.TextLength + 1, 0);
             txtLog.ScrollToCaret();
+            grpLog.Text = String.Format("Log ({0})", txtLog.Lines.LongLength);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -37,7 +42,6 @@ namespace gMKVToolnix
             try
             {
                 this.Close();
-                this.Dispose();
             }
             catch (Exception ex)
             {
@@ -70,23 +74,13 @@ namespace gMKVToolnix
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
             }
-
         }
 
-        private void txtLog_KeyDown(object sender, KeyEventArgs e)
+        private void frmLog_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try
-            {
-                if (e.KeyCode == Keys.A && e.Modifiers == Keys.Control)
-                {
-                    txtLog.SelectAll();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
+            // To avoid getting disposed
+            e.Cancel = true;
+            this.Hide();
         }
     }
 }

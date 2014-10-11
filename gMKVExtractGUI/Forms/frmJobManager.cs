@@ -168,7 +168,7 @@ namespace gMKVToolnix
         {
             try
             {
-                if (grdJobs.Rows.Count == 0)
+                if (GetNumberOfJobs(JobState.Ready) == 0)
                 {
                     throw new Exception("There are no available jobs to run!");
                 }
@@ -268,6 +268,41 @@ namespace gMKVToolnix
             {
                 Debug.WriteLine(ex);
                 ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private Int32 GetNumberOfJobs(JobState argState)
+        {
+            Int32 counter = 0;
+            foreach (DataGridViewRow drJobInfo in grdJobs.Rows)
+            {
+                gMKVJobInfo jobInfo = (gMKVJobInfo)drJobInfo.DataBoundItem;
+                if (jobInfo.State == argState)
+                {
+                    counter++;
+                }
+            }
+            return counter;
+        }
+
+        private void grdJobs_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                // Check if the row clicked is selected
+                if (grdJobs.Rows[e.RowIndex].Selected)
+                {
+                    gMKVJobInfo jobInfo = (gMKVJobInfo)grdJobs.Rows[e.RowIndex].DataBoundItem;
+                    if (jobInfo.State == JobState.Failed || jobInfo.State == JobState.Completed)
+                    {
+                        jobInfo.Reset();
+                        grdJobs.Refresh();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
     }

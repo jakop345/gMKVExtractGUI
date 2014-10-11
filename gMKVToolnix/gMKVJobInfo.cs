@@ -74,5 +74,12 @@ namespace gMKVToolnix
         {
             _Job = argJob;
         }
+
+        public void Reset()
+        {
+            _EndTime = null;
+            _StartTime = null;
+            _State = JobState.Ready;
+        }
     }
 }

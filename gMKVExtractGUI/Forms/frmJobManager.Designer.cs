@@ -170,6 +170,7 @@
             this.grdJobs.AllowUserToAddRows = false;
             this.grdJobs.AllowUserToDeleteRows = false;
             this.grdJobs.AllowUserToResizeRows = false;
+            this.grdJobs.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.grdJobs.BackgroundColor = System.Drawing.Color.White;
             this.grdJobs.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.grdJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -182,6 +183,7 @@
             this.grdJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.grdJobs.Size = new System.Drawing.Size(502, 253);
             this.grdJobs.TabIndex = 1;
+            this.grdJobs.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdJobs_CellContentDoubleClick);
             // 
             // grpActions
             // 
@@ -225,7 +227,7 @@
             this.btnRunAll.Name = "btnRunAll";
             this.btnRunAll.Size = new System.Drawing.Size(90, 30);
             this.btnRunAll.TabIndex = 2;
-            this.btnRunAll.Text = "Run All";
+            this.btnRunAll.Text = "Run Jobs";
             this.btnRunAll.UseVisualStyleBackColor = true;
             this.btnRunAll.Click += new System.EventHandler(this.btnRunAll_Click);
             // 

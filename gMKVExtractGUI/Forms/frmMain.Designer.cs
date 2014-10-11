@@ -329,7 +329,7 @@
             // 
             this.chkJobMode.AutoSize = true;
             this.chkJobMode.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkJobMode.Location = new System.Drawing.Point(70, 24);
+            this.chkJobMode.Location = new System.Drawing.Point(72, 25);
             this.chkJobMode.Name = "chkJobMode";
             this.chkJobMode.Size = new System.Drawing.Size(78, 19);
             this.chkJobMode.TabIndex = 11;

@@ -33,7 +33,6 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                throw;
             }
         }
 

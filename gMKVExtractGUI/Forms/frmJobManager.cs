@@ -166,19 +166,27 @@ namespace gMKVToolnix
 
         private void btnRunAll_Click(object sender, EventArgs e)
         {
-            if (grdJobs.SelectedRows.Count == 0)
+            try
             {
-                throw new Exception("There are no available jobs to run!");
+                if (grdJobs.Rows.Count == 0)
+                {
+                    throw new Exception("There are no available jobs to run!");
+                }
+                List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
+                foreach (Object item in grdJobs.Rows)
+                {
+                    gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
+                    jobInfo.State = JobState.Pending;
+                    jobList.Add(jobInfo);
+                }
+                grdJobs.Refresh();
+                PrepareForRunJobs(jobList);
             }
-            List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
-            foreach (Object item in grdJobs.Rows)
+            catch (Exception ex)
             {
-                gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
-                jobInfo.State = JobState.Pending;
-                jobList.Add(jobInfo);
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
             }
-            grdJobs.Refresh();
-            PrepareForRunJobs(jobList);
         }
 
         private void PrepareForRunJobs(List<gMKVJobInfo> argJobInfoList)
@@ -191,6 +199,7 @@ namespace gMKVToolnix
                 _gMkvExtract.MkvExtractProgressUpdated += _gMkvExtract_MkvExtractProgressUpdated;
                 _gMkvExtract.MkvExtractTrackUpdated += _gMkvExtract_MkvExtractTrackUpdated;
                 _TotalJobs = argJobInfoList.Count;
+                _CurrentJob = 0;
                 prgBrTotal.Maximum = _TotalJobs * 100;
                 RunJobs(new List<gMKVJobInfo>(argJobInfoList));
                 // Check exception builder for exceptions

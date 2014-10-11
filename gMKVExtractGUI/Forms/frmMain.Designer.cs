@@ -451,7 +451,7 @@
             this.grpInputFileInfo.TabStop = false;
             this.grpInputFileInfo.Text = "Input File Information";
             this.grpInputFileInfo.DragDrop += new System.Windows.Forms.DragEventHandler(this.grpInputFileInfo_DragDrop);
-            this.grpInputFileInfo.DragEnter += new System.Windows.Forms.DragEventHandler(this.grpInputFileInfo_DragEnter);
+            this.grpInputFileInfo.DragEnter += new System.Windows.Forms.DragEventHandler(this.grpInputFile_DragEnter);
             // 
             // tableLayoutPanel1
             // 

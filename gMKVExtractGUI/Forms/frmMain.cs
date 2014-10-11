@@ -41,24 +41,41 @@ namespace gMKVToolnix
             try
             {
                 InitializeComponent();
+
+                // Set form icon from the executing assembly
                 Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+                
+                // Set form title 
                 Text = String.Format("gMKVExtractGUI v{0} -- By Gpower2", Assembly.GetExecutingAssembly().GetName().Version);
+                
+                // Set tooltips
                 SetTooltips();
+
                 btnAbort.Enabled = false;
                 btnAbortAll.Enabled = false;
+                
                 _FromConstructor = true;
+                
                 cmbChapterType.DataSource = Enum.GetNames(typeof(MkvChapterTypes));
                 cmbExtractionMode.DataSource = Enum.GetNames(typeof(FormMkvExtractionMode));
-                // load settings
+                
+                // Load settings
                 _Settings.Reload();
+                
+                // Set form size and position from settings
                 this.StartPosition = FormStartPosition.Manual;
                 this.Location = new Point(_Settings.WindowPosX, _Settings.WindowPosY);
                 this.Size = new System.Drawing.Size(_Settings.WindowSizeWidth, _Settings.WindowSizeHeight);
+                
+                // Set chapter type, output durectory and job mode from settings
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _Settings.ChapterType);
                 txtOutputDirectory.Text = _Settings.OutputDirectory;
                 chkLockOutputDirectory.Checked = _Settings.LockedOutputDirectory;
                 chkJobMode.Checked = _Settings.JobMode;
+
                 _FromConstructor = false;
+                
+                // Find MKVToolnix path
                 try
                 {
                     txtMKVToolnixPath.Text = gMKVHelper.GetMKVToolnixPathViaRegistry();
@@ -68,9 +85,9 @@ namespace gMKVToolnix
                     Debug.WriteLine(ex);
                     // MKVToolnix was not found in registry
                     // check in the current directory
-                    if (File.Exists(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                    if (File.Exists(Path.Combine(GetCurrentDirectory(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
                     {
-                        txtMKVToolnixPath.Text = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        txtMKVToolnixPath.Text = GetCurrentDirectory();
                     }
                     else
                     {
@@ -86,9 +103,9 @@ namespace gMKVToolnix
                             throw new Exception("Could not find MKVToolNix in registry, or in the current directory, or in the ini file!\r\nPlease download and reinstall or provide a manual path!");
                         }
                     }
-                }
-                _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
-                // check if user provided with a filename
+                }                
+                
+                // check if user provided with a filename when executing the application
                 if (Environment.GetCommandLineArgs().Length > 1)
                 {
                     txtInputFile.Text = Environment.GetCommandLineArgs()[1];
@@ -167,7 +184,7 @@ namespace gMKVToolnix
                         }                        
                     }
                     String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
-                    ((gRichTextBox)sender).Text = s[0];
+                    ((gTextBox)sender).Text = s[0];
                 }
             }
             catch (Exception ex)
@@ -258,22 +275,6 @@ namespace gMKVToolnix
                     String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
                     txtInputFile.Text = s[0];
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                ShowErrorMessage(ex.Message);
-            }
-        }
-
-        private void grpInputFileInfo_DragEnter(object sender, DragEventArgs e)
-        {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effect = DragDropEffects.All;
-                else
-                    e.Effect = DragDropEffects.None;
             }
             catch (Exception ex)
             {
@@ -1049,6 +1050,7 @@ namespace gMKVToolnix
         public void SetTableLayoutMainStatus(Boolean argStatus)
         {
             tlpMain.Enabled = argStatus;
+            Application.DoEvents();
         }
     }
 }

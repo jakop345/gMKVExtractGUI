@@ -167,7 +167,7 @@ namespace gMKVToolnix
                         }                        
                     }
                     String[] s = (String[])e.Data.GetData(DataFormats.FileDrop, false);
-                    ((gTextBox)sender).Text = s[0];
+                    ((gRichTextBox)sender).Text = s[0];
                 }
             }
             catch (Exception ex)

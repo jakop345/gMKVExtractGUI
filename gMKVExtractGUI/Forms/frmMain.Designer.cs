@@ -63,7 +63,7 @@
             this.grpInputFileInfo = new gMKVToolnix.gGroupBox();
             this.tableLayoutPanel1 = new gMKVToolnix.gTableLayoutPanel();
             this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
-            this.txtSegmentInfo = new gMKVToolnix.gTextBox();
+            this.txtSegmentInfo = new gMKVToolnix.gRichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
@@ -234,21 +234,16 @@
             this.txtInputFile.AllowDrop = true;
             this.txtInputFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtInputFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtInputFile.DetectUrls = false;
             this.txtInputFile.Location = new System.Drawing.Point(6, 22);
-            this.txtInputFile.Multiline = false;
             this.txtInputFile.Name = "txtInputFile";
             this.txtInputFile.ReadOnly = true;
-            this.txtInputFile.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.txtInputFile.ShortcutsEnabled = false;
             this.txtInputFile.Size = new System.Drawing.Size(519, 23);
             this.txtInputFile.TabIndex = 1;
-            this.txtInputFile.Text = "";
             this.txtInputFile.WordWrap = false;
+            this.txtInputFile.TextChanged += new System.EventHandler(this.txtInputFile_TextChanged);
             this.txtInputFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
             this.txtInputFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            this.txtInputFile.TextChanged += new System.EventHandler(this.txtInputFile_TextChanged);
             // 
             // btnBrowseInputFile
             // 
@@ -303,19 +298,15 @@
             this.txtOutputDirectory.AllowDrop = true;
             this.txtOutputDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtOutputDirectory.DetectUrls = false;
             this.txtOutputDirectory.Location = new System.Drawing.Point(6, 22);
-            this.txtOutputDirectory.Multiline = false;
             this.txtOutputDirectory.Name = "txtOutputDirectory";
-            this.txtOutputDirectory.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.txtOutputDirectory.ShortcutsEnabled = false;
             this.txtOutputDirectory.Size = new System.Drawing.Size(462, 23);
             this.txtOutputDirectory.TabIndex = 2;
-            this.txtOutputDirectory.Text = "";
             this.txtOutputDirectory.WordWrap = false;
+            this.txtOutputDirectory.TextChanged += new System.EventHandler(this.txtOutputDirectory_TextChanged);
             this.txtOutputDirectory.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
             this.txtOutputDirectory.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            this.txtOutputDirectory.TextChanged += new System.EventHandler(this.txtOutputDirectory_TextChanged);
             // 
             // grpActions
             // 
@@ -437,20 +428,16 @@
             this.txtMKVToolnixPath.AllowDrop = true;
             this.txtMKVToolnixPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMKVToolnixPath.DetectUrls = false;
             this.txtMKVToolnixPath.Location = new System.Drawing.Point(6, 22);
-            this.txtMKVToolnixPath.Multiline = false;
             this.txtMKVToolnixPath.Name = "txtMKVToolnixPath";
             this.txtMKVToolnixPath.ReadOnly = true;
-            this.txtMKVToolnixPath.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.txtMKVToolnixPath.ShortcutsEnabled = false;
             this.txtMKVToolnixPath.Size = new System.Drawing.Size(519, 23);
             this.txtMKVToolnixPath.TabIndex = 3;
-            this.txtMKVToolnixPath.Text = "";
             this.txtMKVToolnixPath.WordWrap = false;
+            this.txtMKVToolnixPath.TextChanged += new System.EventHandler(this.txtMKVToolnixPath_TextChanged);
             this.txtMKVToolnixPath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txt_DragDrop);
             this.txtMKVToolnixPath.DragEnter += new System.Windows.Forms.DragEventHandler(this.txt_DragEnter);
-            this.txtMKVToolnixPath.TextChanged += new System.EventHandler(this.txtMKVToolnixPath_TextChanged);
             // 
             // grpInputFileInfo
             // 
@@ -563,11 +550,13 @@
             this.toolStripContainer1.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.grpInputFile.ResumeLayout(false);
+            this.grpInputFile.PerformLayout();
             this.grpOutputDirectory.ResumeLayout(false);
             this.grpOutputDirectory.PerformLayout();
             this.grpActions.ResumeLayout(false);
             this.grpActions.PerformLayout();
             this.grpConfig.ResumeLayout(false);
+            this.grpConfig.PerformLayout();
             this.grpInputFileInfo.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
@@ -597,7 +586,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatus;
         private System.Windows.Forms.ToolStripProgressBar prgBrStatus;
         private gTableLayoutPanel tableLayoutPanel1;
-        private gTextBox txtSegmentInfo;
+        private gRichTextBox txtSegmentInfo;
         private System.Windows.Forms.Label lblChapterType;
         private System.Windows.Forms.ComboBox cmbChapterType;
         private System.Windows.Forms.ToolStripStatusLabel lblTrack;

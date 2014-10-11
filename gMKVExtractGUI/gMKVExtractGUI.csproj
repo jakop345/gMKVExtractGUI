@@ -58,6 +58,9 @@
     <Compile Include="Controls\gTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\gTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\frmJobManager.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,7 +87,7 @@
     </Compile>
     <Compile Include="gSettings.cs" />
     <Compile Include="Controls\gTaskbarProgress.cs" />
-    <Compile Include="Controls\gTextBox.cs">
+    <Compile Include="Controls\gRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />

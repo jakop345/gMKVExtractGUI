@@ -43,7 +43,6 @@
             this.btnAbortAll = new System.Windows.Forms.Button();
             this.btnAbort = new System.Windows.Forms.Button();
             this.btnRunAll = new System.Windows.Forms.Button();
-            this.btnRunSelection = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
             this.tlpMain.SuspendLayout();
             this.grpProgress.SuspendLayout();
@@ -189,7 +188,6 @@
             this.grpActions.Controls.Add(this.btnAbortAll);
             this.grpActions.Controls.Add(this.btnAbort);
             this.grpActions.Controls.Add(this.btnRunAll);
-            this.grpActions.Controls.Add(this.btnRunSelection);
             this.grpActions.Controls.Add(this.btnRemove);
             this.grpActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpActions.Location = new System.Drawing.Point(517, 3);
@@ -223,23 +221,13 @@
             // 
             // btnRunAll
             // 
-            this.btnRunAll.Location = new System.Drawing.Point(7, 118);
+            this.btnRunAll.Location = new System.Drawing.Point(7, 72);
             this.btnRunAll.Name = "btnRunAll";
             this.btnRunAll.Size = new System.Drawing.Size(90, 30);
             this.btnRunAll.TabIndex = 2;
             this.btnRunAll.Text = "Run All";
             this.btnRunAll.UseVisualStyleBackColor = true;
             this.btnRunAll.Click += new System.EventHandler(this.btnRunAll_Click);
-            // 
-            // btnRunSelection
-            // 
-            this.btnRunSelection.Location = new System.Drawing.Point(7, 82);
-            this.btnRunSelection.Name = "btnRunSelection";
-            this.btnRunSelection.Size = new System.Drawing.Size(90, 30);
-            this.btnRunSelection.TabIndex = 1;
-            this.btnRunSelection.Text = "Run Selection";
-            this.btnRunSelection.UseVisualStyleBackColor = true;
-            this.btnRunSelection.Click += new System.EventHandler(this.btnRunSelection_Click);
             // 
             // btnRemove
             // 
@@ -284,7 +272,6 @@
         private System.Windows.Forms.Label lblTotalProgress;
         private System.Windows.Forms.Label lblCurrentProgress;
         private gGroupBox grpActions;
-        private System.Windows.Forms.Button btnRunSelection;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Button btnRunAll;
         private gTableLayoutPanel tlpMain;

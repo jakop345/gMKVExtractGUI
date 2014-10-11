@@ -6,13 +6,15 @@ using System.Windows.Forms;
 
 namespace gMKVToolnix
 {
-    public class gTextBox:TextBox
+    public class gRichTextBox : RichTextBox
     {
-        public gTextBox()
+        public gRichTextBox()
             : base()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.ShortcutsEnabled = false;
+            this.DetectUrls = false;
             this.DoubleBuffered = true;
         }
 
@@ -36,6 +38,5 @@ namespace gMKVToolnix
                 throw;
             }
         }
-
     }
 }

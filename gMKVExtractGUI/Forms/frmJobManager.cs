@@ -54,7 +54,6 @@ namespace gMKVToolnix
         {
             btnRemove.Enabled = argStatus;
             btnRunAll.Enabled = argStatus;
-            btnRunSelection.Enabled = argStatus;
         }
 
         void _gMkvExtract_MkvExtractTrackUpdated(string trackName)
@@ -163,23 +162,6 @@ namespace gMKVToolnix
             gTaskbarProgress.SetValue(this, Convert.ToUInt64(val), (UInt64)100);
             grdJobs.Refresh();
             Application.DoEvents();
-        }
-
-        private void btnRunSelection_Click(object sender, EventArgs e)
-        {
-            if (grdJobs.SelectedRows.Count == 0)
-            {
-                throw new Exception("There are no selected jobs!");
-            }
-            List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
-            foreach (Object item in grdJobs.SelectedRows)
-            {
-                gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
-                jobInfo.State = JobState.Pending;
-                jobList.Add(jobInfo);
-            }
-            grdJobs.Refresh();
-            PrepareForRunJobs(jobList);
         }
 
         private void btnRunAll_Click(object sender, EventArgs e)

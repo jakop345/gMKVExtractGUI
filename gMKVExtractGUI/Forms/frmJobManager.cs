@@ -13,24 +13,23 @@ namespace gMKVToolnix
 {
     public partial class frmJobManager : gForm
     {
-        private gMKVExtract _gMkvExtract = null;
         private StringBuilder _ExceptionBuilder = new StringBuilder();
         private frmMain _MainForm = null;
         private Int32 _CurrentJob = 0;
         private Int32 _TotalJobs = 0;
+        private gMKVExtract _gMkvExtract = null;
 
         private BindingList<gMKVJobInfo> _JobList = new BindingList<gMKVJobInfo>();
 
         private Boolean _AbortAll = false;
         
-        public frmJobManager(gMKVExtract argGMkvExtract, frmMain argMainForm)
+        public frmJobManager(frmMain argMainForm)
         {
             InitializeComponent();
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
             Text = String.Format("gMKVExtractGUI v{0} -- Job Manager", Assembly.GetExecutingAssembly().GetName().Version);
 
-            _gMkvExtract = argGMkvExtract;
             _MainForm = argMainForm;
 
             grdJobs.DataSource = _JobList;
@@ -107,17 +106,21 @@ namespace gMKVToolnix
             {
                 try
                 {
-                    // get job from jobInfo
-                    gMKVJob job = jobInfo.Job;
                     // check for abort
                     if (_AbortAll)
                     {
                         break;
                     }
+                    // get job from jobInfo
+                    gMKVJob job = jobInfo.Job;
+                    // create the new gMKVExtract object
+                    _gMkvExtract = new gMKVExtract(job.MKVToolnixPath);
+                    _gMkvExtract.MkvExtractProgressUpdated += _gMkvExtract_MkvExtractProgressUpdated;
+                    _gMkvExtract.MkvExtractTrackUpdated += _gMkvExtract_MkvExtractTrackUpdated;
                     // increate the current job index
                     _CurrentJob++;
                     // start the thread
-                    Thread myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod));
+                    Thread myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod(_gMkvExtract)));
                     jobInfo.StartTime = DateTime.Now;
                     jobInfo.State = JobState.Running;
                     grdJobs.Refresh();
@@ -150,6 +153,14 @@ namespace gMKVToolnix
                 {
                     _ExceptionBuilder.AppendFormat("Exception for job {0}: {1}\r\n", jobInfo.ToString(), ex.Message);
                 }
+                finally
+                {
+                    if (_gMkvExtract != null)
+                    {
+                        _gMkvExtract.MkvExtractProgressUpdated -= _gMkvExtract_MkvExtractProgressUpdated;
+                        _gMkvExtract.MkvExtractTrackUpdated -= _gMkvExtract_MkvExtractTrackUpdated;
+                    }
+                }
             }
         }
 
@@ -176,8 +187,11 @@ namespace gMKVToolnix
                 foreach (Object item in grdJobs.Rows)
                 {
                     gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
-                    jobInfo.State = JobState.Pending;
-                    jobList.Add(jobInfo);
+                    if (jobInfo.State == JobState.Ready)
+                    {
+                        jobInfo.State = JobState.Pending;
+                        jobList.Add(jobInfo);
+                    }
                 }
                 grdJobs.Refresh();
                 PrepareForRunJobs(jobList);
@@ -196,8 +210,6 @@ namespace gMKVToolnix
                 SetActionStatus(false);
                 SetAbortStatus(true);
                 _MainForm.SetTableLayoutMainStatus(false);
-                _gMkvExtract.MkvExtractProgressUpdated += _gMkvExtract_MkvExtractProgressUpdated;
-                _gMkvExtract.MkvExtractTrackUpdated += _gMkvExtract_MkvExtractTrackUpdated;
                 _TotalJobs = argJobInfoList.Count;
                 _CurrentJob = 0;
                 prgBrTotal.Maximum = _TotalJobs * 100;
@@ -226,11 +238,6 @@ namespace gMKVToolnix
             }
             finally
             {
-                if (_gMkvExtract != null)
-                {
-                    _gMkvExtract.MkvExtractProgressUpdated -= _gMkvExtract_MkvExtractProgressUpdated;
-                    _gMkvExtract.MkvExtractTrackUpdated -= _gMkvExtract_MkvExtractTrackUpdated;
-                }
                 UpdateCurrentProgress(0);
                 prgBrTotal.Value = 0;
                 lblCurrentProgressValue.Text = string.Empty;
@@ -247,7 +254,10 @@ namespace gMKVToolnix
         {
             try
             {
-                _gMkvExtract.Abort = true;
+                if (_gMkvExtract != null)
+                {
+                    _gMkvExtract.Abort = true;
+                }
             }
             catch (Exception ex)
             {
@@ -261,8 +271,11 @@ namespace gMKVToolnix
             try
             {
                 _AbortAll = true;
-                _gMkvExtract.Abort = true;
-                _gMkvExtract.AbortAll = true;
+                if (_gMkvExtract != null)
+                {
+                    _gMkvExtract.Abort = true;
+                    _gMkvExtract.AbortAll = true;
+                }
             }
             catch (Exception ex)
             {

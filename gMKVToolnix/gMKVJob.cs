@@ -21,16 +21,38 @@ namespace gMKVToolnix
         private FormMkvExtractionMode _ExtractionMode;
         public FormMkvExtractionMode ExtractionMode { get { return _ExtractionMode; } }
 
-        private gMkvExtractMethod _ExtractMethod;
-        public gMkvExtractMethod ExtractMethod { get { return _ExtractMethod; } }
+        private String _MKVToolnixPath;
+
+        public String MKVToolnixPath
+        {
+            get { return _MKVToolnixPath; }
+        }
+
+        public gMkvExtractMethod ExtractMethod(gMKVExtract argGmkvExtract) {
+                switch (_ExtractionMode)
+                {
+                    case FormMkvExtractionMode.Tracks:
+                        return argGmkvExtract.ExtractMKVSegmentsThreaded;
+                    case FormMkvExtractionMode.Cue_Sheet:
+                        return argGmkvExtract.ExtractMkvCuesheetThreaded;
+                    case FormMkvExtractionMode.Tags:
+                        return argGmkvExtract.ExtractMkvTagsThreaded;
+                    case FormMkvExtractionMode.Timecodes:
+                        return argGmkvExtract.ExtractMKVTimecodesThreaded;
+                    case FormMkvExtractionMode.Tracks_And_Timecodes:
+                        return argGmkvExtract.ExtractMKVSegmentsThreaded;
+                    default:
+                        throw new Exception("Unsupported Extraction Mode!");
+                }
+        }
 
         private List<Object> _ParametersList;
         public List<Object> ParametersList { get { return _ParametersList; } }
 
-        public gMKVJob(FormMkvExtractionMode argExtractionMode, gMkvExtractMethod argExtractMethod, List<Object> argParameters)
+        public gMKVJob(FormMkvExtractionMode argExtractionMode, String argMKVToolnixPath, List<Object> argParameters)
         {
             _ExtractionMode = argExtractionMode;
-            _ExtractMethod = argExtractMethod;
+            _MKVToolnixPath = argMKVToolnixPath;
             _ParametersList = argParameters;
         }
 

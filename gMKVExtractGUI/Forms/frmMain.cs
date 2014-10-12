@@ -594,7 +594,7 @@ namespace gMKVToolnix
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.NoTimecodes);
 
-                        job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMKVSegmentsThreaded, parameterList);
+                        job = new gMKVJob(extractionMode, txtMKVToolnixPath.Text, parameterList);
                         break;
                     case FormMkvExtractionMode.Cue_Sheet:
                         CheckNeccessaryInputFields(false, false);
@@ -603,7 +603,7 @@ namespace gMKVToolnix
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(txtOutputDirectory.Text);
 
-                        job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMkvCuesheetThreaded, parameterList);
+                        job = new gMKVJob(extractionMode, txtMKVToolnixPath.Text, parameterList);
                         break;
                     case FormMkvExtractionMode.Tags:
                         CheckNeccessaryInputFields(false, false);
@@ -612,7 +612,7 @@ namespace gMKVToolnix
                         parameterList.Add(txtInputFile.Text);
                         parameterList.Add(txtOutputDirectory.Text);
 
-                        job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMkvTagsThreaded, parameterList);
+                        job = new gMKVJob(extractionMode, txtMKVToolnixPath.Text, parameterList);
                         break;
                     case FormMkvExtractionMode.Timecodes:
                         CheckNeccessaryInputFields(true, false);
@@ -629,7 +629,7 @@ namespace gMKVToolnix
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.OnlyTimecodes);
 
-                        job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMKVTimecodesThreaded, parameterList);
+                        job = new gMKVJob(extractionMode, txtMKVToolnixPath.Text, parameterList);
                         break;
                     case FormMkvExtractionMode.Tracks_And_Timecodes:
                         CheckNeccessaryInputFields(true, true);
@@ -646,7 +646,7 @@ namespace gMKVToolnix
                         parameterList.Add((MkvChapterTypes)Enum.Parse(typeof(MkvChapterTypes), (String)cmbChapterType.SelectedItem));
                         parameterList.Add(TimecodesExtractionMode.WithTimecodes);
 
-                        job = new gMKVJob(extractionMode, _gMkvExtract.ExtractMKVSegmentsThreaded, parameterList);
+                        job = new gMKVJob(extractionMode, txtMKVToolnixPath.Text, parameterList);
 
                         break;
                 }
@@ -654,7 +654,7 @@ namespace gMKVToolnix
                 {
                     if (_JobManagerForm == null)
                     {
-                        _JobManagerForm = new frmJobManager(_gMkvExtract, this);
+                        _JobManagerForm = new frmJobManager(this);
                     }
                     _JobManagerForm.Show();
                     _JobManagerForm.AddJob(new gMKVJobInfo(job));
@@ -662,7 +662,7 @@ namespace gMKVToolnix
                 else
                 {
                     // start the thread
-                    myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod));
+                    myThread = new Thread(new ParameterizedThreadStart(job.ExtractMethod(_gMkvExtract)));
                     myThread.Start(job.ParametersList);
 
                     btnAbort.Enabled = true;
@@ -727,7 +727,7 @@ namespace gMKVToolnix
                 {
                     if (_JobManagerForm == null)
                     {
-                        _JobManagerForm = new frmJobManager(_gMkvExtract, this);
+                        _JobManagerForm = new frmJobManager(this);
                     }
                     _JobManagerForm.Show();
                     _JobManagerForm.Focus();

@@ -13,6 +13,7 @@ namespace gMKVToolnix
         Failed
     }
 
+    [Serializable]
     public class gMKVJobInfo
     {
 
@@ -74,6 +75,9 @@ namespace gMKVToolnix
         {
             _Job = argJob;
         }
+
+        // For serialization only!!!
+        internal gMKVJobInfo() { }
 
         public void Reset()
         {

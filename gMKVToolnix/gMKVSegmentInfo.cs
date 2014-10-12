@@ -4,6 +4,7 @@ using System.Text;
 
 namespace gMKVToolnix
 {
+    [Serializable]
     public class gMKVSegmentInfo : gMKVSegment
     {
         private String _TimecodeScale;

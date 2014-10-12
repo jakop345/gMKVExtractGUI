@@ -10,6 +10,7 @@ namespace gMKVToolnix
         OGM
     }
 
+    [Serializable]
     public class gMKVChapter : gMKVSegment
     {
         private int _ChapterCount = 0;

@@ -24,6 +24,7 @@ namespace gMKVToolnix
     }
 
     public delegate void UpdateProgressDelegate(Object val);
+    public delegate void UpdateTrackLabelDelegate(Object val);
 
     public partial class frmMain : gForm
     {
@@ -845,8 +846,6 @@ namespace gMKVToolnix
             gTaskbarProgress.SetValue(this, Convert.ToUInt64(val), (UInt64)100);
             Application.DoEvents();
         }
-
-        public delegate void UpdateTrackLabelDelegate(Object val);
 
         public void UpdateTrackLabel(Object val)
         {

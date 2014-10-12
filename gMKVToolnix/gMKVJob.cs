@@ -16,16 +16,26 @@ namespace gMKVToolnix
 
     public delegate void gMkvExtractMethod(Object parameterList);
 
+    [Serializable]
+    [System.Xml.Serialization.XmlInclude(typeof(List<gMKVSegment>))]
+    [System.Xml.Serialization.XmlInclude(typeof(gMKVSegment))]
+    [System.Xml.Serialization.XmlInclude(typeof(gMKVTrack))]
+    [System.Xml.Serialization.XmlInclude(typeof(gMKVChapter))]
+    [System.Xml.Serialization.XmlInclude(typeof(gMKVAttachment))]
     public class gMKVJob
     {
         private FormMkvExtractionMode _ExtractionMode;
-        public FormMkvExtractionMode ExtractionMode { get { return _ExtractionMode; } }
+        public FormMkvExtractionMode ExtractionMode { 
+            get { return _ExtractionMode; }
+            set { _ExtractionMode = value; }
+        }
 
         private String _MKVToolnixPath;
 
         public String MKVToolnixPath
         {
             get { return _MKVToolnixPath; }
+            set { _MKVToolnixPath = value; }
         }
 
         public gMkvExtractMethod ExtractMethod(gMKVExtract argGmkvExtract) {
@@ -47,7 +57,10 @@ namespace gMKVToolnix
         }
 
         private List<Object> _ParametersList;
-        public List<Object> ParametersList { get { return _ParametersList; } }
+        public List<Object> ParametersList { 
+            get { return _ParametersList; }
+            set { _ParametersList = value; }
+        }
 
         public gMKVJob(FormMkvExtractionMode argExtractionMode, String argMKVToolnixPath, List<Object> argParameters)
         {
@@ -55,6 +68,9 @@ namespace gMKVToolnix
             _MKVToolnixPath = argMKVToolnixPath;
             _ParametersList = argParameters;
         }
+
+        // For serialization only!!!
+        internal gMKVJob() { }
 
         private String GetTracks(List<gMKVSegment> argSegmentList)
         {

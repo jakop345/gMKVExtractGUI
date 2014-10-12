@@ -4,6 +4,7 @@ using System.Text;
 
 namespace gMKVToolnix
 {
+    [Serializable]
     public class gMKVAttachment : gMKVSegment
     {
         private String _Filename;

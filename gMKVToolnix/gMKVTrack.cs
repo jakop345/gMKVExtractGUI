@@ -11,6 +11,7 @@ namespace gMKVToolnix
         subtitles
     }
 
+    [Serializable]
     public class gMKVTrack : gMKVSegment
     {
         private int _TrackNumber;

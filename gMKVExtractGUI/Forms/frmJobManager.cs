@@ -39,7 +39,6 @@ namespace gMKVToolnix
 
         public void AddJob(gMKVJobInfo argJobInfo)
         {
-            //lstJobs.Items.Add(argJob);
             _JobList.Add(argJobInfo);
         }
 
@@ -53,10 +52,13 @@ namespace gMKVToolnix
         {
             btnRemove.Enabled = argStatus;
             btnRunAll.Enabled = argStatus;
+            btnLoadJobs.Enabled = argStatus;
+            btnSaveJobs.Enabled = argStatus;
         }
 
         void _gMkvExtract_MkvExtractTrackUpdated(string trackName)
         {
+            this.Invoke(new UpdateTrackLabelDelegate(UpdateTrackLabel), new object[] { trackName });
             Debug.WriteLine(trackName);
         }
 
@@ -175,6 +177,12 @@ namespace gMKVToolnix
             Application.DoEvents();
         }
 
+        public void UpdateTrackLabel(Object val)
+        {
+            txtCurrentTrack.Text = (String)val;
+            Application.DoEvents();
+        }
+
         private void btnRunAll_Click(object sender, EventArgs e)
         {
             try
@@ -184,9 +192,9 @@ namespace gMKVToolnix
                     throw new Exception("There are no available jobs to run!");
                 }
                 List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
-                foreach (Object item in grdJobs.Rows)
+                foreach (DataGridViewRow item in grdJobs.Rows)
                 {
-                    gMKVJobInfo jobInfo = (gMKVJobInfo)((DataGridViewRow)item).DataBoundItem;
+                    gMKVJobInfo jobInfo = (gMKVJobInfo)item.DataBoundItem;
                     if (jobInfo.State == JobState.Ready)
                     {
                         jobInfo.State = JobState.Pending;
@@ -316,6 +324,69 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+            }
+        }
+
+        private void btnSaveJobs_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // ask for path
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Title = "Select job file...";
+                sfd.InitialDirectory = GetCurrentDirectory();
+                sfd.Filter = "*.xml|*.xml";
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    using (System.IO.StreamWriter sw = new System.IO.StreamWriter(sfd.FileName))
+                    {
+                        System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(typeof(List<gMKVJobInfo>));
+                        
+                        List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
+                        foreach (DataGridViewRow item in grdJobs.Rows)
+                        {
+                            jobList.Add((gMKVJobInfo)item.DataBoundItem);
+                        }
+
+                        x.Serialize(sw, jobList);
+                    }
+                    ShowSuccessMessage("The jobs were save successfully!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
+        private void btnLoadJobs_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Ask for path
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.InitialDirectory = GetCurrentDirectory();
+                ofd.Title = "Select jobs file...";
+                ofd.Filter = "*.xml|*.xml";
+                if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    List<gMKVJobInfo> jobList = null;
+                    using (System.IO.StreamReader sr = new System.IO.StreamReader(ofd.FileName))
+                    {
+                        System.Xml.Serialization.XmlSerializer x = new System.Xml.Serialization.XmlSerializer(typeof(List<gMKVJobInfo>));
+                        
+                        jobList = (List<gMKVJobInfo>)x.Deserialize(sr);
+                    }
+                    grdJobs.DataSource = new BindingList<gMKVJobInfo>(jobList);
+                    grdJobs.Refresh();
+                    ShowSuccessMessage("The jobs were loaded successfully!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
             }
         }
     }

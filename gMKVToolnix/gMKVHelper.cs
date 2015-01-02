@@ -178,5 +178,43 @@ namespace gMKVToolnix
             return Path.GetDirectoryName(valuePath);
         }
 
+        public static List<gMKVSegment> GetMergedMkvSegmentList(String argMkvToolnixPath, String argInputFile)
+        {
+            gMKVMerge g = new gMKVMerge(argMkvToolnixPath);
+            List<gMKVSegment> segmentList = g.GetMKVSegments(argInputFile);
+            gMKVInfo gInfo = new gMKVInfo(argMkvToolnixPath);
+            List<gMKVSegment> segmentListInfo = gInfo.GetMKVSegments(argInputFile);
+            foreach (gMKVSegment seg in segmentListInfo)
+            {
+                if (seg is gMKVSegmentInfo)
+                {
+                    segmentList.Insert(0, seg);
+                }
+                else if (seg is gMKVTrack)
+                {
+                    // Update CodecPrivate info from mkvinfo to mkvextract segments
+                    if (!String.IsNullOrEmpty(((gMKVTrack)seg).CodecPrivate))
+                    {
+                        foreach (gMKVSegment seg2 in segmentList)
+                        {
+                            if (seg2 is gMKVTrack)
+                            {
+                                if (((gMKVTrack)seg2).TrackID == ((gMKVTrack)seg).TrackID)
+                                {
+                                    ((gMKVTrack)seg2).CodecPrivate = ((gMKVTrack)seg).CodecPrivate;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            gInfo.FindAndSetDelays(segmentList, argInputFile);
+
+            gInfo = null;
+            segmentListInfo = null;
+
+            return segmentList;
+        }
     }
 }

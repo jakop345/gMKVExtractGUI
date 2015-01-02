@@ -46,6 +46,15 @@ namespace gMKVToolnix
             set { _CodecID = value; }
         }
 
+        private String _CodecPrivate = String.Empty;
+
+        public String CodecPrivate
+        {
+            get { return _CodecPrivate; }
+            set { _CodecPrivate = value; }
+        }
+
+
         private String _Language;
 
         public String Language
@@ -90,6 +99,10 @@ namespace gMKVToolnix
         {
             String str = String.Format("Track {0} [TID {1}][{2}][{3}][{4}][{5}][{6}]", 
                 _TrackNumber, _TrackID, Enum.GetName(typeof(MkvTrackType), _TrackType), _CodecID, _TrackName, _Language, _ExtraInfo);
+            if (!String.IsNullOrEmpty(_CodecPrivate))
+            {
+                str = String.Format("{0}[{1}]", str, _CodecPrivate);
+            }
             if (_TrackType != MkvTrackType.subtitles)
             {
                 str = String.Format("{0}[{1} ms][{2} ms]", str, _Delay, _EffectiveDelay);

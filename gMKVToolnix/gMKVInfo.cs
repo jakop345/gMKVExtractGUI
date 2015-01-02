@@ -345,6 +345,10 @@ namespace gMKVToolnix
                         {
                             ((gMKVTrack)tmpSegment).ExtraInfo += ", Ch:" + outputLine.Substring(outputLine.IndexOf(":") + 1).Trim();
                         }
+                        else if (outputLine.Contains("CodecPrivate,"))
+                        {
+                            ((gMKVTrack)tmpSegment).CodecPrivate = outputLine.Substring(outputLine.IndexOf(",") + 1).Trim();
+                        }
 
                         //18 |+ Segment tracks
                         //19 | + A track

@@ -386,21 +386,7 @@ namespace gMKVToolnix
                     }
                     // get the file information                    
                     gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Indeterminate);
-                    gMKVMerge g = new gMKVMerge(txtMKVToolnixPath.Text.Trim());
-                    List<gMKVSegment> segmentList = g.GetMKVSegments(txtInputFile.Text.Trim());
-                    gMKVInfo gInfo = new gMKVInfo(txtMKVToolnixPath.Text.Trim());
-                    List<gMKVSegment> segmentListInfo = gInfo.GetMKVSegments(txtInputFile.Text.Trim());
-                    foreach (gMKVSegment seg in segmentListInfo)
-                    {
-                        if (seg is gMKVSegmentInfo)
-                        {
-                            segmentList.Insert(0, seg);
-                            break;
-                        }
-                    }
-                    gInfo.FindAndSetDelays(segmentList, txtInputFile.Text.Trim());
-                    gInfo = null;
-                    segmentListInfo = null;
+                    List<gMKVSegment> segmentList = gMKVHelper.GetMergedMkvSegmentList(txtMKVToolnixPath.Text.Trim(), txtInputFile.Text.Trim());
                     foreach (gMKVSegment seg in segmentList)
                     {
                         if (seg is gMKVSegmentInfo)

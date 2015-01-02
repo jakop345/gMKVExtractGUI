@@ -138,8 +138,8 @@
             this.MinimumSize = new System.Drawing.Size(350, 350);
             this.Name = "frmLog";
             this.Text = "frmLog";
+            this.Activated += new System.EventHandler(this.frmLog_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmLog_FormClosing);
-            this.Shown += new System.EventHandler(this.frmLog_Shown);
             this.tlpMain.ResumeLayout(false);
             this.grpLog.ResumeLayout(false);
             this.grpLog.PerformLayout();

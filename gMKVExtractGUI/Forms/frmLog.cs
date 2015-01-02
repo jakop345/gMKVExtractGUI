@@ -25,7 +25,7 @@ namespace gMKVToolnix
             Text = String.Format("gMKVExtractGUI v{0} -- Log", Assembly.GetExecutingAssembly().GetName().Version);
         }
 
-        private void frmLog_Shown(object sender, EventArgs e)
+        private void frmLog_Activated(object sender, EventArgs e)
         {
             txtLog.Text = gMKVLogger.LogText;
         }
@@ -82,5 +82,6 @@ namespace gMKVToolnix
             e.Cancel = true;
             this.Hide();
         }
+
     }
 }

@@ -37,6 +37,21 @@ namespace gMKVToolnix
             SetAbortStatus(false);
         }
 
+        private void SetJobsList(BindingList<gMKVJobInfo> argJobList)
+        {
+            try
+            {
+                _JobList = argJobList;
+                grdJobs.DataSource = _JobList;
+                grdJobs.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);                
+            }
+        }
+
         public void AddJob(gMKVJobInfo argJobInfo)
         {
             _JobList.Add(argJobInfo);
@@ -378,8 +393,7 @@ namespace gMKVToolnix
                         
                         jobList = (List<gMKVJobInfo>)x.Deserialize(sr);
                     }
-                    grdJobs.DataSource = new BindingList<gMKVJobInfo>(jobList);
-                    grdJobs.Refresh();
+                    SetJobsList(new BindingList<gMKVJobInfo>(jobList));
                     ShowSuccessMessage("The jobs were loaded successfully!");
                 }
             }

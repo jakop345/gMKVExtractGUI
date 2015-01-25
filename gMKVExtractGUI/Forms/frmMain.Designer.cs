@@ -102,42 +102,42 @@
             // 
             this.selectAllTracksToolStripMenuItem.Name = "selectAllTracksToolStripMenuItem";
             this.selectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllTracksToolStripMenuItem.Text = "Select All Tracks";
+            this.selectAllTracksToolStripMenuItem.Text = "选择全部轨道";
             this.selectAllTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllTracksToolStripMenuItem_Click);
             // 
             // selectAllVideoTracksToolStripMenuItem
             // 
             this.selectAllVideoTracksToolStripMenuItem.Name = "selectAllVideoTracksToolStripMenuItem";
             this.selectAllVideoTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllVideoTracksToolStripMenuItem.Text = "Select All Video Tracks";
+            this.selectAllVideoTracksToolStripMenuItem.Text = "选择所有视频轨道";
             this.selectAllVideoTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllVideoTracksToolStripMenuItem_Click);
             // 
             // selectAllAudioTracksToolStripMenuItem
             // 
             this.selectAllAudioTracksToolStripMenuItem.Name = "selectAllAudioTracksToolStripMenuItem";
             this.selectAllAudioTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllAudioTracksToolStripMenuItem.Text = "Select All Audio Tracks";
+            this.selectAllAudioTracksToolStripMenuItem.Text = "选择所有音频轨道";
             this.selectAllAudioTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllAudioTracksToolStripMenuItem_Click);
             // 
             // selectAllSubtitleTracksToolStripMenuItem
             // 
             this.selectAllSubtitleTracksToolStripMenuItem.Name = "selectAllSubtitleTracksToolStripMenuItem";
             this.selectAllSubtitleTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllSubtitleTracksToolStripMenuItem.Text = "Select All Subtitle Tracks";
+            this.selectAllSubtitleTracksToolStripMenuItem.Text = "选择所有字幕轨道";
             this.selectAllSubtitleTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllSubtitleTracksToolStripMenuItem_Click);
             // 
             // selectAllChapterTracksToolStripMenuItem
             // 
             this.selectAllChapterTracksToolStripMenuItem.Name = "selectAllChapterTracksToolStripMenuItem";
             this.selectAllChapterTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllChapterTracksToolStripMenuItem.Text = "Select All Chapter Tracks";
+            this.selectAllChapterTracksToolStripMenuItem.Text = "选择所有章节轨道";
             this.selectAllChapterTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllChapterTracksToolStripMenuItem_Click);
             // 
             // selectAllAttachmentsToolStripMenuItem
             // 
             this.selectAllAttachmentsToolStripMenuItem.Name = "selectAllAttachmentsToolStripMenuItem";
             this.selectAllAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.selectAllAttachmentsToolStripMenuItem.Text = "Select All Attachments Tracks";
+            this.selectAllAttachmentsToolStripMenuItem.Text = "选择所有附件轨道";
             this.selectAllAttachmentsToolStripMenuItem.Click += new System.EventHandler(this.selectAllAttachmentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -149,7 +149,7 @@
             // 
             this.unselectAllTracksToolStripMenuItem.Name = "unselectAllTracksToolStripMenuItem";
             this.unselectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.unselectAllTracksToolStripMenuItem.Text = "Unselect All tracks";
+            this.unselectAllTracksToolStripMenuItem.Text = "取消选择所有轨道";
             this.unselectAllTracksToolStripMenuItem.Click += new System.EventHandler(this.unselectAllTracksToolStripMenuItem_Click);
             // 
             // toolStripContainer1
@@ -179,7 +179,7 @@
             this.btnAbort.Name = "btnAbort";
             this.btnAbort.Size = new System.Drawing.Size(92, 30);
             this.btnAbort.TabIndex = 10;
-            this.btnAbort.Text = "Abort";
+            this.btnAbort.Text = "中止";
             this.btnAbort.UseVisualStyleBackColor = true;
             this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
@@ -190,7 +190,7 @@
             this.btnAbortAll.Name = "btnAbortAll";
             this.btnAbortAll.Size = new System.Drawing.Size(92, 30);
             this.btnAbortAll.TabIndex = 11;
-            this.btnAbortAll.Text = "Abort All";
+            this.btnAbortAll.Text = "中止全部";
             this.btnAbortAll.UseVisualStyleBackColor = true;
             this.btnAbortAll.Click += new System.EventHandler(this.btnAbortAll_Click);
             // 
@@ -226,7 +226,7 @@
             this.grpInputFile.Size = new System.Drawing.Size(618, 54);
             this.grpInputFile.TabIndex = 3;
             this.grpInputFile.TabStop = false;
-            this.grpInputFile.Text = "Input file (you can drag and drop the file)";
+            this.grpInputFile.Text = "输入文件 (你可以拖拽到这里)";
             this.grpInputFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.grpInputFile_DragDrop);
             this.grpInputFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.grpInputFile_DragEnter);
             // 
@@ -253,7 +253,7 @@
             this.btnBrowseInputFile.Name = "btnBrowseInputFile";
             this.btnBrowseInputFile.Size = new System.Drawing.Size(80, 30);
             this.btnBrowseInputFile.TabIndex = 2;
-            this.btnBrowseInputFile.Text = "Browse...";
+            this.btnBrowseInputFile.Text = "浏览...";
             this.btnBrowseInputFile.UseVisualStyleBackColor = true;
             this.btnBrowseInputFile.Click += new System.EventHandler(this.btnBrowseInputFile_Click);
             // 
@@ -268,7 +268,7 @@
             this.grpOutputDirectory.Size = new System.Drawing.Size(618, 54);
             this.grpOutputDirectory.TabIndex = 4;
             this.grpOutputDirectory.TabStop = false;
-            this.grpOutputDirectory.Text = "Output Directory";
+            this.grpOutputDirectory.Text = "输出";
             // 
             // chkLockOutputDirectory
             // 
@@ -279,7 +279,7 @@
             this.chkLockOutputDirectory.Name = "chkLockOutputDirectory";
             this.chkLockOutputDirectory.Size = new System.Drawing.Size(51, 19);
             this.chkLockOutputDirectory.TabIndex = 4;
-            this.chkLockOutputDirectory.Text = "Lock";
+            this.chkLockOutputDirectory.Text = "锁定";
             this.chkLockOutputDirectory.UseVisualStyleBackColor = true;
             this.chkLockOutputDirectory.CheckedChanged += new System.EventHandler(this.chkLockOutputDirectory_CheckedChanged);
             // 
@@ -290,7 +290,7 @@
             this.btnBrowseOutputDirectory.Name = "btnBrowseOutputDirectory";
             this.btnBrowseOutputDirectory.Size = new System.Drawing.Size(80, 30);
             this.btnBrowseOutputDirectory.TabIndex = 3;
-            this.btnBrowseOutputDirectory.Text = "Browse...";
+            this.btnBrowseOutputDirectory.Text = "浏览...";
             this.btnBrowseOutputDirectory.UseVisualStyleBackColor = true;
             this.btnBrowseOutputDirectory.Click += new System.EventHandler(this.btnBrowseOutputDirectory_Click);
             // 
@@ -325,7 +325,7 @@
             this.grpActions.Size = new System.Drawing.Size(618, 54);
             this.grpActions.TabIndex = 6;
             this.grpActions.TabStop = false;
-            this.grpActions.Text = "Actions";
+            this.grpActions.Text = "操作";
             // 
             // chkShowPopup
             // 
@@ -348,7 +348,7 @@
             this.chkJobMode.Name = "chkJobMode";
             this.chkJobMode.Size = new System.Drawing.Size(78, 19);
             this.chkJobMode.TabIndex = 11;
-            this.chkJobMode.Text = "Job Mode";
+            this.chkJobMode.Text = "任务模式";
             this.chkJobMode.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkJobMode.UseVisualStyleBackColor = true;
             this.chkJobMode.CheckedChanged += new System.EventHandler(this.chkJobMode_CheckedChanged);
@@ -360,7 +360,7 @@
             this.btnExtract.Name = "btnExtract";
             this.btnExtract.Size = new System.Drawing.Size(90, 30);
             this.btnExtract.TabIndex = 10;
-            this.btnExtract.Text = "Extract";
+            this.btnExtract.Text = "提取";
             this.btnExtract.UseVisualStyleBackColor = true;
             this.btnExtract.Click += new System.EventHandler(this.btnExtract_Click);
             // 
@@ -372,7 +372,7 @@
             this.lblExtractionMode.Name = "lblExtractionMode";
             this.lblExtractionMode.Size = new System.Drawing.Size(45, 15);
             this.lblExtractionMode.TabIndex = 9;
-            this.lblExtractionMode.Text = "Extract:";
+            this.lblExtractionMode.Text = "提取:";
             // 
             // cmbExtractionMode
             // 
@@ -391,7 +391,7 @@
             this.btnShowLog.Name = "btnShowLog";
             this.btnShowLog.Size = new System.Drawing.Size(60, 30);
             this.btnShowLog.TabIndex = 6;
-            this.btnShowLog.Text = "Log...";
+            this.btnShowLog.Text = "日志...";
             this.btnShowLog.UseVisualStyleBackColor = true;
             this.btnShowLog.Click += new System.EventHandler(this.btnShowLog_Click);
             // 
@@ -403,7 +403,7 @@
             this.lblChapterType.Name = "lblChapterType";
             this.lblChapterType.Size = new System.Drawing.Size(49, 15);
             this.lblChapterType.TabIndex = 3;
-            this.lblChapterType.Text = "Chapter";
+            this.lblChapterType.Text = "章节";
             // 
             // cmbChapterType
             // 
@@ -426,7 +426,7 @@
             this.grpConfig.Size = new System.Drawing.Size(618, 54);
             this.grpConfig.TabIndex = 7;
             this.grpConfig.TabStop = false;
-            this.grpConfig.Text = "MKVToolnix Directory (you can drag and drop the directory)";
+            this.grpConfig.Text = "MKVToolnix目录 (你可以拖拽到这里)";
             // 
             // btnBrowseMKVToolnixPath
             // 
@@ -435,7 +435,7 @@
             this.btnBrowseMKVToolnixPath.Name = "btnBrowseMKVToolnixPath";
             this.btnBrowseMKVToolnixPath.Size = new System.Drawing.Size(80, 30);
             this.btnBrowseMKVToolnixPath.TabIndex = 5;
-            this.btnBrowseMKVToolnixPath.Text = "Browse...";
+            this.btnBrowseMKVToolnixPath.Text = "浏览...";
             this.btnBrowseMKVToolnixPath.UseVisualStyleBackColor = true;
             this.btnBrowseMKVToolnixPath.Click += new System.EventHandler(this.btnBrowseMKVToolnixPath_Click);
             // 
@@ -465,7 +465,7 @@
             this.grpInputFileInfo.Size = new System.Drawing.Size(618, 279);
             this.grpInputFileInfo.TabIndex = 5;
             this.grpInputFileInfo.TabStop = false;
-            this.grpInputFileInfo.Text = "Input File Information";
+            this.grpInputFileInfo.Text = "输入文件信息";
             this.grpInputFileInfo.DragDrop += new System.Windows.Forms.DragEventHandler(this.grpInputFileInfo_DragDrop);
             this.grpInputFileInfo.DragEnter += new System.Windows.Forms.DragEventHandler(this.grpInputFile_DragEnter);
             // 
@@ -546,7 +546,7 @@
             this.grpLog.Size = new System.Drawing.Size(755, 106);
             this.grpLog.TabIndex = 8;
             this.grpLog.TabStop = false;
-            this.grpLog.Text = "Log";
+            this.grpLog.Text = "日志";
             // 
             // frmMain
             // 

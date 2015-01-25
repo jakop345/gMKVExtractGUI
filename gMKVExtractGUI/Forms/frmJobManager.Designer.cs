@@ -92,7 +92,7 @@
             this.grpProgress.Size = new System.Drawing.Size(618, 104);
             this.grpProgress.TabIndex = 3;
             this.grpProgress.TabStop = false;
-            this.grpProgress.Text = "Progress";
+            this.grpProgress.Text = "进度";
             // 
             // txtCurrentTrack
             // 
@@ -112,7 +112,7 @@
             this.lblCurrentTrack.Name = "lblCurrentTrack";
             this.lblCurrentTrack.Size = new System.Drawing.Size(78, 15);
             this.lblCurrentTrack.TabIndex = 7;
-            this.lblCurrentTrack.Text = "Current Track";
+            this.lblCurrentTrack.Text = "当前轨道";
             // 
             // lblTotalProgressValue
             // 
@@ -139,7 +139,7 @@
             this.lblTotalProgress.Name = "lblTotalProgress";
             this.lblTotalProgress.Size = new System.Drawing.Size(81, 15);
             this.lblTotalProgress.TabIndex = 4;
-            this.lblTotalProgress.Text = "Total Progress";
+            this.lblTotalProgress.Text = "总进度";
             // 
             // lblCurrentProgress
             // 
@@ -148,7 +148,7 @@
             this.lblCurrentProgress.Name = "lblCurrentProgress";
             this.lblCurrentProgress.Size = new System.Drawing.Size(95, 15);
             this.lblCurrentProgress.TabIndex = 3;
-            this.lblCurrentProgress.Text = "Current Progress";
+            this.lblCurrentProgress.Text = "当前进度";
             // 
             // prgBrTotal
             // 
@@ -193,7 +193,7 @@
             this.grpJobs.Size = new System.Drawing.Size(508, 315);
             this.grpJobs.TabIndex = 0;
             this.grpJobs.TabStop = false;
-            this.grpJobs.Text = "Jobs";
+            this.grpJobs.Text = "任务";
             // 
             // grdJobs
             // 
@@ -248,7 +248,7 @@
             this.grpActions.Size = new System.Drawing.Size(104, 315);
             this.grpActions.TabIndex = 4;
             this.grpActions.TabStop = false;
-            this.grpActions.Text = "Actions";
+            this.grpActions.Text = "操作";
             // 
             // chkShowPopup
             // 
@@ -269,7 +269,7 @@
             this.btnSaveJobs.Name = "btnSaveJobs";
             this.btnSaveJobs.Size = new System.Drawing.Size(90, 30);
             this.btnSaveJobs.TabIndex = 6;
-            this.btnSaveJobs.Text = "Save Jobs...";
+            this.btnSaveJobs.Text = "保存任务...";
             this.btnSaveJobs.UseVisualStyleBackColor = true;
             this.btnSaveJobs.Click += new System.EventHandler(this.btnSaveJobs_Click);
             // 
@@ -279,7 +279,7 @@
             this.btnLoadJobs.Name = "btnLoadJobs";
             this.btnLoadJobs.Size = new System.Drawing.Size(90, 30);
             this.btnLoadJobs.TabIndex = 5;
-            this.btnLoadJobs.Text = "Load Jobs...";
+            this.btnLoadJobs.Text = "加载任务...";
             this.btnLoadJobs.UseVisualStyleBackColor = true;
             this.btnLoadJobs.Click += new System.EventHandler(this.btnLoadJobs_Click);
             // 
@@ -290,7 +290,7 @@
             this.btnAbortAll.Name = "btnAbortAll";
             this.btnAbortAll.Size = new System.Drawing.Size(90, 30);
             this.btnAbortAll.TabIndex = 4;
-            this.btnAbortAll.Text = "Abort All";
+            this.btnAbortAll.Text = "中止全部";
             this.btnAbortAll.UseVisualStyleBackColor = true;
             this.btnAbortAll.Click += new System.EventHandler(this.btnAbortAll_Click);
             // 
@@ -301,7 +301,7 @@
             this.btnAbort.Name = "btnAbort";
             this.btnAbort.Size = new System.Drawing.Size(90, 30);
             this.btnAbort.TabIndex = 3;
-            this.btnAbort.Text = "Abort";
+            this.btnAbort.Text = "中止";
             this.btnAbort.UseVisualStyleBackColor = true;
             this.btnAbort.Click += new System.EventHandler(this.btnAbort_Click);
             // 
@@ -311,7 +311,7 @@
             this.btnRunAll.Name = "btnRunAll";
             this.btnRunAll.Size = new System.Drawing.Size(90, 30);
             this.btnRunAll.TabIndex = 2;
-            this.btnRunAll.Text = "Run Jobs";
+            this.btnRunAll.Text = "执行任务";
             this.btnRunAll.UseVisualStyleBackColor = true;
             this.btnRunAll.Click += new System.EventHandler(this.btnRunAll_Click);
             // 
@@ -321,7 +321,7 @@
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(90, 30);
             this.btnRemove.TabIndex = 0;
-            this.btnRemove.Text = "Remove";
+            this.btnRemove.Text = "移除";
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 

@@ -32,12 +32,12 @@ namespace gMKVToolNix
         {
             try
             {
-                InitializeComponent();
+            InitializeComponent();
 
-                Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-                Text = String.Format("gMKVExtractGUI v{0} -- Job Manager", Assembly.GetExecutingAssembly().GetName().Version);
+            Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+            Text = String.Format("gMKVExtractGUI v{0} -- 任务管理", Assembly.GetExecutingAssembly().GetName().Version);
 
-                _MainForm = argMainForm;
+            _MainForm = argMainForm;
 
                 _FromConstructor = true;
 
@@ -46,12 +46,12 @@ namespace gMKVToolNix
 
                 chkShowPopup.Checked = _Settings.ShowPopupInJobManager;
 
-                grdJobs.DataSource = _JobList;
+            grdJobs.DataSource = _JobList;
 
                 _FromConstructor = false;
 
-                SetAbortStatus(false);
-            }
+            SetAbortStatus(false);
+        }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
@@ -198,7 +198,7 @@ namespace gMKVToolNix
                 }
                 catch (Exception ex)
                 {
-                    _ExceptionBuilder.AppendFormat("Exception for job {0}: {1}\r\n", jobInfo.ToString(), ex.Message);
+                    _ExceptionBuilder.AppendFormat("任务异常 {0}: {1}\r\n", jobInfo.ToString(), ex.Message);
                 }
                 finally
                 {
@@ -234,7 +234,7 @@ namespace gMKVToolNix
             {
                 if (GetNumberOfJobs(JobState.Ready) == 0)
                 {
-                    throw new Exception("There are no available jobs to run!");
+                    throw new Exception("没有可用的任务运行!");
                 }
                 List<gMKVJobInfo> jobList = new List<gMKVJobInfo>();
                 foreach (DataGridViewRow item in grdJobs.Rows)
@@ -286,8 +286,8 @@ namespace gMKVToolNix
                 UpdateCurrentProgress(100);
                 if (chkShowPopup.Checked)
                 {
-                    ShowSuccessMessage("The jobs completed successfully!");
-                }
+                    ShowSuccessMessage("任务已成功完成!");
+            }
                 else
                 {
                     SystemSounds.Asterisk.Play();
@@ -302,10 +302,10 @@ namespace gMKVToolNix
             {
                 if (chkShowPopup.Checked || exceptionOccured)
                 {
-                    UpdateCurrentProgress(0);
-                    prgBrTotal.Value = 0;
-                    lblCurrentProgressValue.Text = string.Empty;
-                    lblTotalProgressValue.Text = string.Empty;
+                UpdateCurrentProgress(0);
+                prgBrTotal.Value = 0;
+                lblCurrentProgressValue.Text = string.Empty;
+                lblTotalProgressValue.Text = string.Empty;
                 }
                 else
                 {
@@ -399,7 +399,7 @@ namespace gMKVToolNix
             {
                 // ask for path
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Title = "Select job file...";
+                sfd.Title = "选择任务文件...";
                 sfd.InitialDirectory = GetCurrentDirectory();
                 sfd.Filter = "*.xml|*.xml";
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -416,7 +416,7 @@ namespace gMKVToolNix
 
                         x.Serialize(sw, jobList);
                     }
-                    ShowSuccessMessage("The jobs were save successfully!");
+                    ShowSuccessMessage("任务保存成功!");
                 }
             }
             catch (Exception ex)
@@ -433,7 +433,7 @@ namespace gMKVToolNix
                 // Ask for path
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.InitialDirectory = GetCurrentDirectory();
-                ofd.Title = "Select jobs file...";
+                ofd.Title = "选择任务文件...";
                 ofd.Filter = "*.xml|*.xml";
                 if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -445,7 +445,7 @@ namespace gMKVToolNix
                         jobList = (List<gMKVJobInfo>)x.Deserialize(sr);
                     }
                     SetJobsList(new BindingList<gMKVJobInfo>(jobList));
-                    ShowSuccessMessage("The jobs were loaded successfully!");
+                    ShowSuccessMessage("任务文件加载成功!");
                 }
             }
             catch (Exception ex)
@@ -501,8 +501,8 @@ namespace gMKVToolNix
             {
                 _Settings.ShowPopupInJobManager = chkShowPopup.Checked;
                 _Settings.Save();
-            }
-        }
+    }
+}
 
         private void grdJobs_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {

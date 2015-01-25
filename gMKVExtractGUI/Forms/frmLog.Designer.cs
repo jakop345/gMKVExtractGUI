@@ -65,7 +65,7 @@
             this.grpLog.Size = new System.Drawing.Size(598, 426);
             this.grpLog.TabIndex = 0;
             this.grpLog.TabStop = false;
-            this.grpLog.Text = "Log";
+            this.grpLog.Text = "日志";
             // 
             // txtLog
             // 
@@ -93,7 +93,7 @@
             this.grpActions.Size = new System.Drawing.Size(598, 63);
             this.grpActions.TabIndex = 1;
             this.grpActions.TabStop = false;
-            this.grpActions.Text = "Actions";
+            this.grpActions.Text = "操作";
             // 
             // btnRefresh
             // 
@@ -102,7 +102,7 @@
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(93, 40);
             this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.Text = "刷新";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
@@ -113,7 +113,7 @@
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(93, 40);
             this.btnCopy.TabIndex = 1;
-            this.btnCopy.Text = "Copy Selection";
+            this.btnCopy.Text = "复制已选择";
             this.btnCopy.UseVisualStyleBackColor = true;
             this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
@@ -124,7 +124,7 @@
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(93, 40);
             this.btnClose.TabIndex = 0;
-            this.btnClose.Text = "Close";
+            this.btnClose.Text = "关闭";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 

@@ -22,7 +22,7 @@ namespace gMKVToolNix
         private void InitForm()
         {
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-            Text = String.Format("gMKVExtractGUI v{0} -- Log", Assembly.GetExecutingAssembly().GetName().Version);
+            Text = String.Format("gMKVExtractGUI v{0} -- 日志", Assembly.GetExecutingAssembly().GetName().Version);
         }
 
         private void frmLog_Activated(object sender, EventArgs e)
@@ -34,7 +34,7 @@ namespace gMKVToolNix
         {
             txtLog.Select(txtLog.TextLength + 1, 0);
             txtLog.ScrollToCaret();
-            grpLog.Text = String.Format("Log ({0})", txtLog.Lines.LongLength);
+            grpLog.Text = String.Format("日志 ({0})", txtLog.Lines.LongLength);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

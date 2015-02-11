@@ -164,8 +164,8 @@ namespace gMKVToolnix
                 // add the default options for running mkvinfo
                 List<OptionValue> optionList = new List<OptionValue>();
                 optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
-                optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
-                optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
+                //optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
+                //optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
                 // check for extra options provided from the caller
                 if (argOptionList != null)
                 {
@@ -203,7 +203,8 @@ namespace gMKVToolnix
                 _MyProcess = null;
 
                 // Check the exit code
-                if (myProcess.ExitCode > 0)
+                // ExitCode 1 is for warnings only, so ignore it
+                if (myProcess.ExitCode > 1)
                 {
                     // something went wrong!
                     throw new Exception(String.Format("Mkvinfo exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}",

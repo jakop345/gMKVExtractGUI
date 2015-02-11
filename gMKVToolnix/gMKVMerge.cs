@@ -107,7 +107,8 @@ namespace gMKVToolnix
                 Debug.WriteLine(String.Format("Exit code: {0}", myProcess.ExitCode));
 
                 // Check the exit code
-                if (myProcess.ExitCode > 0)
+                // ExitCode 1 is for warnings only, so ignore it
+                if (myProcess.ExitCode > 1)
                 {
                     // something went wrong!
                     throw new Exception(String.Format("Mkvmerge exited with error code {0}!\r\n\r\nErrors reported:\r\n{1}",

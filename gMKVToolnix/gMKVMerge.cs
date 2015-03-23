@@ -76,8 +76,8 @@ namespace gMKVToolnix
             {
                 List<OptionValue> optionList = new List<OptionValue>();
                 optionList.Add(new OptionValue(MkvMergeOptions.ui_language, "en"));
-                //optionList.Add(new OptionValue(MkvMergeOptions.command_line_charset, "\"UFT-8\""));
-                //optionList.Add(new OptionValue(MkvMergeOptions.output_charset, "\"UFT-8\""));
+                optionList.Add(new OptionValue(MkvMergeOptions.command_line_charset, "\"UTF-8\""));
+                optionList.Add(new OptionValue(MkvMergeOptions.output_charset, "\"UTF-8\""));
                 optionList.Add(new OptionValue(MkvMergeOptions.identify_verbose, String.Empty));
 
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();

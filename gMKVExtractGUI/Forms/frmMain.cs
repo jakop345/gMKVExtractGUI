@@ -1005,7 +1005,9 @@ namespace gMKVToolnix
         {
             try
             {
-                if (!_FromConstructor)
+                if (!_FromConstructor && !(
+                    this.WindowState == FormWindowState.Minimized
+                    || this.WindowState == FormWindowState.Maximized))
                 {
                     _Settings.WindowPosX = this.Location.X;
                     _Settings.WindowPosY = this.Location.Y;

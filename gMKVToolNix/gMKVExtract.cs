@@ -805,7 +805,7 @@ namespace gMKVToolNix
             }
             else if (argTrack.CodecID.ToUpper().Contains("V_MPEG4/ISO/"))
             {
-                outputFileExtension = "avc";
+                outputFileExtension = "h264";
             }
             else if (argTrack.CodecID.ToUpper().Contains("V_MPEGH/ISO/HEVC"))
             {

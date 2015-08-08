@@ -86,7 +86,32 @@ namespace gMKVToolnix
 
         public gSettings(String appPath)
         {
-            _ApplicationPath = appPath;
+            // check if user has permission for appPath
+            Boolean userHasPermission = false;
+            try
+            {
+                using (FileStream tmp = File.Open(Path.Combine(appPath, _SETTINGS_FILE), FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                {
+                    tmp.Flush();
+                }
+                userHasPermission = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                userHasPermission = false;
+            }
+
+            // If user doesn't have permissions to the application path,
+            // use the current user appdata folder
+            if (userHasPermission)
+            {
+                _ApplicationPath = appPath;
+            }
+            else
+            {
+                _ApplicationPath = Application.UserAppDataPath;
+            }
         }
 
         public void Reload()

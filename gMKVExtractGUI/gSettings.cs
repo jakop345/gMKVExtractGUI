@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace gMKVToolnix
 {
@@ -69,6 +70,14 @@ namespace gMKVToolnix
         {
             get { return _JobMode; }
             set { _JobMode = value; }
+        }
+
+        private FormWindowState _WindowState;
+
+        public FormWindowState WindowState
+        {
+            get { return _WindowState; }
+            set { _WindowState = value; }
         }
 
 
@@ -201,6 +210,18 @@ namespace gMKVToolnix
                                 _JobMode = false;
                             }
                         }
+                        else if (line.StartsWith("Window State:"))
+                        {
+                            try
+                            {
+                                _WindowState = (FormWindowState)Enum.Parse(typeof(FormWindowState), line.Substring(line.IndexOf(":") + 1), true);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _WindowSizeHeight = 600;
+                            }
+                        }
                     }
                 }
             }
@@ -219,6 +240,7 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Initial Window Size Width:{0}", _WindowSizeWidth));
                 sw.WriteLine(String.Format("Initial Window Size Height:{0}", _WindowSizeHeight));
                 sw.WriteLine(String.Format("Job Mode:{0}", _JobMode));
+                sw.WriteLine(String.Format("Window State:{0}", _WindowState.ToString()));
             }
         }
     }

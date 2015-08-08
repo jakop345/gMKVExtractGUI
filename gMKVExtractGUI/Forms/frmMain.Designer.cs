@@ -94,60 +94,60 @@
             this.toolStripSeparator1,
             this.unselectAllTracksToolStripMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(231, 164);
+            this.contextMenuStrip.Size = new System.Drawing.Size(230, 164);
             this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
             // 
             // selectAllTracksToolStripMenuItem
             // 
             this.selectAllTracksToolStripMenuItem.Name = "selectAllTracksToolStripMenuItem";
-            this.selectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllTracksToolStripMenuItem.Text = "Select All Tracks";
             this.selectAllTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllTracksToolStripMenuItem_Click);
             // 
             // selectAllVideoTracksToolStripMenuItem
             // 
             this.selectAllVideoTracksToolStripMenuItem.Name = "selectAllVideoTracksToolStripMenuItem";
-            this.selectAllVideoTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllVideoTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllVideoTracksToolStripMenuItem.Text = "Select All Video Tracks";
             this.selectAllVideoTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllVideoTracksToolStripMenuItem_Click);
             // 
             // selectAllAudioTracksToolStripMenuItem
             // 
             this.selectAllAudioTracksToolStripMenuItem.Name = "selectAllAudioTracksToolStripMenuItem";
-            this.selectAllAudioTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllAudioTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllAudioTracksToolStripMenuItem.Text = "Select All Audio Tracks";
             this.selectAllAudioTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllAudioTracksToolStripMenuItem_Click);
             // 
             // selectAllSubtitleTracksToolStripMenuItem
             // 
             this.selectAllSubtitleTracksToolStripMenuItem.Name = "selectAllSubtitleTracksToolStripMenuItem";
-            this.selectAllSubtitleTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllSubtitleTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllSubtitleTracksToolStripMenuItem.Text = "Select All Subtitle Tracks";
             this.selectAllSubtitleTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllSubtitleTracksToolStripMenuItem_Click);
             // 
             // selectAllChapterTracksToolStripMenuItem
             // 
             this.selectAllChapterTracksToolStripMenuItem.Name = "selectAllChapterTracksToolStripMenuItem";
-            this.selectAllChapterTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllChapterTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllChapterTracksToolStripMenuItem.Text = "Select All Chapter Tracks";
             this.selectAllChapterTracksToolStripMenuItem.Click += new System.EventHandler(this.selectAllChapterTracksToolStripMenuItem_Click);
             // 
             // selectAllAttachmentsToolStripMenuItem
             // 
             this.selectAllAttachmentsToolStripMenuItem.Name = "selectAllAttachmentsToolStripMenuItem";
-            this.selectAllAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.selectAllAttachmentsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.selectAllAttachmentsToolStripMenuItem.Text = "Select All Attachments Tracks";
             this.selectAllAttachmentsToolStripMenuItem.Click += new System.EventHandler(this.selectAllAttachmentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(227, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(226, 6);
             // 
             // unselectAllTracksToolStripMenuItem
             // 
             this.unselectAllTracksToolStripMenuItem.Name = "unselectAllTracksToolStripMenuItem";
-            this.unselectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.unselectAllTracksToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.unselectAllTracksToolStripMenuItem.Text = "Unselect All tracks";
             this.unselectAllTracksToolStripMenuItem.Click += new System.EventHandler(this.unselectAllTracksToolStripMenuItem_Click);
             // 
@@ -543,6 +543,7 @@
             this.Name = "frmMain";
             this.Text = "gMKVExtractGUI";
             this.ResizeEnd += new System.EventHandler(this.frmMain_ResizeEnd);
+            this.ClientSizeChanged += new System.EventHandler(this.frmMain_ClientSizeChanged);
             this.Move += new System.EventHandler(this.frmMain_Move);
             this.contextMenuStrip.ResumeLayout(false);
             this.toolStripContainer1.ContentPanel.ResumeLayout(false);

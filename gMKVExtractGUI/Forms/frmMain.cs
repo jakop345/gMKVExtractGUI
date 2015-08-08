@@ -67,7 +67,8 @@ namespace gMKVToolnix
                 this.StartPosition = FormStartPosition.Manual;
                 this.Location = new Point(_Settings.WindowPosX, _Settings.WindowPosY);
                 this.Size = new System.Drawing.Size(_Settings.WindowSizeWidth, _Settings.WindowSizeHeight);
-                
+                this.WindowState = _Settings.WindowState;
+
                 // Set chapter type, output durectory and job mode from settings
                 cmbChapterType.SelectedItem = Enum.GetName(typeof(MkvChapterTypes), _Settings.ChapterType);
                 txtOutputDirectory.Text = _Settings.OutputDirectory;
@@ -1011,6 +1012,7 @@ namespace gMKVToolnix
                 {
                     _Settings.WindowPosX = this.Location.X;
                     _Settings.WindowPosY = this.Location.Y;
+                    _Settings.WindowState = this.WindowState;
                     _Settings.Save();
                 }
             }
@@ -1028,6 +1030,7 @@ namespace gMKVToolnix
                 {
                     _Settings.WindowSizeWidth = this.Size.Width;
                     _Settings.WindowSizeHeight = this.Size.Height;
+                    _Settings.WindowState = this.WindowState;
                     _Settings.Save();
                 }
             }
@@ -1053,6 +1056,22 @@ namespace gMKVToolnix
         {
             tlpMain.Enabled = argStatus;
             Application.DoEvents();
+        }
+
+        private void frmMain_ClientSizeChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_FromConstructor)
+                {
+                    _Settings.WindowState = this.WindowState;
+                    _Settings.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
     }
 }

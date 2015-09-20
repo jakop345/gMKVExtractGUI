@@ -17,6 +17,11 @@ namespace gMKVToolnix
             get { return "mmg.exe"; }
         }
 
+        public static string MKV_MERGE_NEW_GUI_FILENAME
+        {
+            get { return "mkvmerge.exe"; }
+        }
+
         public static String UnescapeString(String argString)
         {
             return argString.

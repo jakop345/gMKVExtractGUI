@@ -87,14 +87,16 @@ namespace gMKVToolnix
                     Debug.WriteLine(ex);
                     // MKVToolnix was not found in registry
                     // check in the current directory
-                    if (File.Exists(Path.Combine(GetCurrentDirectory(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                    if (File.Exists(Path.Combine(GetCurrentDirectory(), gMKVHelper.MKV_MERGE_GUI_FILENAME))
+                        || File.Exists(Path.Combine(GetCurrentDirectory(), gMKVHelper.MKV_MERGE_NEW_GUI_FILENAME)))
                     {
                         txtMKVToolnixPath.Text = GetCurrentDirectory();
                     }
                     else
                     {
                         // check for ini file
-                        if (File.Exists(Path.Combine(_Settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                        if (File.Exists(Path.Combine(_Settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_GUI_FILENAME))
+                            || File.Exists(Path.Combine(_Settings.MkvToolnixPath, gMKVHelper.MKV_MERGE_NEW_GUI_FILENAME)))
                         {
                             _FromConstructor = true;
                             txtMKVToolnixPath.Text = _Settings.MkvToolnixPath;
@@ -311,7 +313,8 @@ namespace gMKVToolnix
                 if (!_FromConstructor)
                 {
                     // check if the folder actually contains MKVToolnix
-                    if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                    if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME))
+                        && !File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_NEW_GUI_FILENAME)))
                     {
                         _FromConstructor = true;
                         txtMKVToolnixPath.Text = String.Empty;
@@ -782,7 +785,8 @@ namespace gMKVToolnix
             }
             else
             {
-                if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME)))
+                if (!File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_GUI_FILENAME))
+                    && !File.Exists(Path.Combine(txtMKVToolnixPath.Text.Trim(), gMKVHelper.MKV_MERGE_NEW_GUI_FILENAME)))
                 {
                     throw new Exception("The MKVToolnix path provided does not contain MKVToolnix files!");
                 }

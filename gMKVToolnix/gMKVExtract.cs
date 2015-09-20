@@ -612,6 +612,10 @@ namespace gMKVToolnix
             {
                 outputFileExtension = "avc";
             }
+            else if (argTrack.CodecID.ToUpper().Contains("V_MPEGH/ISO/HEVC"))
+            {
+                outputFileExtension = "hevc";
+            }
             else if (argTrack.CodecID.ToUpper().Contains("V_MPEG4/MS/V3"))
             {
                 outputFileExtension = "mp4";

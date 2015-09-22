@@ -10,18 +10,39 @@ namespace gMKVToolnix
     public class gMKVHelper
     {
         /// <summary>
+        /// Returns if the running Platform is Linux Or MacOSX
+        /// </summary>
+        public static Boolean IsLinux
+        {
+            get
+            {
+                PlatformID myPlatform = Environment.OSVersion.Platform;
+                // 128 is Mono 1.x specific value for Linux systems, so it's there to provide compatibility
+                return (myPlatform == PlatformID.Unix) || (myPlatform == PlatformID.MacOSX) || ((Int32)myPlatform == 128);
+            }
+        }
+
+        /// <summary>
         /// Gets the mkvmerge GUI executable filename
         /// </summary>
         public static String MKV_MERGE_GUI_FILENAME 
         {
-            get { return "mmg.exe"; }
+            get { return IsLinux ? "mmg" : "mmg.exe"; }
         }
 
+        /// <summary>
+        /// Gets the new mkvmerge GUI executable filename
+        /// </summary>
         public static string MKV_MERGE_NEW_GUI_FILENAME
         {
-            get { return "mkvmerge.exe"; }
+            get { return IsLinux ? "mkvmerge" : "mkvmerge.exe"; }
         }
 
+        /// <summary>
+        /// Unescapes string from mkvtoolnix output
+        /// </summary>
+        /// <param name="argString"></param>
+        /// <returns></returns>
         public static String UnescapeString(String argString)
         {
             return argString.
@@ -32,6 +53,11 @@ namespace gMKVToolnix
                 Replace(@"\\", @"\");
         }
 
+        /// <summary>
+        /// Escapes string from mkvtoolnix output
+        /// </summary>
+        /// <param name="argString"></param>
+        /// <returns></returns>
         public static String EscapeString(String argString)
         {
             return argString.
@@ -50,6 +76,11 @@ namespace gMKVToolnix
         /// <returns></returns>
         public static String GetMKVToolnixPathViaRegistry()
         {
+            // Check if we are on Linux, so we don't have to check the registry
+            if (gMKVHelper.IsLinux)
+            {
+                throw new Exception("Running on Linux...");
+            }
             RegistryKey regUninstall = null;
             RegistryKey regMkvToolnix = null;
             String valuePath = String.Empty;
@@ -183,6 +214,12 @@ namespace gMKVToolnix
             return Path.GetDirectoryName(valuePath);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="argMkvToolnixPath"></param>
+        /// <param name="argInputFile"></param>
+        /// <returns></returns>
         public static List<gMKVSegment> GetMergedMkvSegmentList(String argMkvToolnixPath, String argInputFile)
         {
             gMKVMerge g = new gMKVMerge(argMkvToolnixPath);

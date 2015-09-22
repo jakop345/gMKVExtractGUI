@@ -32,6 +32,14 @@ namespace gMKVToolnix
             }
         }
 
+        /// <summary>
+        /// Gets the mkvinfo executable filename
+        /// </summary>
+        public static String MKV_MERGE_FILENAME
+        {
+            get { return gMKVHelper.IsLinux ? "mkvmerge" : "mkvmerge.exe"; }
+        }
+
         private String _MKVToolnixPath = String.Empty;
         private String _MKVMergeFilename = String.Empty;
         private List<gMKVSegment> _SegmentList = new List<gMKVSegment>();
@@ -50,13 +58,13 @@ namespace gMKVToolnix
         public gMKVMerge(String mkvToonlixPath)
         {
             _MKVToolnixPath = mkvToonlixPath;
-            _MKVMergeFilename = Path.Combine(_MKVToolnixPath, "mkvmerge.exe");            
+            _MKVMergeFilename = Path.Combine(_MKVToolnixPath, MKV_MERGE_FILENAME);            
         }
 
         public List<gMKVSegment> GetMKVSegments(String argMKVFile)
         {
             // check for existence of MKVMerge
-            if (!File.Exists(_MKVMergeFilename)) { throw new Exception("Could not find mkvmerge.exe!\r\n" + _MKVMergeFilename); }
+            if (!File.Exists(_MKVMergeFilename)) { throw new Exception(String.Format("Could not find {0}!\r\n{1}", MKV_MERGE_FILENAME, _MKVMergeFilename)); }
             // First clear the segment list
             _SegmentList.Clear();
             // Clear the mkvmerge output

@@ -67,6 +67,14 @@ namespace gMKVToolnix
             public TrackParameter() { }
         }
 
+        /// <summary>
+        /// Gets the mkvextract executable filename
+        /// </summary>
+        public static String MKV_EXTRACT_FILENAME
+        {
+            get { return gMKVHelper.IsLinux ? "mkvextract" : "mkvextract.exe"; }
+        }
+
         private String _MKVToolnixPath = String.Empty;
         private String _MKVExtractFilename = String.Empty;
         private StringBuilder _MKVExtractOutput = new StringBuilder();
@@ -96,7 +104,7 @@ namespace gMKVToolnix
         public gMKVExtract(String mkvToonlixPath)
         {
             _MKVToolnixPath = mkvToonlixPath;
-            _MKVExtractFilename = Path.Combine(_MKVToolnixPath, "mkvextract.exe");
+            _MKVExtractFilename = Path.Combine(_MKVToolnixPath, MKV_EXTRACT_FILENAME);
         }
 
         public void ExtractMKVSegmentsThreaded(Object parameters)

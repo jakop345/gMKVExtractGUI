@@ -128,7 +128,7 @@ namespace gMKVToolnix
         private void ParseMkvMergeOutput()
         {
             // start the loop for each line of the output
-            foreach (String outputLine in _MKVMergeOutput.ToString().Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (String outputLine in _MKVMergeOutput.ToString().Split(new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (outputLine.StartsWith("Track ID "))
                 {

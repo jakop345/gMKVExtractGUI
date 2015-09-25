@@ -236,7 +236,7 @@ namespace gMKVToolnix
             gMKVSegment tmpSegment = null;
             MkvInfoParseState tmpState = MkvInfoParseState.Searching;
             Int32 attachmentID = 1;
-            foreach (String outputLine in _MKVInfoOutput.ToString().Split(new String[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (String outputLine in _MKVInfoOutput.ToString().Split(new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 // first determine the parse state we are in
                 if (outputLine.Contains("Segment,"))

@@ -498,7 +498,15 @@ namespace gMKVToolnix
             {
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVExtractFilename;
-                myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);
+                // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
+                if (!gMKVHelper.IsLinux)
+                {
+                    myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);
+                }
+                else
+                {
+                    myProcessInfo.Arguments = String.Format("{0}", argParameters);
+                }                    
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;
                 myProcessInfo.StandardOutputEncoding = Encoding.UTF8;

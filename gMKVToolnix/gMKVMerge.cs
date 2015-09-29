@@ -83,7 +83,11 @@ namespace gMKVToolnix
             using (Process myProcess = new Process())
             {
                 List<OptionValue> optionList = new List<OptionValue>();
-                optionList.Add(new OptionValue(MkvMergeOptions.ui_language, "en"));
+                // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
+                if (!gMKVHelper.IsLinux)
+                {
+                    optionList.Add(new OptionValue(MkvMergeOptions.ui_language, "en"));
+                }                
                 //optionList.Add(new OptionValue(MkvMergeOptions.command_line_charset, "\"UTF-8\""));
                 //optionList.Add(new OptionValue(MkvMergeOptions.output_charset, "\"UTF-8\""));
                 optionList.Add(new OptionValue(MkvMergeOptions.identify_verbose, String.Empty));

@@ -171,7 +171,11 @@ namespace gMKVToolnix
             {
                 // add the default options for running mkvinfo
                 List<OptionValue> optionList = new List<OptionValue>();
-                optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
+                // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
+                if (!gMKVHelper.IsLinux)
+                {
+                    optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
+                }
                 //optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 //optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
                 // check for extra options provided from the caller

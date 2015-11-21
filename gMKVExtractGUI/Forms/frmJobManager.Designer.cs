@@ -30,6 +30,8 @@
         {
             this.tlpMain = new gMKVToolnix.gTableLayoutPanel();
             this.grpProgress = new gMKVToolnix.gGroupBox();
+            this.txtCurrentTrack = new gMKVToolnix.gTextBox();
+            this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTotalProgressValue = new System.Windows.Forms.Label();
             this.lblCurrentProgressValue = new System.Windows.Forms.Label();
             this.lblTotalProgress = new System.Windows.Forms.Label();
@@ -40,14 +42,12 @@
             this.grpJobs = new gMKVToolnix.gGroupBox();
             this.grdJobs = new gMKVToolnix.Controls.gDataGridView();
             this.grpActions = new gMKVToolnix.gGroupBox();
+            this.btnSaveJobs = new System.Windows.Forms.Button();
+            this.btnLoadJobs = new System.Windows.Forms.Button();
             this.btnAbortAll = new System.Windows.Forms.Button();
             this.btnAbort = new System.Windows.Forms.Button();
             this.btnRunAll = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
-            this.btnLoadJobs = new System.Windows.Forms.Button();
-            this.btnSaveJobs = new System.Windows.Forms.Button();
-            this.lblCurrentTrack = new System.Windows.Forms.Label();
-            this.txtCurrentTrack = new gMKVToolnix.gTextBox();
             this.tlpMain.SuspendLayout();
             this.grpProgress.SuspendLayout();
             this.tlpJobs.SuspendLayout();
@@ -89,11 +89,29 @@
             this.grpProgress.TabStop = false;
             this.grpProgress.Text = "Progress";
             // 
+            // txtCurrentTrack
+            // 
+            this.txtCurrentTrack.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCurrentTrack.Location = new System.Drawing.Point(107, 18);
+            this.txtCurrentTrack.Name = "txtCurrentTrack";
+            this.txtCurrentTrack.ReadOnly = true;
+            this.txtCurrentTrack.Size = new System.Drawing.Size(460, 23);
+            this.txtCurrentTrack.TabIndex = 8;
+            // 
+            // lblCurrentTrack
+            // 
+            this.lblCurrentTrack.AutoSize = true;
+            this.lblCurrentTrack.Location = new System.Drawing.Point(8, 22);
+            this.lblCurrentTrack.Name = "lblCurrentTrack";
+            this.lblCurrentTrack.Size = new System.Drawing.Size(78, 15);
+            this.lblCurrentTrack.TabIndex = 7;
+            this.lblCurrentTrack.Text = "Current Track";
+            // 
             // lblTotalProgressValue
             // 
             this.lblTotalProgressValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblTotalProgressValue.AutoSize = true;
-            this.lblTotalProgressValue.Location = new System.Drawing.Point(573, 53);
+            this.lblTotalProgressValue.Location = new System.Drawing.Point(573, 79);
             this.lblTotalProgressValue.Name = "lblTotalProgressValue";
             this.lblTotalProgressValue.Size = new System.Drawing.Size(0, 15);
             this.lblTotalProgressValue.TabIndex = 6;
@@ -102,7 +120,7 @@
             // 
             this.lblCurrentProgressValue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCurrentProgressValue.AutoSize = true;
-            this.lblCurrentProgressValue.Location = new System.Drawing.Point(573, 25);
+            this.lblCurrentProgressValue.Location = new System.Drawing.Point(573, 51);
             this.lblCurrentProgressValue.Name = "lblCurrentProgressValue";
             this.lblCurrentProgressValue.Size = new System.Drawing.Size(0, 15);
             this.lblCurrentProgressValue.TabIndex = 5;
@@ -110,16 +128,16 @@
             // lblTotalProgress
             // 
             this.lblTotalProgress.AutoSize = true;
-            this.lblTotalProgress.Location = new System.Drawing.Point(8, 80);
+            this.lblTotalProgress.Location = new System.Drawing.Point(8, 79);
             this.lblTotalProgress.Name = "lblTotalProgress";
-            this.lblTotalProgress.Size = new System.Drawing.Size(82, 15);
+            this.lblTotalProgress.Size = new System.Drawing.Size(81, 15);
             this.lblTotalProgress.TabIndex = 4;
             this.lblTotalProgress.Text = "Total Progress";
             // 
             // lblCurrentProgress
             // 
             this.lblCurrentProgress.AutoSize = true;
-            this.lblCurrentProgress.Location = new System.Drawing.Point(8, 52);
+            this.lblCurrentProgress.Location = new System.Drawing.Point(8, 51);
             this.lblCurrentProgress.Name = "lblCurrentProgress";
             this.lblCurrentProgress.Size = new System.Drawing.Size(95, 15);
             this.lblCurrentProgress.TabIndex = 3;
@@ -206,6 +224,26 @@
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
             // 
+            // btnSaveJobs
+            // 
+            this.btnSaveJobs.Location = new System.Drawing.Point(7, 158);
+            this.btnSaveJobs.Name = "btnSaveJobs";
+            this.btnSaveJobs.Size = new System.Drawing.Size(90, 30);
+            this.btnSaveJobs.TabIndex = 6;
+            this.btnSaveJobs.Text = "Save Jobs...";
+            this.btnSaveJobs.UseVisualStyleBackColor = true;
+            this.btnSaveJobs.Click += new System.EventHandler(this.btnSaveJobs_Click);
+            // 
+            // btnLoadJobs
+            // 
+            this.btnLoadJobs.Location = new System.Drawing.Point(7, 122);
+            this.btnLoadJobs.Name = "btnLoadJobs";
+            this.btnLoadJobs.Size = new System.Drawing.Size(90, 30);
+            this.btnLoadJobs.TabIndex = 5;
+            this.btnLoadJobs.Text = "Load Jobs...";
+            this.btnLoadJobs.UseVisualStyleBackColor = true;
+            this.btnLoadJobs.Click += new System.EventHandler(this.btnLoadJobs_Click);
+            // 
             // btnAbortAll
             // 
             this.btnAbortAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -247,44 +285,6 @@
             this.btnRemove.Text = "Remove";
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
-            // 
-            // btnLoadJobs
-            // 
-            this.btnLoadJobs.Location = new System.Drawing.Point(7, 122);
-            this.btnLoadJobs.Name = "btnLoadJobs";
-            this.btnLoadJobs.Size = new System.Drawing.Size(90, 30);
-            this.btnLoadJobs.TabIndex = 5;
-            this.btnLoadJobs.Text = "Load Jobs...";
-            this.btnLoadJobs.UseVisualStyleBackColor = true;
-            this.btnLoadJobs.Click += new System.EventHandler(this.btnLoadJobs_Click);
-            // 
-            // btnSaveJobs
-            // 
-            this.btnSaveJobs.Location = new System.Drawing.Point(7, 158);
-            this.btnSaveJobs.Name = "btnSaveJobs";
-            this.btnSaveJobs.Size = new System.Drawing.Size(90, 30);
-            this.btnSaveJobs.TabIndex = 6;
-            this.btnSaveJobs.Text = "Save Jobs...";
-            this.btnSaveJobs.UseVisualStyleBackColor = true;
-            this.btnSaveJobs.Click += new System.EventHandler(this.btnSaveJobs_Click);
-            // 
-            // lblCurrentTrack
-            // 
-            this.lblCurrentTrack.AutoSize = true;
-            this.lblCurrentTrack.Location = new System.Drawing.Point(8, 22);
-            this.lblCurrentTrack.Name = "lblCurrentTrack";
-            this.lblCurrentTrack.Size = new System.Drawing.Size(79, 15);
-            this.lblCurrentTrack.TabIndex = 7;
-            this.lblCurrentTrack.Text = "Current Track";
-            // 
-            // txtCurrentTrack
-            // 
-            this.txtCurrentTrack.BackColor = System.Drawing.SystemColors.Window;
-            this.txtCurrentTrack.Location = new System.Drawing.Point(107, 18);
-            this.txtCurrentTrack.Name = "txtCurrentTrack";
-            this.txtCurrentTrack.ReadOnly = true;
-            this.txtCurrentTrack.Size = new System.Drawing.Size(460, 23);
-            this.txtCurrentTrack.TabIndex = 8;
             // 
             // frmJobManager
             // 

@@ -18,6 +18,7 @@ namespace gMKVToolnix
         private Int32 _CurrentJob = 0;
         private Int32 _TotalJobs = 0;
         private gMKVExtract _gMkvExtract = null;
+        private Boolean _ExtractRunning = false;
 
         private BindingList<gMKVJobInfo> _JobList = new BindingList<gMKVJobInfo>();
 
@@ -86,7 +87,14 @@ namespace gMKVToolnix
         {
             // To avoid getting disposed
             e.Cancel = true;
-            this.Hide();
+            if (_ExtractRunning)
+            {
+                ShowErrorMessage("There is an extraction process running! Please abort before closing!");
+            }
+            else
+            {
+                this.Hide();
+            }
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
@@ -232,6 +240,7 @@ namespace gMKVToolnix
             {
                 SetActionStatus(false);
                 SetAbortStatus(true);
+                _ExtractRunning = true;
                 _MainForm.SetTableLayoutMainStatus(false);
                 _TotalJobs = argJobInfoList.Count;
                 _CurrentJob = 0;
@@ -263,6 +272,7 @@ namespace gMKVToolnix
             {
                 UpdateCurrentProgress(0);
                 prgBrTotal.Value = 0;
+                _ExtractRunning = false;
                 lblCurrentProgressValue.Text = string.Empty;
                 lblTotalProgressValue.Text = string.Empty;
                 _AbortAll = false;

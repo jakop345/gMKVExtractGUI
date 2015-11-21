@@ -293,7 +293,7 @@
             this.ClientSize = new System.Drawing.Size(624, 411);
             this.Controls.Add(this.tlpMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.MinimumSize = new System.Drawing.Size(640, 400);
+            this.MinimumSize = new System.Drawing.Size(640, 450);
             this.Name = "frmJobManager";
             this.Text = "frmJobManager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmJobManager_FormClosing);

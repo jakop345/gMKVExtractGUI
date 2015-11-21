@@ -1087,13 +1087,14 @@ namespace gMKVToolnix
             {
                 if (_ExtractRunning)
                 {
-                    ShowErrorMessage("There is an extraction process running! Please abort before closing!");
                     e.Cancel = true;
+                    ShowErrorMessage("There is an extraction process running! Please abort before closing!");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                e.Cancel = true;
                 ShowErrorMessage(ex.Message);
             }
         }

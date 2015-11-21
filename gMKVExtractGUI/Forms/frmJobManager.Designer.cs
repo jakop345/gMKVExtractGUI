@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tlpMain = new gMKVToolnix.gTableLayoutPanel();
             this.grpProgress = new gMKVToolnix.gGroupBox();
             this.txtCurrentTrack = new gMKVToolnix.gTextBox();
@@ -48,12 +49,15 @@
             this.btnAbort = new System.Windows.Forms.Button();
             this.btnRunAll = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.changeToReadyStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             this.grpProgress.SuspendLayout();
             this.tlpJobs.SuspendLayout();
             this.grpJobs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).BeginInit();
             this.grpActions.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -197,6 +201,7 @@
             this.grdJobs.BackgroundColor = System.Drawing.Color.White;
             this.grdJobs.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.grdJobs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.grdJobs.ContextMenuStrip = this.contextMenuStrip;
             this.grdJobs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grdJobs.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.grdJobs.Location = new System.Drawing.Point(3, 19);
@@ -286,6 +291,21 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeToReadyStatusToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(200, 48);
+            this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+            // 
+            // changeToReadyStatusToolStripMenuItem
+            // 
+            this.changeToReadyStatusToolStripMenuItem.Name = "changeToReadyStatusToolStripMenuItem";
+            this.changeToReadyStatusToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.changeToReadyStatusToolStripMenuItem.Text = "Change to Ready Status";
+            this.changeToReadyStatusToolStripMenuItem.Click += new System.EventHandler(this.changeToReadyStatusToolStripMenuItem_Click);
+            // 
             // frmJobManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -304,6 +324,7 @@
             this.grpJobs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).EndInit();
             this.grpActions.ResumeLayout(false);
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -330,5 +351,7 @@
         private System.Windows.Forms.Button btnLoadJobs;
         private gTextBox txtCurrentTrack;
         private System.Windows.Forms.Label lblCurrentTrack;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem changeToReadyStatusToolStripMenuItem;
     }
 }

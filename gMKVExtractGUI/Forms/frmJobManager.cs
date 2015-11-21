@@ -413,5 +413,45 @@ namespace gMKVToolnix
                 ShowErrorMessage(ex.Message);
             }
         }
+
+        private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+            SetContextMenuText();
+        }
+
+        private void SetContextMenuText()
+        {
+            if (_ExtractRunning)
+            {
+                changeToReadyStatusToolStripMenuItem.Enabled = false;
+            }
+            else if (grdJobs.SelectedRows.Count == 0)
+            {
+                changeToReadyStatusToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                foreach (DataGridViewRow row in grdJobs.SelectedRows)
+                {
+                    if(((gMKVJobInfo)row.DataBoundItem).State != JobState.Ready)
+                    {
+                        changeToReadyStatusToolStripMenuItem.Enabled = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void changeToReadyStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in grdJobs.SelectedRows)
+            {
+                if (((gMKVJobInfo)row.DataBoundItem).State != JobState.Ready)
+                {
+                    ((gMKVJobInfo)row.DataBoundItem).Reset();
+                }
+            }
+            grdJobs.Refresh();
+        }
     }
 }

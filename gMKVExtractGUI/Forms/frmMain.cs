@@ -36,6 +36,7 @@ namespace gMKVToolnix
         private Boolean _FromConstructor = false;
         private ToolTip _ToolTip = new ToolTip();
         private Boolean _JobMode = false;
+        private Boolean _ExtractRunning = false;
 
         public frmMain()
         {
@@ -560,6 +561,7 @@ namespace gMKVToolnix
             try
             {
                 tlpMain.Enabled = false;
+                _ExtractRunning = true;
                 Application.DoEvents();
                 _gMkvExtract.MkvExtractProgressUpdated += g_MkvExtractProgressUpdated;
                 _gMkvExtract.MkvExtractTrackUpdated += g_MkvExtractTrackUpdated;
@@ -690,6 +692,7 @@ namespace gMKVToolnix
                     _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 }
                 ClearStatus();
+                _ExtractRunning = false;
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
                 btnAbortAll.Enabled = false;
@@ -1075,6 +1078,23 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+            }
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            try
+            {
+                if (_ExtractRunning)
+                {
+                    ShowErrorMessage("There is an extraction process running! Please abort before closing!");
+                    e.Cancel = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
             }
         }
     }

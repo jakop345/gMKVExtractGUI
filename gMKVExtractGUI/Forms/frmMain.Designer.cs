@@ -542,6 +542,7 @@
             this.MinimumSize = new System.Drawing.Size(640, 600);
             this.Name = "frmMain";
             this.Text = "gMKVExtractGUI";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.ResizeEnd += new System.EventHandler(this.frmMain_ResizeEnd);
             this.ClientSizeChanged += new System.EventHandler(this.frmMain_ClientSizeChanged);
             this.Move += new System.EventHandler(this.frmMain_Move);

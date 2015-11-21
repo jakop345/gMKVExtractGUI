@@ -37,7 +37,7 @@ namespace gMKVToolnix
         /// </summary>
         public static String MKV_MERGE_FILENAME
         {
-            get { return gMKVHelper.IsLinux ? "mkvmerge" : "mkvmerge.exe"; }
+            get { return gMKVHelper.IsOnLinux ? "mkvmerge" : "mkvmerge.exe"; }
         }
 
         private String _MKVToolnixPath = String.Empty;
@@ -84,7 +84,7 @@ namespace gMKVToolnix
             {
                 List<OptionValue> optionList = new List<OptionValue>();
                 // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
-                if (!gMKVHelper.IsLinux)
+                if (!gMKVHelper.IsOnLinux)
                 {
                     optionList.Add(new OptionValue(MkvMergeOptions.ui_language, "en"));
                 }                

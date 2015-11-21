@@ -72,7 +72,7 @@ namespace gMKVToolnix
         /// </summary>
         public static String MKV_EXTRACT_FILENAME
         {
-            get { return gMKVHelper.IsLinux ? "mkvextract" : "mkvextract.exe"; }
+            get { return gMKVHelper.IsOnLinux ? "mkvextract" : "mkvextract.exe"; }
         }
 
         private String _MKVToolnixPath = String.Empty;
@@ -499,7 +499,7 @@ namespace gMKVToolnix
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVExtractFilename;
                 // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
-                if (!gMKVHelper.IsLinux)
+                if (!gMKVHelper.IsOnLinux)
                 {
                     myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);
                 }

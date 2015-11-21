@@ -61,7 +61,7 @@ namespace gMKVToolnix
         /// </summary>
         public static String MKV_INFO_FILENAME
         {
-            get { return gMKVHelper.IsLinux ? "mkvinfo" : "mkvinfo.exe"; }
+            get { return gMKVHelper.IsOnLinux ? "mkvinfo" : "mkvinfo.exe"; }
         }
 
         private String _MKVToolnixPath = String.Empty;
@@ -172,7 +172,7 @@ namespace gMKVToolnix
                 // add the default options for running mkvinfo
                 List<OptionValue> optionList = new List<OptionValue>();
                 // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
-                if (!gMKVHelper.IsLinux)
+                if (!gMKVHelper.IsOnLinux)
                 {
                     optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
                 }

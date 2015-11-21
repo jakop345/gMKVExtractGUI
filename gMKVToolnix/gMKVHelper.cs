@@ -12,7 +12,7 @@ namespace gMKVToolnix
         /// <summary>
         /// Returns if the running Platform is Linux Or MacOSX
         /// </summary>
-        public static Boolean IsLinux
+        public static Boolean IsOnLinux
         {
             get
             {
@@ -27,7 +27,7 @@ namespace gMKVToolnix
         /// </summary>
         public static String MKV_MERGE_GUI_FILENAME 
         {
-            get { return IsLinux ? "mmg" : "mmg.exe"; }
+            get { return IsOnLinux ? "mmg" : "mmg.exe"; }
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace gMKVToolnix
         /// </summary>
         public static string MKV_MERGE_NEW_GUI_FILENAME
         {
-            get { return IsLinux ? "mkvmerge" : "mkvmerge.exe"; }
+            get { return IsOnLinux ? "mkvmerge" : "mkvmerge.exe"; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace gMKVToolnix
         public static String GetMKVToolnixPathViaRegistry()
         {
             // Check if we are on Linux, so we don't have to check the registry
-            if (gMKVHelper.IsLinux)
+            if (gMKVHelper.IsOnLinux)
             {
                 throw new Exception("Running on Linux...");
             }

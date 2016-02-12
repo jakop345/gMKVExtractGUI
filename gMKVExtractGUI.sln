@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gMKVExtractGUI", "gMKVExtractGUI\gMKVExtractGUI.csproj", "{20EBEFF3-C838-4239-A236-EC055BF51398}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gMKVToolnix", "gMKVToolnix\gMKVToolnix.csproj", "{82FC8FA8-50C0-44FA-8801-80050C0ED89F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gMKVToolNix", "gMKVToolnix\gMKVToolNix.csproj", "{82FC8FA8-50C0-44FA-8801-80050C0ED89F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,8 +7,8 @@
     <ProjectGuid>{82FC8FA8-50C0-44FA-8801-80050C0ED89F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>gMKVToolnix</RootNamespace>
-    <AssemblyName>gMKVToolnix</AssemblyName>
+    <RootNamespace>gMKVToolNix</RootNamespace>
+    <AssemblyName>gMKVToolNix</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

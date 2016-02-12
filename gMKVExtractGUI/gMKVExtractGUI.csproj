@@ -122,9 +122,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\gMKVToolnix\gMKVToolnix.csproj">
+    <ProjectReference Include="..\gMKVToolnix\gMKVToolNix.csproj">
       <Project>{82fc8fa8-50c0-44fa-8801-80050c0ed89f}</Project>
-      <Name>gMKVToolnix</Name>
+      <Name>gMKVToolNix</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

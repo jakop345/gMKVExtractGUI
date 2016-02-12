@@ -187,7 +187,7 @@ namespace gMKVToolnix
                 else if (outputLine.StartsWith("Chapters: "))
                 {
                     gMKVChapter tmp = new gMKVChapter();
-                    tmp.ChapterCount = Int32.Parse(outputLine.Replace("Chapters: ", string.Empty).Replace("entries", string.Empty).Trim());
+                    tmp.ChapterCount = Int32.Parse(outputLine.Replace("Chapters: ", string.Empty).Replace("entry", String.Empty).Replace("entries", string.Empty).Trim());
                     _SegmentList.Add(tmp);
                 }
             }

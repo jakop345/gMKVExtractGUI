@@ -440,9 +440,28 @@ namespace gMKVToolnix
                                                 tr.Title = atom.ChapterDisplay[0].ChapterString;
                                             }
                                             if (!String.IsNullOrEmpty(atom.ChapterTimeStart)
-                                                && atom.ChapterTimeStart.Contains("."))
+                                                && atom.ChapterTimeStart.Contains(":"))
                                             {
-                                                tr.Index = atom.ChapterTimeStart.Substring(0, atom.ChapterTimeStart.IndexOf("."));
+                                                String[] timeElements = atom.ChapterTimeStart.Split(new String[] { ":" }, StringSplitOptions.None);
+                                                if (timeElements.Length == 3)
+                                                {
+                                                    // Convert nanoseconds to frames (each second is 75 frames)
+                                                    Int64 nanoSeconds = 0;
+                                                    Int32 frames = 0;
+                                                    Int32 secondsLength = timeElements[2].Length;
+                                                    if (timeElements[2].Contains("."))
+                                                    {
+                                                        secondsLength = timeElements[2].IndexOf(".");
+                                                        nanoSeconds = Int64.Parse(timeElements[2].Substring(timeElements[2].IndexOf(".") + 1));
+                                                        // I take the integer part of the result action in order to get the first frame
+                                                        frames = Convert.ToInt32(Math.Floor(Convert.ToDouble(nanoSeconds) / 1000000000.0 * 75.0));
+                                                    }
+                                                    tr.Index = String.Format("{0}:{1}:{2}",
+                                                        timeElements[1]
+                                                        , timeElements[2].Substring(0, secondsLength)
+                                                        , frames.ToString("00")
+                                                        );
+                                                }
                                             }
 
                                             cue.Tracks.Add(tr);
@@ -452,18 +471,18 @@ namespace gMKVToolnix
 
                                     StringBuilder cueBuilder = new StringBuilder();
 
-                                    cueBuilder.AppendFormat("REM GENRE \"\" \r\n");
-                                    cueBuilder.AppendFormat("REM DATE \"\" \r\n");
-                                    cueBuilder.AppendFormat("PERFORMER \"\" \r\n");
-                                    cueBuilder.AppendFormat("TITLE \"{0}\" \r\n", cue.Title);
-                                    cueBuilder.AppendFormat("FILE \"{0}\" {1} \r\n", cue.File, cue.FileType);
+                                    cueBuilder.AppendFormat("REM GENRE \"\"\r\n");
+                                    cueBuilder.AppendFormat("REM DATE \"\"\r\n");
+                                    cueBuilder.AppendFormat("PERFORMER \"\"\r\n");
+                                    cueBuilder.AppendFormat("TITLE \"{0}\"\r\n", cue.Title);
+                                    cueBuilder.AppendFormat("FILE \"{0}\" {1}\r\n", cue.File, cue.FileType);
 
                                     foreach (CueTrack tr in cue.Tracks)
                                     {
-                                        cueBuilder.AppendFormat("\tTRACK {0} AUDIO \r\n", tr.Number.ToString("00"));
-                                        cueBuilder.AppendFormat("\t\tTITLE \"{0}\" \r\n", tr.Title);
-                                        cueBuilder.AppendFormat("\t\tPERFORMER \"\" \r\n");
-                                        cueBuilder.AppendFormat("\t\tINDEX 01 {0} \r\n", tr.Index);
+                                        cueBuilder.AppendFormat("\tTRACK {0} AUDIO\r\n", tr.Number.ToString("00"));
+                                        cueBuilder.AppendFormat("\t\tTITLE \"{0}\"\r\n", tr.Title);
+                                        cueBuilder.AppendFormat("\t\tPERFORMER \"\"\r\n");
+                                        cueBuilder.AppendFormat("\t\tINDEX 01 {0}\r\n", tr.Index);
                                     }
 
                                     using (StreamWriter sw = new StreamWriter(finalPar.OutputFilename, false, Encoding.UTF8))

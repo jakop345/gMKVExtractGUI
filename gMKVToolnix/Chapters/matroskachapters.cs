@@ -20,8 +20,8 @@ using System.Xml.Serialization;
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class Chapters {
     
     private EditionEntry[] editionEntryField;
@@ -43,8 +43,8 @@ public partial class Chapters {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class EditionEntry {
     
     private string editionUIDField;
@@ -114,8 +114,8 @@ public partial class EditionEntry {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class ChapterAtom {
     
     private string chapterTimeStartField;
@@ -271,8 +271,8 @@ public partial class ChapterAtom {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class ChapterTrack {
     
     private string chapterTrackNumberField;
@@ -293,8 +293,8 @@ public partial class ChapterTrack {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class ChapterDisplay {
     
     private string chapterStringField;
@@ -341,8 +341,8 @@ public partial class ChapterDisplay {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class ChapterProcess {
     
     private string chapterProcessCodecIDField;
@@ -388,8 +388,8 @@ public partial class ChapterProcess {
 [System.SerializableAttribute()]
 [System.Diagnostics.DebuggerStepThroughAttribute()]
 [System.ComponentModel.DesignerCategoryAttribute("code")]
-[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true, Namespace="http://tempuri.org/matroskachapters")]
-[System.Xml.Serialization.XmlRootAttribute(Namespace="http://tempuri.org/matroskachapters", IsNullable=false)]
+[System.Xml.Serialization.XmlTypeAttribute(AnonymousType=true)]
+[System.Xml.Serialization.XmlRootAttribute(IsNullable=false)]
 public partial class ChapterProcessCommand {
     
     private string chapterProcessTimeField;

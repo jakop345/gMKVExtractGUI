@@ -4,6 +4,9 @@ using System.Text;
 using System.Diagnostics;
 using System.IO;
 using System.Globalization;
+using System.Xml.Serialization;
+using System.Xml;
+using gMKVToolNix.CueSheet;
 
 namespace gMKVToolnix
 {
@@ -14,7 +17,8 @@ namespace gMKVToolnix
         attachments,
         chapters,
         cuesheet,
-        timecodes_v2
+        timecodes_v2,
+        cues
     }
 
     public enum MkvExtractGlobalOptions
@@ -36,6 +40,13 @@ namespace gMKVToolnix
         NoTimecodes,
         WithTimecodes,
         OnlyTimecodes
+    }
+
+    public enum CuesExtractionMode
+    {
+        NoCues,
+        WithCues,
+        OnlyCues
     }
 
     public delegate void MkvExtractProgressUpdatedEventHandler(Int32 progress);
@@ -117,7 +128,8 @@ namespace gMKVToolnix
                     (List<gMKVSegment>)objParameters[1],
                     (String)objParameters[2],
                     (MkvChapterTypes)objParameters[3],
-                    (TimecodesExtractionMode)objParameters[4]);
+                    (TimecodesExtractionMode)objParameters[4],
+                    (CuesExtractionMode)objParameters[5]);
             }
             catch (Exception ex)
             {
@@ -127,7 +139,7 @@ namespace gMKVToolnix
 
         private List<TrackParameter> GetTrackParameters(gMKVSegment argSeg,
             String argMKVFile, String argOutputDirectory, MkvChapterTypes argChapterType, 
-            TimecodesExtractionMode argTimecodesExtractionMode)
+            TimecodesExtractionMode argTimecodesExtractionMode, CuesExtractionMode argCueExtractionMode)
         {
             // create the new parameter list type
             List<TrackParameter> trackParameterList = new List<TrackParameter>();
@@ -154,8 +166,36 @@ namespace gMKVToolnix
                     ));
                 }
 
+                // if we are in a mode that requires cues extraction, add the parameter for the track
+                if (argCueExtractionMode != CuesExtractionMode.NoCues)
+                {
+                    trackParameterList.Add(new TrackParameter(
+                        MkvExtractModes.cues,
+                        String.Empty,
+                        String.Format("{0}:\"{1}\"",
+                            ((gMKVTrack)argSeg).TrackID,
+                            Path.Combine(
+                                argOutputDirectory,
+                                String.Format("{0}_track{1}_{2}.cue",
+                                    Path.GetFileNameWithoutExtension(argMKVFile),
+                                    ((gMKVTrack)argSeg).TrackNumber,
+                                    ((gMKVTrack)argSeg).Language))),
+                        false,
+                        String.Empty
+                    ));
+                }
+
                 // check if the mode requires the extraction of the segment itself
-                if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
+                if (
+                    !(
+                    (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.NoCues)
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.NoTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)
+                    )
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)                    
+                    )
                 {
                     String outputFileExtension = String.Empty;
                     String outputDelayPart = String.Empty;
@@ -203,7 +243,16 @@ namespace gMKVToolnix
             else if (argSeg is gMKVAttachment)
             {
                 // check if the mode requires the extraction of the segment itself
-                if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
+                if (
+                    !(
+                    (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.NoCues)
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.NoTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)
+                    )
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)
+                    )
                 {
                     // add the parameter for extracting the attachment
                     trackParameterList.Add(new TrackParameter(
@@ -222,7 +271,16 @@ namespace gMKVToolnix
             else if (argSeg is gMKVChapter)
             {
                 // check if the mode requires the extraction of the segment itself
-                if (argTimecodesExtractionMode != TimecodesExtractionMode.OnlyTimecodes)
+                if (
+                    !(
+                    (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.NoCues)
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.NoTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)
+                    )
+                    || (argTimecodesExtractionMode == TimecodesExtractionMode.OnlyTimecodes &&
+                    argCueExtractionMode == CuesExtractionMode.OnlyCues)
+                    )
                 {
                     String outputFileExtension = String.Empty;
                     String options = String.Empty;
@@ -235,6 +293,9 @@ namespace gMKVToolnix
                         case MkvChapterTypes.OGM:
                             outputFileExtension = "ogm.txt";
                             options = "--simple";
+                            break;
+                        case MkvChapterTypes.CUE:
+                            outputFileExtension = "cue";
                             break;
                         default:
                             break;
@@ -259,7 +320,7 @@ namespace gMKVToolnix
         }
 
         public void ExtractMKVSegments(String argMKVFile, List<gMKVSegment> argMKVSegmentsToExtract, 
-            String argOutputDirectory, MkvChapterTypes argChapterType, TimecodesExtractionMode argTimecodesExtractionMode)
+            String argOutputDirectory, MkvChapterTypes argChapterType, TimecodesExtractionMode argTimecodesExtractionMode, CuesExtractionMode argCueExtractionMode)
         {
             _Abort = false;
             _AbortAll = false;
@@ -276,7 +337,7 @@ namespace gMKVToolnix
                 }
                 try
                 {
-                    initialParameters.AddRange(GetTrackParameters(seg, argMKVFile, argOutputDirectory, argChapterType, argTimecodesExtractionMode));
+                    initialParameters.AddRange(GetTrackParameters(seg, argMKVFile, argOutputDirectory, argChapterType, argTimecodesExtractionMode, argCueExtractionMode));
                 }
                 catch (Exception ex)
                 {
@@ -343,6 +404,80 @@ namespace gMKVToolnix
                     {
                         _OutputFileWriter.Close();
                         _OutputFileWriter = null;
+
+                        try
+                        {
+                            // If we have chapters with CUE format, then we read the XML chapters and convert it to CUE
+                            if (finalPar.ExtractMode == MkvExtractModes.chapters)
+                            {
+                                if (finalPar.OutputFilename.EndsWith("cue"))
+                                {
+                                    Chapters c = null;
+                                    using (StreamReader sr = new StreamReader(finalPar.OutputFilename))
+                                    {
+                                        XmlSerializer serializer = new XmlSerializer(typeof(Chapters));
+                                        c = (Chapters)serializer.Deserialize(sr);
+                                    }
+                                    Cue cue = new Cue();
+                                    cue.File = Path.GetFileName(argMKVFile);
+                                    cue.FileType = "WAVE";
+                                    cue.Title = Path.GetFileName(argMKVFile);
+                                    cue.Tracks = new List<CueTrack>();
+
+                                    if (c.EditionEntry != null 
+                                        && c.EditionEntry.Length > 0
+                                        && c.EditionEntry[0].ChapterAtom != null
+                                        && c.EditionEntry[0].ChapterAtom.Length > 0)
+                                    {
+                                        Int32 currentChapterTrackNumber = 1;
+                                        foreach (ChapterAtom atom in c.EditionEntry[0].ChapterAtom)
+                                        {
+                                            CueTrack tr = new CueTrack();
+                                            tr.Number = currentChapterTrackNumber;
+                                            if (atom.ChapterDisplay != null
+                                                && atom.ChapterDisplay.Length > 0)
+                                            {
+                                                tr.Title = atom.ChapterDisplay[0].ChapterString;
+                                            }
+                                            if (!String.IsNullOrEmpty(atom.ChapterTimeStart)
+                                                && atom.ChapterTimeStart.Contains("."))
+                                            {
+                                                tr.Index = atom.ChapterTimeStart.Substring(0, atom.ChapterTimeStart.IndexOf("."));
+                                            }
+
+                                            cue.Tracks.Add(tr);
+                                            currentChapterTrackNumber++;
+                                        }
+                                    }
+
+                                    StringBuilder cueBuilder = new StringBuilder();
+
+                                    cueBuilder.AppendFormat("REM GENRE \"\" \r\n");
+                                    cueBuilder.AppendFormat("REM DATE \"\" \r\n");
+                                    cueBuilder.AppendFormat("PERFORMER \"\" \r\n");
+                                    cueBuilder.AppendFormat("TITLE \"{0}\" \r\n", cue.Title);
+                                    cueBuilder.AppendFormat("FILE \"{0}\" {1} \r\n", cue.File, cue.FileType);
+
+                                    foreach (CueTrack tr in cue.Tracks)
+                                    {
+                                        cueBuilder.AppendFormat("\tTRACK {0} AUDIO \r\n", tr.Number.ToString("00"));
+                                        cueBuilder.AppendFormat("\t\tTITLE \"{0}\" \r\n", tr.Title);
+                                        cueBuilder.AppendFormat("\t\tPERFORMER \"\" \r\n");
+                                        cueBuilder.AppendFormat("\t\tINDEX 01 {0} \r\n", tr.Index);
+                                    }
+
+                                    using (StreamWriter sw = new StreamWriter(finalPar.OutputFilename, false, Encoding.UTF8))
+                                    {
+                                        sw.Write(cueBuilder.ToString());
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception exc)
+                        {
+                            Debug.WriteLine(exc);
+                            _ErrorBuilder.AppendLine(String.Format("Track output: {0}\r\nException: {1}\r\n", finalPar.TrackOutput, exc.Message));
+                        }
                     }
                 }
             }
@@ -364,14 +499,35 @@ namespace gMKVToolnix
                     (List<gMKVSegment>)objParameters[1],
                     (String)objParameters[2],
                     (MkvChapterTypes)objParameters[3],
-                    TimecodesExtractionMode.OnlyTimecodes);
+                    TimecodesExtractionMode.OnlyTimecodes,
+                    CuesExtractionMode.NoCues);
             }
             catch (Exception ex)
             {
                 _ThreadedException = ex;
             }
         }
-        
+
+        public void ExtractMKVCuesThreaded(Object parameters)
+        {
+            _ThreadedException = null;
+            try
+            {
+                List<Object> objParameters = (List<Object>)parameters;
+                ExtractMKVSegments((String)objParameters[0],
+                    (List<gMKVSegment>)objParameters[1],
+                    (String)objParameters[2],
+                    (MkvChapterTypes)objParameters[3],
+                    TimecodesExtractionMode.NoTimecodes,
+                    CuesExtractionMode.OnlyCues);
+            }
+            catch (Exception ex)
+            {
+                _ThreadedException = ex;
+            }
+        }
+
+
         public void ExtractMkvCuesheetThreaded(Object parameters)
         {
             _ThreadedException = null;

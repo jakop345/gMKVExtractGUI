@@ -7,7 +7,8 @@ namespace gMKVToolnix
     public enum MkvChapterTypes
     {
         XML,
-        OGM
+        OGM,
+        CUE
     }
 
     [Serializable]

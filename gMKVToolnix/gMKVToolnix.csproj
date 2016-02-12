@@ -35,6 +35,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Chapters\matroskachapters.cs">
+      <DependentUpon>matroskachapters.xsd</DependentUpon>
+    </Compile>
     <Compile Include="gMKVAttachment.cs" />
     <Compile Include="gMKVChapter.cs" />
     <Compile Include="gMKVExtract.cs" />
@@ -48,6 +51,12 @@
     <Compile Include="gMKVTrack.cs" />
     <Compile Include="gMKVHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Chapters\matroskachapters.dtd" />
+    <None Include="Chapters\matroskachapters.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

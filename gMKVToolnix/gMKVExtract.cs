@@ -445,6 +445,9 @@ namespace gMKVToolnix
                                                 String[] timeElements = atom.ChapterTimeStart.Split(new String[] { ":" }, StringSplitOptions.None);
                                                 if (timeElements.Length == 3)
                                                 {
+                                                    // Find cue minutes from hours and minutes
+                                                    Int32 hours = Int32.Parse(timeElements[0]);
+                                                    Int32 minutes = Int32.Parse(timeElements[1]) + 60 * hours;
                                                     // Convert nanoseconds to frames (each second is 75 frames)
                                                     Int64 nanoSeconds = 0;
                                                     Int32 frames = 0;
@@ -457,7 +460,7 @@ namespace gMKVToolnix
                                                         frames = Convert.ToInt32(Math.Floor(Convert.ToDouble(nanoSeconds) / 1000000000.0 * 75.0));
                                                     }
                                                     tr.Index = String.Format("{0}:{1}:{2}",
-                                                        timeElements[1]
+                                                        minutes.ToString("#00")
                                                         , timeElements[2].Substring(0, secondsLength)
                                                         , frames.ToString("00")
                                                         );

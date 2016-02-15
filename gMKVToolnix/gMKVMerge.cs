@@ -139,8 +139,27 @@ namespace gMKVToolnix
                     gMKVTrack tmp = new gMKVTrack();
                     tmp.TrackType = (MkvTrackType)Enum.Parse(typeof(MkvTrackType), outputLine.Substring(outputLine.IndexOf(":") + 1, outputLine.IndexOf("(") - outputLine.IndexOf(":") - 1).Trim());
                     tmp.TrackID = Int32.Parse(outputLine.Substring(0, outputLine.IndexOf(":")).Replace("Track ID", String.Empty).Trim());
-                    tmp.TrackNumber = Int32.Parse(ExtractProperty(outputLine, "number"));
-                    tmp.CodecID = ExtractProperty(outputLine, "codec_id");
+                    if (outputLine.Contains("number"))
+                    {
+                        // if we have version 5.x and newer
+                        tmp.TrackNumber = Int32.Parse(ExtractProperty(outputLine, "number"));
+                    }
+                    else
+                    {
+                        // if we have version 4.x and older
+                        tmp.TrackNumber = tmp.TrackID;
+                    }
+                    if (outputLine.Contains("codec_id"))
+                    {
+                        // if we have version 5.x and newer
+                        tmp.CodecID = ExtractProperty(outputLine, "codec_id");
+                    }
+                    else
+                    {
+                        // if we have version 4.x and older
+                        tmp.CodecID = outputLine.Substring(outputLine.IndexOf("(") + 1, outputLine.IndexOf(")") - outputLine.IndexOf("(") - 1);
+                    }
+
                     if (outputLine.Contains("language:"))
                     {
                         tmp.Language = ExtractProperty(outputLine, "language");

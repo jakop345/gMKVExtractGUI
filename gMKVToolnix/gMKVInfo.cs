@@ -323,8 +323,18 @@ namespace gMKVToolnix
                         }
                         else if (outputLine.Contains("Track number:"))
                         {
-                            ((gMKVTrack)tmpSegment).TrackNumber = Int32.Parse(outputLine.Substring(outputLine.IndexOf(":") + 1, outputLine.IndexOf("(") - outputLine.IndexOf(":") - 1).Trim());
-                            ((gMKVTrack)tmpSegment).TrackID = Int32.Parse(outputLine.Substring(outputLine.LastIndexOf(":") + 1, outputLine.IndexOf(")") - outputLine.LastIndexOf(":") - 1).Trim());
+                            if (outputLine.Contains("track ID for mkvmerge & mkvextract"))
+                            {
+                                // if we have version 5.x and newer
+                                ((gMKVTrack)tmpSegment).TrackNumber = Int32.Parse(outputLine.Substring(outputLine.IndexOf(":") + 1, outputLine.IndexOf("(") - outputLine.IndexOf(":") - 1).Trim());
+                                ((gMKVTrack)tmpSegment).TrackID = Int32.Parse(outputLine.Substring(outputLine.LastIndexOf(":") + 1, outputLine.IndexOf(")") - outputLine.LastIndexOf(":") - 1).Trim());
+                            }
+                            else
+                            {
+                                // if we have version 4.x and older
+                                ((gMKVTrack)tmpSegment).TrackNumber = Int32.Parse(outputLine.Substring(outputLine.IndexOf(":") + 1).Trim());
+                                ((gMKVTrack)tmpSegment).TrackID = ((gMKVTrack)tmpSegment).TrackNumber;
+                            }
                         }
                         else if (outputLine.Contains("Track type:"))
                         {

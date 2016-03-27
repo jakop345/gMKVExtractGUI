@@ -26,7 +26,8 @@ namespace gMKVToolnix
         help, // Show this help
         version, // Show version information
         check_for_updates, // Check online for the latest release
-        gui_mode // In this mode specially-formatted lines may be output that can tell a controlling GUI what's happening
+        gui_mode, // In this mode specially-formatted lines may be output that can tell a controlling GUI what's happening
+        no_gui // It doesn't show the GUI but the CLI
     }
 
     public class gMKVInfo
@@ -178,6 +179,17 @@ namespace gMKVToolnix
                 }
                 //optionList.Add(new OptionValue(MkvInfoOptions.command_line_charset, "\"UFT-8\""));
                 //optionList.Add(new OptionValue(MkvInfoOptions.output_charset, "\"UFT-8\""));
+                
+                // Since MKVToolNix v9.0.0, in Windows and Mac OSX, the default behaviour is to show the GUI
+                if (!gMKVHelper.IsOnLinux)
+                {
+                    // Check the file version of the mkvInfo.exe
+                    FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(_MKVInfoFilename);
+                    if (myFileVersionInfo.FileMajorPart >= 9)
+                    {
+                        optionList.Add(new OptionValue(MkvInfoOptions.no_gui, ""));
+                    }
+                }
                 // check for extra options provided from the caller
                 if (argOptionList != null)
                 {

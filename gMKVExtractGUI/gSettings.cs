@@ -73,13 +73,18 @@ namespace gMKVToolnix
         }
 
         private FormWindowState _WindowState;
-
         public FormWindowState WindowState
         {
             get { return _WindowState; }
             set { _WindowState = value; }
         }
 
+        private Boolean _ShowPopup = true;
+        public Boolean ShowPopup
+        {
+            get { return _ShowPopup; }
+            set { _ShowPopup = value; }
+        }
 
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
@@ -247,6 +252,18 @@ namespace gMKVToolnix
                                 _WindowSizeHeight = 600;
                             }
                         }
+                        else if (line.StartsWith("Show Popup:"))
+                        {
+                            try
+                            {
+                                _ShowPopup = Boolean.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _ShowPopup = true;
+                            }
+                        }
                     }
                 }
             }
@@ -266,6 +283,7 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Initial Window Size Height:{0}", _WindowSizeHeight));
                 sw.WriteLine(String.Format("Job Mode:{0}", _JobMode));
                 sw.WriteLine(String.Format("Window State:{0}", _WindowState.ToString()));
+                sw.WriteLine(String.Format("Show Popup:{0}", _ShowPopup));
             }
         }
     }

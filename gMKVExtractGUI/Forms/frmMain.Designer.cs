@@ -69,6 +69,7 @@
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpLog = new gMKVToolnix.gGroupBox();
+            this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -310,6 +311,7 @@
             // 
             // grpActions
             // 
+            this.grpActions.Controls.Add(this.chkShowPopup);
             this.grpActions.Controls.Add(this.chkJobMode);
             this.grpActions.Controls.Add(this.btnExtract);
             this.grpActions.Controls.Add(this.lblExtractionMode);
@@ -329,7 +331,7 @@
             // 
             this.chkJobMode.AutoSize = true;
             this.chkJobMode.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkJobMode.Location = new System.Drawing.Point(72, 25);
+            this.chkJobMode.Location = new System.Drawing.Point(72, 24);
             this.chkJobMode.Name = "chkJobMode";
             this.chkJobMode.Size = new System.Drawing.Size(78, 19);
             this.chkJobMode.TabIndex = 11;
@@ -353,21 +355,22 @@
             // 
             this.lblExtractionMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblExtractionMode.AutoSize = true;
-            this.lblExtractionMode.Location = new System.Drawing.Point(266, 26);
+            this.lblExtractionMode.Location = new System.Drawing.Point(362, 26);
             this.lblExtractionMode.Name = "lblExtractionMode";
-            this.lblExtractionMode.Size = new System.Drawing.Size(93, 15);
+            this.lblExtractionMode.Size = new System.Drawing.Size(45, 15);
             this.lblExtractionMode.TabIndex = 9;
-            this.lblExtractionMode.Text = "Extraction Mode";
+            this.lblExtractionMode.Text = "Extract:";
             // 
             // cmbExtractionMode
             // 
             this.cmbExtractionMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbExtractionMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbExtractionMode.FormattingEnabled = true;
-            this.cmbExtractionMode.Location = new System.Drawing.Point(363, 22);
+            this.cmbExtractionMode.Location = new System.Drawing.Point(411, 22);
             this.cmbExtractionMode.Name = "cmbExtractionMode";
-            this.cmbExtractionMode.Size = new System.Drawing.Size(150, 23);
+            this.cmbExtractionMode.Size = new System.Drawing.Size(102, 23);
             this.cmbExtractionMode.TabIndex = 8;
+            this.cmbExtractionMode.DropDown += new System.EventHandler(this.cmbExtractionMode_DropDown);
             // 
             // btnShowLog
             // 
@@ -383,7 +386,7 @@
             // 
             this.lblChapterType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblChapterType.AutoSize = true;
-            this.lblChapterType.Location = new System.Drawing.Point(156, 26);
+            this.lblChapterType.Location = new System.Drawing.Point(228, 26);
             this.lblChapterType.Name = "lblChapterType";
             this.lblChapterType.Size = new System.Drawing.Size(49, 15);
             this.lblChapterType.TabIndex = 3;
@@ -394,7 +397,7 @@
             this.cmbChapterType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbChapterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbChapterType.FormattingEnabled = true;
-            this.cmbChapterType.Location = new System.Drawing.Point(209, 22);
+            this.cmbChapterType.Location = new System.Drawing.Point(281, 22);
             this.cmbChapterType.Name = "cmbChapterType";
             this.cmbChapterType.Size = new System.Drawing.Size(52, 23);
             this.cmbChapterType.TabIndex = 2;
@@ -531,6 +534,19 @@
             this.grpLog.TabStop = false;
             this.grpLog.Text = "Log";
             // 
+            // chkShowPopup
+            // 
+            this.chkShowPopup.AutoSize = true;
+            this.chkShowPopup.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.Location = new System.Drawing.Point(158, 24);
+            this.chkShowPopup.Name = "chkShowPopup";
+            this.chkShowPopup.Size = new System.Drawing.Size(61, 19);
+            this.chkShowPopup.TabIndex = 12;
+            this.chkShowPopup.Text = "Popup";
+            this.chkShowPopup.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.UseVisualStyleBackColor = true;
+            this.chkShowPopup.CheckedChanged += new System.EventHandler(this.chkShowPopup_CheckedChanged);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -609,6 +625,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem unselectAllTracksToolStripMenuItem;
         private System.Windows.Forms.CheckBox chkJobMode;
+        private System.Windows.Forms.CheckBox chkShowPopup;
     }
 }
 

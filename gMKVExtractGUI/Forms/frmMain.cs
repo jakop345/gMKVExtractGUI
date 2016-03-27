@@ -75,6 +75,7 @@ namespace gMKVToolnix
                 txtOutputDirectory.Text = _Settings.OutputDirectory;
                 chkLockOutputDirectory.Checked = _Settings.LockedOutputDirectory;
                 chkJobMode.Checked = _Settings.JobMode;
+                chkShowPopup.Checked = _Settings.ShowPopup;
 
                 _FromConstructor = false;
                 
@@ -730,7 +731,10 @@ namespace gMKVToolnix
                         throw _gMkvExtract.ThreadedException;
                     }
                     UpdateProgress(100);
-                    ShowSuccessMessage("The extraction was completed successfully!");
+                    if (chkShowPopup.Checked)
+                    {
+                        ShowSuccessMessage("The extraction was completed successfully!");
+                    }
                 }
             }
             catch (Exception ex)
@@ -748,7 +752,15 @@ namespace gMKVToolnix
                     _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
                     _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 }
-                ClearStatus();
+                if (chkShowPopup.Checked)
+                {
+                    ClearStatus();
+                }
+                else
+                {
+                    lblTrack.Text = "";
+                    lblStatus.Text = "Extraction completed!";
+                }
                 _ExtractRunning = false;
                 tlpMain.Enabled = true;
                 btnAbort.Enabled = false;
@@ -1142,6 +1154,15 @@ namespace gMKVToolnix
             }
         }
 
+        private void chkShowPopup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_FromConstructor)
+            {
+                _Settings.ShowPopup = chkShowPopup.Checked;
+                _Settings.Save();
+            }
+        }
+
         public void SetTableLayoutMainStatus(Boolean argStatus)
         {
             tlpMain.Enabled = argStatus;
@@ -1181,5 +1202,45 @@ namespace gMKVToolnix
                 ShowErrorMessage(ex.Message);
             }
         }
+
+        private void AutosizeDropDownWidth()
+        {
+            float longestItem = 0;
+            // Βρίσκει το μεγαλύτερο κείμενο των στοιχείων της λίστας, ώστε να ορίσει το μέγεθος της λίστας.
+            using (Graphics g = Graphics.FromHwnd(this.Handle))
+            {
+                foreach (Object item in cmbExtractionMode.Items)
+                {
+                    String textRepresentation = cmbExtractionMode.GetItemText(item);
+                    float itemWidth = g.MeasureString(textRepresentation, Font).Width;
+                    if (itemWidth > longestItem)
+                    {
+                        longestItem = itemWidth;
+                    }
+                }
+            }
+
+            // Αν υπάρχει ScrollBar, τότε αυξάνεται το μέγεθος κατά 15.
+            if (cmbExtractionMode.Items.Count > cmbExtractionMode.MaxDropDownItems)
+            {
+                longestItem += 15;
+            }
+
+            // Αλλάζει το μέγεθος της λίστας του ComboBox, αλλά ποτέ δεν θα την κάνει μικρότερη από το μέγεθος του ComboBox
+            cmbExtractionMode.DropDownWidth = Convert.ToInt32(Math.Max(longestItem, cmbExtractionMode.Width));
+        }
+
+        private void cmbExtractionMode_DropDown(object sender, EventArgs e)
+        {
+            try
+            {
+                AutosizeDropDownWidth();
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+        }
+
     }
 }

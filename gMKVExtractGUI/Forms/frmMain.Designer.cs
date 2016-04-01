@@ -50,6 +50,7 @@
             this.btnBrowseOutputDirectory = new System.Windows.Forms.Button();
             this.txtOutputDirectory = new gMKVToolnix.gTextBox();
             this.grpActions = new gMKVToolnix.gGroupBox();
+            this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.chkJobMode = new System.Windows.Forms.CheckBox();
             this.btnExtract = new System.Windows.Forms.Button();
             this.lblExtractionMode = new System.Windows.Forms.Label();
@@ -69,7 +70,6 @@
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.grpLog = new gMKVToolnix.gGroupBox();
-            this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.contextMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -327,6 +327,19 @@
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
             // 
+            // chkShowPopup
+            // 
+            this.chkShowPopup.AutoSize = true;
+            this.chkShowPopup.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.Location = new System.Drawing.Point(158, 24);
+            this.chkShowPopup.Name = "chkShowPopup";
+            this.chkShowPopup.Size = new System.Drawing.Size(61, 19);
+            this.chkShowPopup.TabIndex = 12;
+            this.chkShowPopup.Text = "Popup";
+            this.chkShowPopup.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.UseVisualStyleBackColor = true;
+            this.chkShowPopup.CheckedChanged += new System.EventHandler(this.chkShowPopup_CheckedChanged);
+            // 
             // chkJobMode
             // 
             this.chkJobMode.AutoSize = true;
@@ -534,19 +547,6 @@
             this.grpLog.TabStop = false;
             this.grpLog.Text = "Log";
             // 
-            // chkShowPopup
-            // 
-            this.chkShowPopup.AutoSize = true;
-            this.chkShowPopup.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkShowPopup.Location = new System.Drawing.Point(158, 24);
-            this.chkShowPopup.Name = "chkShowPopup";
-            this.chkShowPopup.Size = new System.Drawing.Size(61, 19);
-            this.chkShowPopup.TabIndex = 12;
-            this.chkShowPopup.Text = "Popup";
-            this.chkShowPopup.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkShowPopup.UseVisualStyleBackColor = true;
-            this.chkShowPopup.CheckedChanged += new System.EventHandler(this.chkShowPopup_CheckedChanged);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -555,7 +555,7 @@
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.grpLog);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.MinimumSize = new System.Drawing.Size(640, 600);
+            this.MinimumSize = new System.Drawing.Size(600, 400);
             this.Name = "frmMain";
             this.Text = "gMKVExtractGUI";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);

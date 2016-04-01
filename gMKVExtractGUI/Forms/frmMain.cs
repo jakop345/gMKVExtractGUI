@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using System.Media;
 
 namespace gMKVToolnix
 {
@@ -734,6 +735,10 @@ namespace gMKVToolnix
                     if (chkShowPopup.Checked)
                     {
                         ShowSuccessMessage("The extraction was completed successfully!");
+                    }
+                    else
+                    {
+                        SystemSounds.Asterisk.Play();
                     }
                 }
             }

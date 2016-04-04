@@ -86,6 +86,14 @@ namespace gMKVToolnix
             set { _ShowPopup = value; }
         }
 
+        private Boolean _ShowPopupInJobManager = true;
+        public Boolean ShowPopupInJobManager
+        {
+            get { return _ShowPopupInJobManager; }
+            set { _ShowPopupInJobManager = value; }
+        }
+
+
         private static String _SETTINGS_FILE = "gMKVExtractGUI.ini";
         private String _ApplicationPath = String.Empty;
 
@@ -264,6 +272,18 @@ namespace gMKVToolnix
                                 _ShowPopup = true;
                             }
                         }
+                        else if (line.StartsWith("Show Popup In Job Manager:"))
+                        {
+                            try
+                            {
+                                _ShowPopupInJobManager = Boolean.Parse(line.Substring(line.IndexOf(":") + 1));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                                _ShowPopup = true;
+                            }
+                        }
                     }
                 }
             }
@@ -284,6 +304,7 @@ namespace gMKVToolnix
                 sw.WriteLine(String.Format("Job Mode:{0}", _JobMode));
                 sw.WriteLine(String.Format("Window State:{0}", _WindowState.ToString()));
                 sw.WriteLine(String.Format("Show Popup:{0}", _ShowPopup));
+                sw.WriteLine(String.Format("Show Popup In Job Manager:{0}", _ShowPopupInJobManager));
             }
         }
     }

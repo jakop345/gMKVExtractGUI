@@ -121,6 +121,7 @@ namespace gMKVToolnix
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                _FromConstructor = false;
                 ShowErrorMessage(ex.Message);
             }
         }

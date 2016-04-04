@@ -42,22 +42,23 @@
             this.tlpJobs = new gMKVToolnix.gTableLayoutPanel();
             this.grpJobs = new gMKVToolnix.gGroupBox();
             this.grdJobs = new gMKVToolnix.Controls.gDataGridView();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.changeToReadyStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpActions = new gMKVToolnix.gGroupBox();
+            this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.btnSaveJobs = new System.Windows.Forms.Button();
             this.btnLoadJobs = new System.Windows.Forms.Button();
             this.btnAbortAll = new System.Windows.Forms.Button();
             this.btnAbort = new System.Windows.Forms.Button();
             this.btnRunAll = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
-            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.changeToReadyStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tlpMain.SuspendLayout();
             this.grpProgress.SuspendLayout();
             this.tlpJobs.SuspendLayout();
             this.grpJobs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).BeginInit();
-            this.grpActions.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
+            this.grpActions.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMain
@@ -72,7 +73,7 @@
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 110F));
-            this.tlpMain.Size = new System.Drawing.Size(624, 411);
+            this.tlpMain.Size = new System.Drawing.Size(624, 431);
             this.tlpMain.TabIndex = 5;
             // 
             // grpProgress
@@ -86,7 +87,7 @@
             this.grpProgress.Controls.Add(this.prgBrTotal);
             this.grpProgress.Controls.Add(this.prgBrCurrent);
             this.grpProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpProgress.Location = new System.Drawing.Point(3, 304);
+            this.grpProgress.Location = new System.Drawing.Point(3, 324);
             this.grpProgress.Name = "grpProgress";
             this.grpProgress.Size = new System.Drawing.Size(618, 104);
             this.grpProgress.TabIndex = 3;
@@ -95,6 +96,8 @@
             // 
             // txtCurrentTrack
             // 
+            this.txtCurrentTrack.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCurrentTrack.BackColor = System.Drawing.SystemColors.Window;
             this.txtCurrentTrack.Location = new System.Drawing.Point(107, 18);
             this.txtCurrentTrack.Name = "txtCurrentTrack";
@@ -178,7 +181,7 @@
             this.tlpJobs.Name = "tlpJobs";
             this.tlpJobs.RowCount = 1;
             this.tlpJobs.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpJobs.Size = new System.Drawing.Size(624, 301);
+            this.tlpJobs.Size = new System.Drawing.Size(624, 321);
             this.tlpJobs.TabIndex = 4;
             // 
             // grpJobs
@@ -187,7 +190,7 @@
             this.grpJobs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpJobs.Location = new System.Drawing.Point(3, 3);
             this.grpJobs.Name = "grpJobs";
-            this.grpJobs.Size = new System.Drawing.Size(508, 295);
+            this.grpJobs.Size = new System.Drawing.Size(508, 315);
             this.grpJobs.TabIndex = 0;
             this.grpJobs.TabStop = false;
             this.grpJobs.Text = "Jobs";
@@ -209,12 +212,28 @@
             this.grdJobs.ReadOnly = true;
             this.grdJobs.RowHeadersVisible = false;
             this.grdJobs.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.grdJobs.Size = new System.Drawing.Size(502, 273);
+            this.grdJobs.Size = new System.Drawing.Size(502, 293);
             this.grdJobs.TabIndex = 1;
             this.grdJobs.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdJobs_CellContentDoubleClick);
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.changeToReadyStatusToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(200, 26);
+            this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
+            // 
+            // changeToReadyStatusToolStripMenuItem
+            // 
+            this.changeToReadyStatusToolStripMenuItem.Name = "changeToReadyStatusToolStripMenuItem";
+            this.changeToReadyStatusToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.changeToReadyStatusToolStripMenuItem.Text = "Change to Ready Status";
+            this.changeToReadyStatusToolStripMenuItem.Click += new System.EventHandler(this.changeToReadyStatusToolStripMenuItem_Click);
+            // 
             // grpActions
             // 
+            this.grpActions.Controls.Add(this.chkShowPopup);
             this.grpActions.Controls.Add(this.btnSaveJobs);
             this.grpActions.Controls.Add(this.btnLoadJobs);
             this.grpActions.Controls.Add(this.btnAbortAll);
@@ -224,14 +243,27 @@
             this.grpActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpActions.Location = new System.Drawing.Point(517, 3);
             this.grpActions.Name = "grpActions";
-            this.grpActions.Size = new System.Drawing.Size(104, 295);
+            this.grpActions.Size = new System.Drawing.Size(104, 315);
             this.grpActions.TabIndex = 4;
             this.grpActions.TabStop = false;
             this.grpActions.Text = "Actions";
             // 
+            // chkShowPopup
+            // 
+            this.chkShowPopup.AutoSize = true;
+            this.chkShowPopup.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.Location = new System.Drawing.Point(20, 69);
+            this.chkShowPopup.Name = "chkShowPopup";
+            this.chkShowPopup.Size = new System.Drawing.Size(61, 19);
+            this.chkShowPopup.TabIndex = 13;
+            this.chkShowPopup.Text = "Popup";
+            this.chkShowPopup.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkShowPopup.UseVisualStyleBackColor = true;
+            this.chkShowPopup.CheckedChanged += new System.EventHandler(this.chkShowPopup_CheckedChanged);
+            // 
             // btnSaveJobs
             // 
-            this.btnSaveJobs.Location = new System.Drawing.Point(7, 158);
+            this.btnSaveJobs.Location = new System.Drawing.Point(7, 186);
             this.btnSaveJobs.Name = "btnSaveJobs";
             this.btnSaveJobs.Size = new System.Drawing.Size(90, 30);
             this.btnSaveJobs.TabIndex = 6;
@@ -241,7 +273,7 @@
             // 
             // btnLoadJobs
             // 
-            this.btnLoadJobs.Location = new System.Drawing.Point(7, 122);
+            this.btnLoadJobs.Location = new System.Drawing.Point(7, 150);
             this.btnLoadJobs.Name = "btnLoadJobs";
             this.btnLoadJobs.Size = new System.Drawing.Size(90, 30);
             this.btnLoadJobs.TabIndex = 5;
@@ -252,7 +284,7 @@
             // btnAbortAll
             // 
             this.btnAbortAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAbortAll.Location = new System.Drawing.Point(7, 262);
+            this.btnAbortAll.Location = new System.Drawing.Point(7, 282);
             this.btnAbortAll.Name = "btnAbortAll";
             this.btnAbortAll.Size = new System.Drawing.Size(90, 30);
             this.btnAbortAll.TabIndex = 4;
@@ -263,7 +295,7 @@
             // btnAbort
             // 
             this.btnAbort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAbort.Location = new System.Drawing.Point(7, 226);
+            this.btnAbort.Location = new System.Drawing.Point(7, 246);
             this.btnAbort.Name = "btnAbort";
             this.btnAbort.Size = new System.Drawing.Size(90, 30);
             this.btnAbort.TabIndex = 3;
@@ -273,7 +305,7 @@
             // 
             // btnRunAll
             // 
-            this.btnRunAll.Location = new System.Drawing.Point(7, 72);
+            this.btnRunAll.Location = new System.Drawing.Point(7, 93);
             this.btnRunAll.Name = "btnRunAll";
             this.btnRunAll.Size = new System.Drawing.Size(90, 30);
             this.btnRunAll.TabIndex = 2;
@@ -291,29 +323,14 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
-            // contextMenuStrip
-            // 
-            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.changeToReadyStatusToolStripMenuItem});
-            this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(200, 48);
-            this.contextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip_Opening);
-            // 
-            // changeToReadyStatusToolStripMenuItem
-            // 
-            this.changeToReadyStatusToolStripMenuItem.Name = "changeToReadyStatusToolStripMenuItem";
-            this.changeToReadyStatusToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.changeToReadyStatusToolStripMenuItem.Text = "Change to Ready Status";
-            this.changeToReadyStatusToolStripMenuItem.Click += new System.EventHandler(this.changeToReadyStatusToolStripMenuItem_Click);
-            // 
             // frmJobManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(624, 411);
+            this.ClientSize = new System.Drawing.Size(624, 431);
             this.Controls.Add(this.tlpMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.MinimumSize = new System.Drawing.Size(640, 450);
+            this.MinimumSize = new System.Drawing.Size(640, 470);
             this.Name = "frmJobManager";
             this.Text = "frmJobManager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmJobManager_FormClosing);
@@ -323,8 +340,9 @@
             this.tlpJobs.ResumeLayout(false);
             this.grpJobs.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.grdJobs)).EndInit();
-            this.grpActions.ResumeLayout(false);
             this.contextMenuStrip.ResumeLayout(false);
+            this.grpActions.ResumeLayout(false);
+            this.grpActions.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -353,5 +371,6 @@
         private System.Windows.Forms.Label lblCurrentTrack;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem changeToReadyStatusToolStripMenuItem;
+        private System.Windows.Forms.CheckBox chkShowPopup;
     }
 }

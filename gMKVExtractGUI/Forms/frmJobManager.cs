@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Media;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -19,6 +21,8 @@ namespace gMKVToolnix
         private Int32 _TotalJobs = 0;
         private gMKVExtract _gMkvExtract = null;
         private Boolean _ExtractRunning = false;
+        private gSettings _Settings = new gSettings(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+        private Boolean _FromConstructor = false;
 
         private BindingList<gMKVJobInfo> _JobList = new BindingList<gMKVJobInfo>();
 
@@ -26,16 +30,34 @@ namespace gMKVToolnix
         
         public frmJobManager(frmMain argMainForm)
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
-            Text = String.Format("gMKVExtractGUI v{0} -- Job Manager", Assembly.GetExecutingAssembly().GetName().Version);
+                Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+                Text = String.Format("gMKVExtractGUI v{0} -- Job Manager", Assembly.GetExecutingAssembly().GetName().Version);
 
-            _MainForm = argMainForm;
+                _MainForm = argMainForm;
 
-            grdJobs.DataSource = _JobList;
+                _FromConstructor = true;
 
-            SetAbortStatus(false);
+                // Load settings
+                _Settings.Reload();
+
+                chkShowPopup.Checked = _Settings.ShowPopupInJobManager;
+
+                grdJobs.DataSource = _JobList;
+
+                _FromConstructor = false;
+
+                SetAbortStatus(false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                _FromConstructor = false;
+                ShowErrorMessage(ex.Message);
+            }
         }
 
         private void SetJobsList(BindingList<gMKVJobInfo> argJobList)
@@ -236,6 +258,7 @@ namespace gMKVToolnix
 
         private void PrepareForRunJobs(List<gMKVJobInfo> argJobInfoList)
         {
+            bool exceptionOccured = false;
             try
             {
                 SetActionStatus(false);
@@ -261,7 +284,14 @@ namespace gMKVToolnix
                     throw new Exception(_ExceptionBuilder.ToString());
                 }
                 UpdateCurrentProgress(100);
-                ShowSuccessMessage("The jobs completed successfully!");
+                if (chkShowPopup.Checked)
+                {
+                    ShowSuccessMessage("The jobs completed successfully!");
+                }
+                else
+                {
+                    SystemSounds.Asterisk.Play();
+                }
             }
             catch (Exception ex)
             {
@@ -270,11 +300,22 @@ namespace gMKVToolnix
             }
             finally
             {
-                UpdateCurrentProgress(0);
-                prgBrTotal.Value = 0;
+                if (chkShowPopup.Checked || exceptionOccured)
+                {
+                    UpdateCurrentProgress(0);
+                    prgBrTotal.Value = 0;
+                    lblCurrentProgressValue.Text = string.Empty;
+                    lblTotalProgressValue.Text = string.Empty;
+                }
+                else
+                {
+                    lblCurrentProgressValue.Text = string.Empty;
+                    lblTotalProgressValue.Text = string.Empty;
+                    txtCurrentTrack.Text = "Extraction completed!";
+                }
+                gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.NoProgress);
+                gTaskbarProgress.SetOverlayIcon(this, null, null);
                 _ExtractRunning = false;
-                lblCurrentProgressValue.Text = string.Empty;
-                lblTotalProgressValue.Text = string.Empty;
                 _AbortAll = false;
                 grdJobs.Refresh();
                 SetActionStatus(true);
@@ -452,6 +493,15 @@ namespace gMKVToolnix
                 }
             }
             grdJobs.Refresh();
+        }
+
+        private void chkShowPopup_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_FromConstructor)
+            {
+                _Settings.ShowPopupInJobManager = chkShowPopup.Checked;
+                _Settings.Save();
+            }
         }
     }
 }

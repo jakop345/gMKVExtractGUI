@@ -563,6 +563,7 @@ namespace gMKVToolnix
      
         private void btnExtract_Click(object sender, EventArgs e)
         {
+            bool exceptionOccured = false;
             try
             {
                 tlpMain.Enabled = false;
@@ -751,6 +752,7 @@ namespace gMKVToolnix
 
                 gTaskbarProgress.SetState(this, gTaskbarProgress.TaskbarStates.Error);
                 gTaskbarProgress.SetOverlayIcon(this, SystemIcons.Error, "Error!");
+                exceptionOccured = true;
                 ShowErrorMessage(ex.Message);
             }
             finally
@@ -760,7 +762,7 @@ namespace gMKVToolnix
                     _gMkvExtract.MkvExtractProgressUpdated -= g_MkvExtractProgressUpdated;
                     _gMkvExtract.MkvExtractTrackUpdated -= g_MkvExtractTrackUpdated;
                 }
-                if (chkShowPopup.Checked)
+                if (chkShowPopup.Checked || exceptionOccured)
                 {
                     ClearStatus();
                 }

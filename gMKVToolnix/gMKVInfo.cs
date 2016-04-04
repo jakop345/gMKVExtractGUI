@@ -158,6 +158,20 @@ namespace gMKVToolnix
                             tr.EffectiveDelay = tr.Delay - _VideoTrackDelay;
                         }
                     }
+
+                    // Check if no delays were detected
+                    if(tr.Delay == Int32.MinValue)
+                    {
+                        if(tr.EffectiveDelay == Int32.MinValue)
+                        {
+                            tr.Delay = 0;
+                            tr.EffectiveDelay = 0;
+                        }
+                        else
+                        {
+                            tr.Delay = tr.EffectiveDelay;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -255,8 +269,19 @@ namespace gMKVToolnix
             foreach (String outputLine in _MKVInfoOutput.ToString().Split(new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 // first determine the parse state we are in
-                if (outputLine.Contains("Segment,"))
+                //if (outputLine.Contains("Segment,"))
+                //{
+                //    tmpState = MkvInfoParseState.InsideSegmentInfo;
+                //    continue;
+                //}
+                if (outputLine.Contains("Segment information"))
                 {
+                    // if previous segment is not null, add it to the list and create a new one
+                    if (tmpSegment != null)
+                    {
+                        _SegmentList.Add(tmpSegment);
+                    }
+                    tmpSegment = new gMKVSegmentInfo();
                     tmpState = MkvInfoParseState.InsideSegmentInfo;
                     continue;
                 }
@@ -283,16 +308,17 @@ namespace gMKVToolnix
                         // if we are still searching for the state, just continue with next line
                         continue;
                     case MkvInfoParseState.InsideSegmentInfo:
-                        if (outputLine.Contains("Segment information"))
-                        {
-                            // if previous segment is not null, add it to the list and create a new one
-                            if (tmpSegment != null)
-                            {
-                                _SegmentList.Add(tmpSegment);
-                            }
-                            tmpSegment = new gMKVSegmentInfo();
-                        }
-                        else if (outputLine.Contains("Timecode scale:"))
+                        //if (outputLine.Contains("Segment information"))
+                        //{
+                        //    // if previous segment is not null, add it to the list and create a new one
+                        //    if (tmpSegment != null)
+                        //    {
+                        //        _SegmentList.Add(tmpSegment);
+                        //    }
+                        //    tmpSegment = new gMKVSegmentInfo();
+                        //}
+                        //else if (outputLine.Contains("Timecode scale:"))
+                        if (outputLine.Contains("Timecode scale:"))
                         {
                             ((gMKVSegmentInfo)tmpSegment).TimecodeScale = outputLine.Substring(outputLine.IndexOf(":") + 1).Trim();
                         }
@@ -602,7 +628,7 @@ namespace gMKVToolnix
                         if (tr.Delay == Int32.MinValue)
                         {
                             // try to find the delay
-                            Match m = Regex.Match(e.Data, String.Format(@"track number {0}, \d frame\(s\), timecode (\d+\.\d+)s", tr.TrackNumber));
+                            Match m = Regex.Match(e.Data, String.Format(@"track number {0}, \d+ frame\(s\), timecode (\d+\.\d+)s", tr.TrackNumber));
                             if (m.Success)
                             {
                                 // Parse the delay (get the seconds in decimal, multiply by 1000 to convert them to ms, and then convert to Int32

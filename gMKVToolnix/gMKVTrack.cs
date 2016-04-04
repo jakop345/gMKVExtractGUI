@@ -54,6 +54,13 @@ namespace gMKVToolnix
             set { _CodecPrivate = value; }
         }
 
+        private String _CodecPrivateData = String.Empty;
+
+        public String CodecPrivateData
+        {
+            get { return _CodecPrivateData; }
+            set { _CodecPrivateData = value; }
+        }
 
         private String _Language;
 
@@ -93,6 +100,14 @@ namespace gMKVToolnix
         {
             get { return _EffectiveDelay; }
             set { _EffectiveDelay = value; }
+        }
+
+        private Int64 _MinimumTimestamp = Int64.MinValue;
+
+        public Int64 MinimumTimestamp // In nanoseconds
+        {
+            get { return _MinimumTimestamp; }
+            set { _MinimumTimestamp = value; }
         }
 
         public override string ToString()

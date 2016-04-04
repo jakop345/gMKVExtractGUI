@@ -50,7 +50,9 @@ namespace gMKVToolnix
                 Replace(@"\2", "\"").
                 Replace(@"\c", ":").
                 Replace(@"\h", "#").
-                Replace(@"\\", @"\");
+                Replace(@"\\", @"\").
+                Replace(@"\b", "[").
+                Replace(@"\B", "]");
         }
 
         /// <summary>
@@ -223,38 +225,77 @@ namespace gMKVToolnix
         public static List<gMKVSegment> GetMergedMkvSegmentList(String argMkvToolnixPath, String argInputFile)
         {
             gMKVMerge g = new gMKVMerge(argMkvToolnixPath);
-            List<gMKVSegment> segmentList = g.GetMKVSegments(argInputFile);
             gMKVInfo gInfo = new gMKVInfo(argMkvToolnixPath);
-            List<gMKVSegment> segmentListInfo = gInfo.GetMKVSegments(argInputFile);
-            foreach (gMKVSegment seg in segmentListInfo)
+
+            List<gMKVSegment> segmentList = g.GetMKVSegments(argInputFile);
+
+            // Check if information was found in mkvmerge output
+            bool segmentInfoWasFound = false;
+            foreach (gMKVSegment seg in segmentList)
             {
                 if (seg is gMKVSegmentInfo)
                 {
-                    segmentList.Insert(0, seg);
+                    segmentInfoWasFound = true;
+                    break;
                 }
-                else if (seg is gMKVTrack)
+            }
+
+            // Check if codec_private_data was found in mkvmerge output
+            bool codecPrivateDataWasFound = false;
+            foreach (gMKVSegment seg in segmentList)
+            {
+                if (seg is gMKVTrack)
                 {
-                    // Update CodecPrivate info from mkvinfo to mkvextract segments
-                    if (!String.IsNullOrEmpty(((gMKVTrack)seg).CodecPrivate))
+                    if (!String.IsNullOrEmpty(((gMKVTrack)seg).CodecPrivateData))
                     {
-                        foreach (gMKVSegment seg2 in segmentList)
+                        codecPrivateDataWasFound = true;
+                        break;
+                    }                    
+                }
+            }
+
+            if (!segmentInfoWasFound || !codecPrivateDataWasFound)
+            {
+                List<gMKVSegment> segmentListInfo = gInfo.GetMKVSegments(argInputFile);
+                foreach (gMKVSegment seg in segmentListInfo)
+                {
+                    if (seg is gMKVSegmentInfo && !segmentInfoWasFound)
+                    {
+                        segmentList.Insert(0, seg);
+                    }
+                    else if (seg is gMKVTrack && !codecPrivateDataWasFound)
+                    {
+                        // Update CodecPrivate info from mkvinfo to mkvextract segments
+                        if (!String.IsNullOrEmpty(((gMKVTrack)seg).CodecPrivate))
                         {
-                            if (seg2 is gMKVTrack)
+                            foreach (gMKVSegment seg2 in segmentList)
                             {
-                                if (((gMKVTrack)seg2).TrackID == ((gMKVTrack)seg).TrackID)
+                                if (seg2 is gMKVTrack)
                                 {
-                                    ((gMKVTrack)seg2).CodecPrivate = ((gMKVTrack)seg).CodecPrivate;
-                                    break;
+                                    if (((gMKVTrack)seg2).TrackID == ((gMKVTrack)seg).TrackID)
+                                    {
+                                        ((gMKVTrack)seg2).CodecPrivate = ((gMKVTrack)seg).CodecPrivate;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                segmentListInfo = null;
             }
-            gInfo.FindAndSetDelays(segmentList, argInputFile);
+
+            // Try to determine the delays from mkvmerge info
+            if (!g.FindDelays(segmentList))
+            {
+                // If we couldn't determine the delays from mkvmerge info, then we use mkvinfo
+                gInfo.FindAndSetDelays(segmentList, argInputFile);
+            }
+
+            // Translate codec_private_data in codec_private information
+            g.FindCodecPrivate(segmentList);
 
             gInfo = null;
-            segmentListInfo = null;
 
             return segmentList;
         }

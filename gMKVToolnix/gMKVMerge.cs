@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -8,6 +10,36 @@ namespace gMKVToolnix
 {
     public class gMKVMerge
     {
+        static readonly string[] formats = { 
+            // Basic formats
+            "yyyyMMddTHHmmsszzz",
+            "yyyyMMddTHHmmsszz",
+            "yyyyMMddTHHmmssZ",
+            // Extended formats
+            "yyyy-MM-ddTHH:mm:sszzz",
+            "yyyy-MM-ddTHH:mm:sszz",
+            "yyyy-MM-ddTHH:mm:ssZ",
+            // All of the above with reduced accuracy
+            "yyyyMMddTHHmmzzz",
+            "yyyyMMddTHHmmzz",
+            "yyyyMMddTHHmmZ",
+            "yyyy-MM-ddTHH:mmzzz",
+            "yyyy-MM-ddTHH:mmzz",
+            "yyyy-MM-ddTHH:mmZ",
+            // Accuracy reduced to hours
+            "yyyyMMddTHHzzz",
+            "yyyyMMddTHHzz",
+            "yyyyMMddTHHZ",
+            "yyyy-MM-ddTHHzzz",
+            "yyyy-MM-ddTHHzz",
+            "yyyy-MM-ddTHHZ",
+            // 
+            "yyyyMMdd",
+            "yyyyMMddT",
+            "yyyy-MM-dd",
+            "yyyy-MM-ddT"
+        };
+
         internal class OptionValue
         {
             private MkvMergeOptions _Option;
@@ -78,6 +110,240 @@ namespace gMKVToolnix
             return _SegmentList;
         }
 
+        public bool FindDelays(List<gMKVSegment> argSegmentList)
+        {
+            // Check to see if the list contains segments
+            if(argSegmentList == null || argSegmentList.Count == 0)
+            {
+                return false;
+            }
+            
+            Int32 videoDelay = Int32.MinValue;
+
+            // First, find the video delay
+            foreach (gMKVSegment seg in argSegmentList)
+            {
+                if (seg is gMKVTrack)
+                {
+                    gMKVTrack track = (gMKVTrack)seg;
+                    if(track.TrackType == MkvTrackType.video)
+                    {
+                        // Check if MinimumTimestamp property was found
+                        if (track.MinimumTimestamp == Int64.MinValue)
+                        {
+                            // Could not determine the delays
+                            return false;
+                        }
+                        // Convert to ms from ns
+                        videoDelay = Convert.ToInt32(track.MinimumTimestamp / 1000000);
+                        track.Delay = videoDelay;
+                        track.EffectiveDelay = videoDelay;
+                        break;
+                    }
+                }
+            }
+
+            // Check if video delay was found
+            if (videoDelay == Int32.MinValue)
+            {
+                // Could not determine the delays
+                return false;
+            }
+
+            // If video delay was found, then determine the audio track delay
+            foreach (gMKVSegment seg in argSegmentList)
+            {
+                if (seg is gMKVTrack)
+                {
+                    gMKVTrack track = (gMKVTrack)seg;
+                    if (track.TrackType == MkvTrackType.audio)
+                    {
+                        // Check if MinimumTimestamp property was found
+                        if (track.MinimumTimestamp == Int64.MinValue)
+                        {
+                            // Could not determine the delays
+                            return false;
+                        }
+                        // Convert to ms from ns
+                        track.Delay = Convert.ToInt32(track.MinimumTimestamp / 1000000);
+                        track.EffectiveDelay = track.Delay - videoDelay;
+                    }
+                }
+            }
+
+            // If everything went all right, then we return true
+            return true;
+        }
+
+        private byte[] HexStringToByteArray(string hexString)
+        {
+            if (hexString.Length % 2 == 1)
+            {
+                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The binary key cannot have an odd number of digits: {0}", hexString));
+            }
+
+            byte[] HexAsBytes = new byte[hexString.Length / 2];
+            for (int index = 0; index < HexAsBytes.Length; index++)
+            {
+                string byteValue = hexString.Substring(index * 2, 2);
+                HexAsBytes[index] = byte.Parse(byteValue, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+            }
+
+            return HexAsBytes;
+        }
+
+        public void FindCodecPrivate(List<gMKVSegment> argSegmentList)
+        {
+            foreach (gMKVSegment seg in argSegmentList)
+            {
+                if (seg is gMKVTrack)
+                {
+                    gMKVTrack track = (gMKVTrack)seg;
+                    // Check if the track has CodecPrivateData
+                    // and it doesn't have a text representation of CodecPrivate
+                    if (!String.IsNullOrEmpty(track.CodecPrivateData)
+                        && String.IsNullOrEmpty(track.CodecPrivate))
+                    {
+                        byte[] codecPrivateBytes = HexStringToByteArray(track.CodecPrivateData);
+                        if (track.TrackType == MkvTrackType.video)
+                        {
+                            if (track.CodecID == "V_MS/VFW/FOURCC")
+                            {
+                                track.CodecPrivate = String.Format("length {0} (FourCC: \"{1}\")"
+                                    , codecPrivateBytes.Length
+                                    , ((32 <= codecPrivateBytes[16]) && (127 > codecPrivateBytes[16]) ? System.Text.Encoding.ASCII.GetString(new byte[] { codecPrivateBytes[16] }) : "?") +
+                                    ((32 <= codecPrivateBytes[17]) && (127 > codecPrivateBytes[17]) ? System.Text.Encoding.ASCII.GetString(new byte[] { codecPrivateBytes[17] }) : "?") +
+                                    ((32 <= codecPrivateBytes[18]) && (127 > codecPrivateBytes[18]) ? System.Text.Encoding.ASCII.GetString(new byte[] { codecPrivateBytes[18] }) : "?") +
+                                    ((32 <= codecPrivateBytes[19]) && (127 > codecPrivateBytes[19]) ? System.Text.Encoding.ASCII.GetString(new byte[] { codecPrivateBytes[19] }) : "?")
+                                );
+                            }
+                            else if (track.CodecID == "V_MPEG4/ISO/AVC")
+                            {
+                                Int32 profileIdc = codecPrivateBytes[1];
+                                Int32 levelIdc = codecPrivateBytes[3];
+
+                                String profileIdcString = "";
+
+                                switch (profileIdc)
+                                {
+                                    case 44:
+                                        profileIdcString = "CAVLC 4:4:4 Intra";
+                                        break;
+                                    case 66:
+                                        profileIdcString = "Baseline";
+                                        break;
+                                    case 77:
+                                        profileIdcString = "Main";
+                                        break;
+                                    case 83:
+                                        profileIdcString = "Scalable Baseline";
+                                        break;
+                                    case 86:
+                                        profileIdcString = "Scalable High";
+                                        break;
+                                    case 88:
+                                        profileIdcString = "Extended";
+                                        break;
+                                    case 100:
+                                        profileIdcString = "High";
+                                        break;
+                                    case 110:
+                                        profileIdcString = "High 10";
+                                        break;
+                                    case 118:
+                                        profileIdcString = "Multiview High";
+                                        break;
+                                    case 122:
+                                        profileIdcString = "High 4:2:2";
+                                        break;
+                                    case 128:
+                                        profileIdcString = "Stereo High";
+                                        break;
+                                    case 144:
+                                        profileIdcString = "High 4:4:4";
+                                        break;
+                                    case 244:
+                                        profileIdcString = "High 4:4:4 Predictive";
+                                        break;
+                                    default:
+                                        profileIdcString = "Unknown";
+                                        break;
+                                }
+
+                                track.CodecPrivate = String.Format("length {0} (h.264 profile: {1} @L{2}.{3})"
+                                    , codecPrivateBytes.Length
+                                    , profileIdcString
+                                    , levelIdc / 10
+                                    , levelIdc % 10
+                                );
+                            }
+                            else if (track.CodecID == "V_MPEGH/ISO/HEVC")
+                            {
+                                BitArray codecPrivateBits = new BitArray(new byte[] { codecPrivateBytes[1] });
+
+                                Int32 profileIdc = Convert.ToInt32((codecPrivateBits[4] ? "1" : "0") +
+                                    (codecPrivateBits[3] ? "1" : "0") +
+                                    (codecPrivateBits[2] ? "1" : "0") +
+                                    (codecPrivateBits[1] ? "1" : "0") +
+                                    (codecPrivateBits[0] ? "1" : "0"), 2);
+
+                                Int32 levelIdc = codecPrivateBytes[12];
+
+                                String profileIdcString = "";
+
+                                switch (profileIdc)
+                                {
+                                    case 1:
+                                        profileIdcString = "Main";
+                                        break;
+                                    case 2:
+                                        profileIdcString = "Main 10";
+                                        break;
+                                    case 3:
+                                        profileIdcString = "Main Still Picture";
+                                        break;
+                                    default:
+                                        profileIdcString = "Unknown";
+                                        break;
+                                }
+
+                                track.CodecPrivate = String.Format("length {0} (HEVC profile: {1} @L{2}.{3})"
+                                    , codecPrivateBytes.Length
+                                    , profileIdcString
+                                    , levelIdc / 3 / 10
+                                    , levelIdc / 3 % 10
+                                );
+                            }
+                            else
+                            {
+                                track.CodecPrivate = String.Format("length {0}", codecPrivateBytes.Length);
+                            }
+                        }
+                        else if (track.TrackType == MkvTrackType.audio)
+                        {
+                            if (track.CodecID == "A_MS/ACM")
+                            {
+                                //UInt16 formatTag = BitConverter.ToUInt16(new byte[] { codecPrivateBytes[1], codecPrivateBytes[0] }, 0);
+                                track.CodecPrivate = String.Format("length {0} (format tag: 0x{1:x2}{2:x2})"
+                                    , codecPrivateBytes.Length
+                                    , codecPrivateBytes[0]
+                                    , codecPrivateBytes[1]
+                                );
+                            }
+                            else
+                            {
+                                track.CodecPrivate = String.Format("length {0}", codecPrivateBytes.Length);
+                            }
+                        }
+                        else
+                        {
+                            track.CodecPrivate = String.Format("length {0}", codecPrivateBytes.Length);
+                        }
+                    }
+                }
+            }
+        }
+
         private void ExecuteMkvMerge(String argMKVFile)
         {
             using (Process myProcess = new Process())
@@ -134,7 +400,42 @@ namespace gMKVToolnix
             // start the loop for each line of the output
             foreach (String outputLine in _MKVMergeOutput.ToString().Split(new String[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (outputLine.StartsWith("Track ID "))
+                if (outputLine.StartsWith("File "))
+                {
+                    gMKVSegmentInfo tmp = new gMKVSegmentInfo();
+                    if (outputLine.Contains("muxing_application:"))
+                    {
+                        tmp.MuxingApplication = ExtractProperty(outputLine, "muxing_application");
+                    }
+                    if (outputLine.Contains("writing_application:"))
+                    {
+                        tmp.WritingApplication = ExtractProperty(outputLine, "writing_application");
+                    }
+                    if (outputLine.Contains("date_utc:"))
+                    {
+                        tmp.Date = DateTime.ParseExact(ExtractProperty(outputLine, "date_utc"), formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal).ToUniversalTime().
+                            ToString("ddd MMM dd HH:mm:ss yyyy UTC", CultureInfo.InvariantCulture);
+                    }
+                    if (outputLine.Contains("duration:"))
+                    {
+                        //Duration: 5979.008s (01:39:39.008)
+                        String originalDuration = ExtractProperty(outputLine, "duration");
+                        TimeSpan tmpTime = TimeSpan.FromMilliseconds(Convert.ToDouble(Int64.Parse(originalDuration)) / 1000000.0);
+                        tmp.Duration = String.Format("{0}s ({1}:{2}:{3}.{4})",
+                            (Convert.ToDouble(Int64.Parse(originalDuration)) / 1000000000.0).ToString("#0.000", CultureInfo.InvariantCulture),
+                            tmpTime.Hours.ToString("00"),
+                            tmpTime.Minutes.ToString("00"),
+                            tmpTime.Seconds.ToString("00"),
+                            tmpTime.Milliseconds.ToString("000"));
+                    }
+                    if (!String.IsNullOrEmpty(tmp.MuxingApplication)
+                        && !String.IsNullOrEmpty(tmp.WritingApplication)
+                        && !String.IsNullOrEmpty(tmp.Duration))
+                    {
+                        _SegmentList.Add(tmp);
+                    }
+                }
+                else if (outputLine.StartsWith("Track ID "))
                 {
                     gMKVTrack tmp = new gMKVTrack();
                     tmp.TrackType = (MkvTrackType)Enum.Parse(typeof(MkvTrackType), outputLine.Substring(outputLine.IndexOf(":") + 1, outputLine.IndexOf("(") - outputLine.IndexOf(":") - 1).Trim());
@@ -168,12 +469,26 @@ namespace gMKVToolnix
                     {
                         tmp.TrackName = ExtractProperty(outputLine, "track_name"); 
                     }
+                    if (outputLine.Contains("codec_private_data:"))
+                    {
+                        tmp.CodecPrivateData = ExtractProperty(outputLine, "codec_private_data");
+                    }
                     switch (tmp.TrackType)
                     {
                         case MkvTrackType.video:
                             if (outputLine.Contains("pixel_dimensions:"))
                             {
                                 tmp.ExtraInfo = ExtractProperty(outputLine, "pixel_dimensions"); 
+                            }
+                            // in versions after v9.0.1, Mosu was kind enough to provide us with the minimum_timestamp property
+                            // in order to determine the current track's delay
+                            if (outputLine.Contains("minimum_timestamp:"))
+                            {
+                                Int64 tmpInt64;
+                                if (Int64.TryParse(ExtractProperty(outputLine, "minimum_timestamp"), out tmpInt64))
+                                {
+                                    tmp.MinimumTimestamp = tmpInt64;
+                                }
                             }
                             break;
                         case MkvTrackType.audio:
@@ -184,6 +499,16 @@ namespace gMKVToolnix
                             if (outputLine.Contains("audio_channels:"))
                             {
                                 tmp.ExtraInfo += ", Ch:" + ExtractProperty(outputLine, "audio_channels");
+                            }
+                            // in versions after v9.0.1, Mosu was kind enough to provide us with the minimum_timestamp property
+                            // in order to determine the current track's delay
+                            if (outputLine.Contains("minimum_timestamp:"))
+                            {
+                                Int64 tmpInt64;
+                                if (Int64.TryParse(ExtractProperty(outputLine, "minimum_timestamp"), out tmpInt64))
+                                {
+                                    tmp.MinimumTimestamp = tmpInt64;
+                                }
                             }
                             break;
                         case MkvTrackType.subtitles:

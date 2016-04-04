@@ -328,6 +328,9 @@ namespace gMKVToolnix
                     // Write the value to the ini file
                     _Settings.MkvToolnixPath = txtMKVToolnixPath.Text.Trim();
                     _Settings.Save();
+
+                    // Clear the input text
+                    txtInputFile.Clear();
                 }
                 _gMkvExtract = new gMKVExtract(txtMKVToolnixPath.Text);
             }

@@ -491,6 +491,7 @@
             this.chkLstInputFileTracks.ContextMenuStrip = this.contextMenuStrip;
             this.chkLstInputFileTracks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkLstInputFileTracks.FormattingEnabled = true;
+            this.chkLstInputFileTracks.HorizontalScrollbar = true;
             this.chkLstInputFileTracks.Location = new System.Drawing.Point(3, 83);
             this.chkLstInputFileTracks.Name = "chkLstInputFileTracks";
             this.chkLstInputFileTracks.Size = new System.Drawing.Size(606, 171);
@@ -555,7 +556,7 @@
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.grpLog);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(161)));
-            this.MinimumSize = new System.Drawing.Size(600, 400);
+            this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "frmMain";
             this.Text = "gMKVExtractGUI";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);

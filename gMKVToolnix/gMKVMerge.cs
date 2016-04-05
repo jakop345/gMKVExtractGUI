@@ -437,9 +437,27 @@ namespace gMKVToolnix
                 }
                 else if (outputLine.StartsWith("Track ID "))
                 {
+                    Int32 trackID = Int32.Parse(outputLine.Substring(0, outputLine.IndexOf(":")).Replace("Track ID", String.Empty).Trim());
+                    // Check if there is already a track with the same TrackID (workaround for a weird bug in MKVToolnix v4 when identifying files from AviDemux)
+                    bool trackFound = false;
+                    foreach (gMKVSegment tmpSeg in _SegmentList)
+                    {
+                        if(tmpSeg is gMKVTrack && ((gMKVTrack)tmpSeg).TrackID == trackID)
+                        {
+                            // If we already have a track with the same trackID, then don't bother adding it again
+                            trackFound = true;
+                            break;
+                        }
+                    }
+                    // Check if track found
+                    if (trackFound)
+                    {
+                        // If we already have a track with the same trackID, then don't bother adding it again
+                        continue;
+                    }
                     gMKVTrack tmp = new gMKVTrack();
                     tmp.TrackType = (MkvTrackType)Enum.Parse(typeof(MkvTrackType), outputLine.Substring(outputLine.IndexOf(":") + 1, outputLine.IndexOf("(") - outputLine.IndexOf(":") - 1).Trim());
-                    tmp.TrackID = Int32.Parse(outputLine.Substring(0, outputLine.IndexOf(":")).Replace("Track ID", String.Empty).Trim());
+                    tmp.TrackID = trackID;
                     if (outputLine.Contains("number"))
                     {
                         // if we have version 5.x and newer

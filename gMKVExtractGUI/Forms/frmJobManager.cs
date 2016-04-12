@@ -503,5 +503,18 @@ namespace gMKVToolnix
                 _Settings.Save();
             }
         }
+
+        private void grdJobs_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            try
+            {
+                grpJobs.Text = String.Format("Jobs ({0})", grdJobs.Rows.Count);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                ShowErrorMessage(ex.Message);
+            }
+        }
     }
 }

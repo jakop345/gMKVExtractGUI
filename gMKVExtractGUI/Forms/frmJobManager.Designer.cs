@@ -215,6 +215,7 @@
             this.grdJobs.Size = new System.Drawing.Size(502, 293);
             this.grdJobs.TabIndex = 1;
             this.grdJobs.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grdJobs_CellContentDoubleClick);
+            this.grdJobs.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.grdJobs_DataBindingComplete);
             // 
             // contextMenuStrip
             // 

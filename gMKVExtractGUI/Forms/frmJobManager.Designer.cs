@@ -200,6 +200,7 @@
             this.grdJobs.AllowUserToAddRows = false;
             this.grdJobs.AllowUserToDeleteRows = false;
             this.grdJobs.AllowUserToResizeRows = false;
+            this.grdJobs.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.grdJobs.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.grdJobs.BackgroundColor = System.Drawing.Color.White;
             this.grdJobs.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;

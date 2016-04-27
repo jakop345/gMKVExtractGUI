@@ -58,9 +58,10 @@ namespace gMKVToolNix
             if (_TaskbarInstance == null) { _TaskbarInstance = (ITaskbarList3)new TaskbarInstance(); }
             return _TaskbarInstance;
         }
+
         private static bool IsTaskbarSupported() 
         { 
-            return Environment.OSVersion.Version >= new Version(6, 1); 
+            return !Program.IsOnLinux && Environment.OSVersion.Version >= new Version(6, 1); 
         }
 
         public static void SetState(Form frm, TaskbarStates taskbarState)

@@ -28,6 +28,7 @@ namespace gMKVToolNix
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             if (!File.Exists(Path.Combine(Application.StartupPath, "gMKVToolNix.dll")))
             {
                 MessageBox.Show("The gMKVToolNix.dll was not found! Please download and reinstall gMKVExtractGUI!", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -45,5 +46,6 @@ namespace gMKVToolNix
                 Application.Run(new frmMain());
             }
         }
+
     }
 }

@@ -187,7 +187,12 @@ namespace gMKVToolNix
                 // add the default options for running mkvinfo
                 List<OptionValue> optionList = new List<OptionValue>();
                 // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
-                if (!gMKVHelper.IsOnLinux)
+                // After talking with Mosu, the language output is defined from ui-language, with different language codes for Windows and Linux
+                if (gMKVHelper.IsOnLinux)
+                {
+                    optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en_US"));
+                }
+                else
                 {
                     optionList.Add(new OptionValue(MkvInfoOptions.ui_language, "en"));
                 }

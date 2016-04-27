@@ -677,13 +677,14 @@ namespace gMKVToolNix
                 ProcessStartInfo myProcessInfo = new ProcessStartInfo();
                 myProcessInfo.FileName = _MKVExtractFilename;
                 // if on Linux, the language output must be defined from the environment variables LC_ALL, LANG, and LC_MESSAGES
-                if (!gMKVHelper.IsOnLinux)
+                // After talking with Mosu, the language output is defined from ui-language, with different language codes for Windows and Linux
+                if (gMKVHelper.IsOnLinux)
                 {
-                    myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);
+                    myProcessInfo.Arguments = String.Format("--ui-language en_US {0}", argParameters);
                 }
                 else
                 {
-                    myProcessInfo.Arguments = String.Format("{0}", argParameters);
+                    myProcessInfo.Arguments = String.Format("--ui-language en {0}", argParameters);                    
                 }                    
                 myProcessInfo.UseShellExecute = false;
                 myProcessInfo.RedirectStandardOutput = true;

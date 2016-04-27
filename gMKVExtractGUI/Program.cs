@@ -37,12 +37,13 @@ namespace gMKVToolNix
             {
                 // If on Linux, set the enironmnet variables for locale to C (default locale)
                 // Actually set to en_US.UTF-8 locale in order to support UTF-8 filenames in Linux
-                if (IsOnLinux)
-                {
-                    Environment.SetEnvironmentVariable("LC_ALL", "en_US.UTF-8", EnvironmentVariableTarget.Process);
-                    Environment.SetEnvironmentVariable("LANG", "en_US.UTF-8", EnvironmentVariableTarget.Process);
-                    Environment.SetEnvironmentVariable("LC_MESSAGES", "en_US.UTF-8", EnvironmentVariableTarget.Process);
-                }
+                //// After clearing things with Mosu, this is not necessary anymore, since --ui-language is more than enough!
+                //if (IsOnLinux)
+                //{
+                //    Environment.SetEnvironmentVariable("LC_ALL", "en_US.UTF-8", EnvironmentVariableTarget.Process);
+                //    Environment.SetEnvironmentVariable("LANG", "en_US.UTF-8", EnvironmentVariableTarget.Process);
+                //    Environment.SetEnvironmentVariable("LC_MESSAGES", "en_US.UTF-8", EnvironmentVariableTarget.Process);
+                //}
                 Application.Run(new frmMain());
             }
         }

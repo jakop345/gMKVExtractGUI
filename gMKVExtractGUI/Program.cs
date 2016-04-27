@@ -28,18 +28,19 @@ namespace gMKVToolNix
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            if (!File.Exists(Path.Combine(Application.StartupPath, "gMKVToolnix.dll")))
+            if (!File.Exists(Path.Combine(Application.StartupPath, "gMKVToolNix.dll")))
             {
-                MessageBox.Show("The gMKVToolnix.dll was not found! Please download and reinstall gMKVExtractGUI!", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The gMKVToolNix.dll was not found! Please download and reinstall gMKVExtractGUI!", "An error has occured!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
                 // If on Linux, set the enironmnet variables for locale to C (default locale)
+                // Actually set to en_US.UTF-8 locale in order to support UTF-8 filenames in Linux
                 if (IsOnLinux)
                 {
-                    Environment.SetEnvironmentVariable("LC_ALL", "C", EnvironmentVariableTarget.Process);
-                    Environment.SetEnvironmentVariable("LANG", "C", EnvironmentVariableTarget.Process);
-                    Environment.SetEnvironmentVariable("LC_MESSAGES", "C", EnvironmentVariableTarget.Process);
+                    Environment.SetEnvironmentVariable("LC_ALL", "en_US.UTF-8", EnvironmentVariableTarget.Process);
+                    Environment.SetEnvironmentVariable("LANG", "en_US.UTF-8", EnvironmentVariableTarget.Process);
+                    Environment.SetEnvironmentVariable("LC_MESSAGES", "en_US.UTF-8", EnvironmentVariableTarget.Process);
                 }
                 Application.Run(new frmMain());
             }

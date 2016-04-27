@@ -1,4 +1,4 @@
-﻿namespace gMKVToolnix
+﻿namespace gMKVToolNix
 {
     partial class frmMain
     {
@@ -41,15 +41,15 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.btnAbort = new System.Windows.Forms.Button();
             this.btnAbortAll = new System.Windows.Forms.Button();
-            this.tlpMain = new gMKVToolnix.gTableLayoutPanel();
-            this.grpInputFile = new gMKVToolnix.gGroupBox();
-            this.txtInputFile = new gMKVToolnix.gTextBox();
+            this.tlpMain = new gMKVToolNix.gTableLayoutPanel();
+            this.grpInputFile = new gMKVToolNix.gGroupBox();
+            this.txtInputFile = new gMKVToolNix.gTextBox();
             this.btnBrowseInputFile = new System.Windows.Forms.Button();
-            this.grpOutputDirectory = new gMKVToolnix.gGroupBox();
+            this.grpOutputDirectory = new gMKVToolNix.gGroupBox();
             this.chkLockOutputDirectory = new System.Windows.Forms.CheckBox();
             this.btnBrowseOutputDirectory = new System.Windows.Forms.Button();
-            this.txtOutputDirectory = new gMKVToolnix.gTextBox();
-            this.grpActions = new gMKVToolnix.gGroupBox();
+            this.txtOutputDirectory = new gMKVToolNix.gTextBox();
+            this.grpActions = new gMKVToolNix.gGroupBox();
             this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.chkJobMode = new System.Windows.Forms.CheckBox();
             this.btnExtract = new System.Windows.Forms.Button();
@@ -58,18 +58,18 @@
             this.btnShowLog = new System.Windows.Forms.Button();
             this.lblChapterType = new System.Windows.Forms.Label();
             this.cmbChapterType = new System.Windows.Forms.ComboBox();
-            this.grpConfig = new gMKVToolnix.gGroupBox();
+            this.grpConfig = new gMKVToolNix.gGroupBox();
             this.btnBrowseMKVToolnixPath = new System.Windows.Forms.Button();
-            this.txtMKVToolnixPath = new gMKVToolnix.gTextBox();
-            this.grpInputFileInfo = new gMKVToolnix.gGroupBox();
-            this.tableLayoutPanel1 = new gMKVToolnix.gTableLayoutPanel();
-            this.chkLstInputFileTracks = new gMKVToolnix.gCheckedListBox();
-            this.txtSegmentInfo = new gMKVToolnix.gRichTextBox();
+            this.txtMKVToolnixPath = new gMKVToolNix.gTextBox();
+            this.grpInputFileInfo = new gMKVToolNix.gGroupBox();
+            this.tableLayoutPanel1 = new gMKVToolNix.gTableLayoutPanel();
+            this.chkLstInputFileTracks = new gMKVToolNix.gCheckedListBox();
+            this.txtSegmentInfo = new gMKVToolNix.gRichTextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.prgBrStatus = new System.Windows.Forms.ToolStripProgressBar();
             this.lblTrack = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.grpLog = new gMKVToolnix.gGroupBox();
+            this.grpLog = new gMKVToolNix.gGroupBox();
             this.contextMenuStrip.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();

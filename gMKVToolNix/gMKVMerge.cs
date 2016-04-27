@@ -6,7 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public class gMKVMerge
     {

@@ -6,10 +6,10 @@ using System.Drawing;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
-using gMKVToolnix;
+using gMKVToolNix;
 using System.Diagnostics;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public partial class frmLog : gForm
     {

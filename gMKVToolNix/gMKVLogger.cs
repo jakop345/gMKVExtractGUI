@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public delegate void LogLineAddedEventHandler(String lineAdded, DateTime actionDate);
 

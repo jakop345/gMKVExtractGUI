@@ -7,7 +7,7 @@
     <ProjectGuid>{20EBEFF3-C838-4239-A236-EC055BF51398}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>gMKVToolnix</RootNamespace>
+    <RootNamespace>gMKVToolNix</RootNamespace>
     <AssemblyName>gMKVExtractGUI</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -35,7 +35,7 @@
     <ApplicationIcon>Images\gMkvExtractGuiIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>gMKVToolnix.Program</StartupObject>
+    <StartupObject>gMKVToolNix.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -122,7 +122,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\gMKVToolnix\gMKVToolNix.csproj">
+    <ProjectReference Include="..\gMKVToolNix\gMKVToolNix.csproj">
       <Project>{82fc8fa8-50c0-44fa-8801-80050c0ed89f}</Project>
       <Name>gMKVToolNix</Name>
     </ProjectReference>

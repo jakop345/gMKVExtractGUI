@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public class gForm : Form
     {

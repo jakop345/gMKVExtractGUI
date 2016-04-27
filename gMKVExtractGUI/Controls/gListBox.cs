@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace gMKVToolnix.Controls
+namespace gMKVToolNix.Controls
 {
     public class gListBox:ListBox
     {

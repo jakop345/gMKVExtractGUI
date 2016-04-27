@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using gMKVToolNix.CueSheet;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public enum MkvExtractModes
     {

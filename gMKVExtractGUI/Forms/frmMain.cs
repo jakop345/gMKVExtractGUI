@@ -11,7 +11,7 @@ using System.IO;
 using System.Threading;
 using System.Media;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public enum TrackSelectionMode
     {

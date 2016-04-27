@@ -1,4 +1,4 @@
-﻿namespace gMKVToolnix
+﻿namespace gMKVToolNix
 {
     partial class frmLog
     {
@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tlpMain = new gMKVToolnix.gTableLayoutPanel();
-            this.grpLog = new gMKVToolnix.gGroupBox();
-            this.txtLog = new gMKVToolnix.gTextBox();
-            this.grpActions = new gMKVToolnix.gGroupBox();
+            this.tlpMain = new gMKVToolNix.gTableLayoutPanel();
+            this.grpLog = new gMKVToolNix.gGroupBox();
+            this.txtLog = new gMKVToolNix.gTextBox();
+            this.grpActions = new gMKVToolNix.gGroupBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnCopy = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();

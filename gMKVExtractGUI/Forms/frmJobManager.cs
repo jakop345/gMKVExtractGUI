@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public partial class frmJobManager : gForm
     {

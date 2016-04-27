@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     public enum JobState
     {

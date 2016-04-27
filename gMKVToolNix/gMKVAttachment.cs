@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace gMKVToolnix
+namespace gMKVToolNix
 {
     [Serializable]
     public class gMKVAttachment : gMKVSegment

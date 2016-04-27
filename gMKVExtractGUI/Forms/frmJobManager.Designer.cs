@@ -1,4 +1,4 @@
-﻿namespace gMKVToolnix
+﻿namespace gMKVToolNix
 {
     partial class frmJobManager
     {
@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.tlpMain = new gMKVToolnix.gTableLayoutPanel();
-            this.grpProgress = new gMKVToolnix.gGroupBox();
-            this.txtCurrentTrack = new gMKVToolnix.gTextBox();
+            this.tlpMain = new gMKVToolNix.gTableLayoutPanel();
+            this.grpProgress = new gMKVToolNix.gGroupBox();
+            this.txtCurrentTrack = new gMKVToolNix.gTextBox();
             this.lblCurrentTrack = new System.Windows.Forms.Label();
             this.lblTotalProgressValue = new System.Windows.Forms.Label();
             this.lblCurrentProgressValue = new System.Windows.Forms.Label();
@@ -39,12 +39,12 @@
             this.lblCurrentProgress = new System.Windows.Forms.Label();
             this.prgBrTotal = new System.Windows.Forms.ProgressBar();
             this.prgBrCurrent = new System.Windows.Forms.ProgressBar();
-            this.tlpJobs = new gMKVToolnix.gTableLayoutPanel();
-            this.grpJobs = new gMKVToolnix.gGroupBox();
-            this.grdJobs = new gMKVToolnix.Controls.gDataGridView();
+            this.tlpJobs = new gMKVToolNix.gTableLayoutPanel();
+            this.grpJobs = new gMKVToolNix.gGroupBox();
+            this.grdJobs = new gMKVToolNix.Controls.gDataGridView();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.changeToReadyStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.grpActions = new gMKVToolnix.gGroupBox();
+            this.grpActions = new gMKVToolNix.gGroupBox();
             this.chkShowPopup = new System.Windows.Forms.CheckBox();
             this.btnSaveJobs = new System.Windows.Forms.Button();
             this.btnLoadJobs = new System.Windows.Forms.Button();

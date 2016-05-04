@@ -51,14 +51,14 @@ namespace gMKVToolNix
             set { _WindowPosY = value; }
         }
 
-        private Int32 _WindowSizeWidth;
+        private Int32 _WindowSizeWidth = 640;
         public Int32 WindowSizeWidth
         {
             get { return _WindowSizeWidth; }
             set { _WindowSizeWidth = value; }
         }
 
-        private Int32 _WindowSizeHeight;
+        private Int32 _WindowSizeHeight = 600;
         public Int32 WindowSizeHeight
         {
             get { return _WindowSizeHeight; }

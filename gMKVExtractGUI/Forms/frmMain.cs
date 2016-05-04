@@ -511,12 +511,16 @@ namespace gMKVToolNix
                 // check if output directory is locked
                 if (!chkLockOutputDirectory.Checked)
                 {
-                    FolderBrowserDialog fbd = new FolderBrowserDialog();
-                    fbd.Description = "Select output directory...";
-                    fbd.ShowNewFolderButton = true;
-                    if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    sfd.RestoreDirectory = true;
+                    sfd.CheckFileExists = false;
+                    sfd.CheckPathExists = false;
+                    sfd.OverwritePrompt = false;
+                    sfd.FileName = "Select directory";
+                    sfd.Title = "Select output directory...";
+                    if ((sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK))
                     {
-                        txtOutputDirectory.Text = fbd.SelectedPath;
+                        txtOutputDirectory.Text = Path.GetDirectoryName(sfd.FileName);
                     }
                 }
             }
@@ -537,22 +541,25 @@ namespace gMKVToolNix
                     if (ShowQuestion("Do you really want to change MKVToolnix path?", "Are you sure?") != DialogResult.Yes)
                     {
                         return;
-                        //throw new Exception("User abort!");
                     }
                 }
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-                if (txtMKVToolnixPath.Text.Trim().Length > 0) 
+
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.RestoreDirectory = true;
+                ofd.CheckFileExists = false;
+                ofd.CheckPathExists = false;
+                ofd.FileName = "Select directory";
+                ofd.Title = "Select MKVToolnix directory...";
+                if (txtMKVToolnixPath.Text.Trim().Length > 0)
                 {
                     if (Directory.Exists(txtMKVToolnixPath.Text.Trim()))
                     {
-                        fbd.SelectedPath = txtMKVToolnixPath.Text.Trim();
+                        ofd.InitialDirectory = txtMKVToolnixPath.Text.Trim();
                     }
                 }
-                fbd.Description = "Select MKVToolnix directory...";
-                fbd.ShowNewFolderButton = true;
-                if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if ((ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK))
                 {
-                    txtMKVToolnixPath.Text = fbd.SelectedPath;
+                    txtMKVToolnixPath.Text = Path.GetDirectoryName(ofd.FileName);
                 }
             }
             catch (Exception ex)
@@ -770,7 +777,10 @@ namespace gMKVToolNix
                 else
                 {
                     lblTrack.Text = "";
-                    lblStatus.Text = "Extraction completed!";
+                    if (!_JobMode)
+                    {
+                        lblStatus.Text = "Extraction completed!";
+                    }
                 }
                 _ExtractRunning = false;
                 tlpMain.Enabled = true;
